@@ -152,6 +152,7 @@
   ```
 - **Success Codes**: 200 OK
 - **Error Codes**: 401 Unauthorized, 404 Not Found
+
 #### Create Flashcard
 - **Method**: POST
 - **Path**: `/api/flashcards`

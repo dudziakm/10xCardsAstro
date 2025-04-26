@@ -7,6 +7,11 @@ declare global {
   namespace App {
     interface Locals {
       supabase: SupabaseClient<Database>;
+      session: {
+        user: {
+          id: string;
+        };
+      } | null;
     }
   }
 }

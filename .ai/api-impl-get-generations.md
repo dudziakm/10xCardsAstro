@@ -1,4 +1,4 @@
-# API Endpoint Implementation Plan: List Generations
+# API Endpoint Implementation Plan: List Generations (GET /api/generations)
 
 ## 1. Przegląd punktu końcowego
 Endpoint `/api/generations` umożliwia uwierzytelnionym użytkownikom pobieranie paginowanej listy ich historii generacji fiszek wraz z podstawowymi informacjami o każdej generacji. Odpowiedź zawiera zarówno dane generacji, jak i informacje o paginacji.
