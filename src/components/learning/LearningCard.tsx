@@ -54,6 +54,15 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
         }`}
         style={{ minHeight: "400px" }}
         onClick={handleFlip}
+        onKeyDown={(e) => {
+          if (!isFlipped && !hasRated && (e.key === "Enter" || e.key === " ")) {
+            e.preventDefault();
+            handleFlip();
+          }
+        }}
+        role={!isFlipped && !hasRated ? "button" : undefined}
+        tabIndex={!isFlipped && !hasRated ? 0 : undefined}
+        aria-label={!isFlipped && !hasRated ? "Kliknij aby zobaczyć odpowiedź" : undefined}
       >
         <div className="absolute inset-0 p-8 flex flex-col">
           {/* Card header */}

@@ -19,13 +19,17 @@
     <h2>Test Database</h2>
     <button onclick="testDatabase()">Test Database Connection</button>
 
-    <script>
+    <script type="module">
+      /* eslint-disable */
       const results = document.getElementById("results");
 
       function log(message) {
-        results.innerHTML += "<p>" + message + "</p>";
+        if (results) {
+          results.innerHTML += "<p>" + message + "</p>";
+        }
       }
 
+      // Used by onclick in HTML
       async function testGetFlashcards() {
         try {
           log("Testing GET /api/flashcards...");
@@ -36,6 +40,7 @@
         }
       }
 
+      // Used by onclick in HTML
       async function testCreateFlashcard() {
         try {
           log("Testing POST /api/flashcards...");
@@ -49,6 +54,7 @@
         }
       }
 
+      // Used by onclick in HTML
       async function testDatabase() {
         try {
           log("Testing database connection...");

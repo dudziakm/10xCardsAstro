@@ -36,5 +36,9 @@ vi.mock("../db/supabase.client.ts", () => ({
 global.fetch = vi.fn();
 
 // Mock console methods to reduce noise in tests
-vi.spyOn(console, "log").mockImplementation(() => {});
-vi.spyOn(console, "error").mockImplementation(() => {});
+vi.spyOn(console, "log").mockImplementation(() => {
+  /* Mock console.log */
+});
+vi.spyOn(console, "error").mockImplementation(() => {
+  /* Mock console.error */
+});

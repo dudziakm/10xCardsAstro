@@ -52,28 +52,29 @@ export class GenerationService {
         .eq("id", generationId);
 
       if (updateError) {
-        console.error(`Failed to update generation log (success) for ID ${generationId}:`, updateError);
         // Continue despite update error, but log it
       }
 
       return { candidates, generationId };
-    } catch (error: any) {
-      console.error("Error during flashcard generation:", error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Unknown generation error";
+      const errorCode =
+        error instanceof Error && "code" in error ? (error as Error & { code: string }).code : "GENERATION_FAILED";
 
       if (generationId) {
         // 5. Log error and update generation log (Failure)
         const errorCmd: CreateGenerationErrorLogCommand = {
           generation_id: generationId,
-          error_message: error.message || "Unknown generation error",
-          error_code: error.code || "GENERATION_FAILED",
+          error_message: errorMessage,
+          error_code: errorCode,
           timestamp: new Date().toISOString(),
         };
 
         try {
           await this.supabase.from("generation_error_logs").insert(errorCmd);
           await this.supabase.from("generations").update({ successful: false }).eq("id", generationId);
-        } catch (logError) {
-          console.error("Failed to log generation error:", logError);
+        } catch {
+          // Failed to log generation error
         }
       }
 

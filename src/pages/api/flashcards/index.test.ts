@@ -1,22 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// Mock Astro locals
-const mockLocals = {
-  user: { id: "test-user-123" },
-};
-
-// Mock Supabase
-const mockSupabase = {
-  from: vi.fn(() => ({
-    select: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    range: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    single: vi.fn(),
-  })),
-};
-
 // Mock the flashcard service
 vi.mock("../../../lib/services/flashcard.service.ts", () => ({
   FlashcardService: vi.fn().mockImplementation(() => ({

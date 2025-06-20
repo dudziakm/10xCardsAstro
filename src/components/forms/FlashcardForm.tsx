@@ -55,7 +55,7 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
         front: flashcardData.front,
         back: flashcardData.back,
       });
-    } catch (err) {
+    } catch {
       setError("Nie udało się załadować fiszki");
     } finally {
       setInitialLoading(false);
@@ -77,7 +77,10 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
       let response;
 
       if (mode === "edit" && (flashcard || loadedFlashcard)) {
-        const currentFlashcard = flashcard || loadedFlashcard!;
+        const currentFlashcard = flashcard || loadedFlashcard;
+        if (!currentFlashcard) {
+          throw new Error("No flashcard data available");
+        }
         response = await fetch(`/api/flashcards/${currentFlashcard.id}`, {
           method: "PUT",
           headers: {

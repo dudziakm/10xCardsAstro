@@ -24,9 +24,9 @@ export const GET: APIRoute = async ({ locals }) => {
     }
 
     // Test basic queries
-    const { data: flashcards, error: flashcardsError } = await supabase.from("flashcards").select("count").limit(1);
+    const { error: flashcardsError } = await supabase.from("flashcards").select("count").limit(1);
 
-    const { data: generations, error: generationsError } = await supabase.from("generations").select("count").limit(1);
+    const { error: generationsError } = await supabase.from("generations").select("count").limit(1);
 
     return new Response(
       JSON.stringify({

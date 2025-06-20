@@ -269,7 +269,7 @@ describe("OpenRouter AI Service", () => {
 
       await callOpenRouterAI("Test input"); // No count specified
 
-      const requestBody = JSON.parse((global.fetch as any).mock.calls[0][1].body);
+      const requestBody = JSON.parse((global.fetch as vi.Mock).mock.calls[0][1].body);
       expect(requestBody.messages[0].content).toContain("stwórz 5 fiszek"); // Default count = 5
     });
   });

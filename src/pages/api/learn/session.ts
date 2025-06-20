@@ -24,7 +24,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
     const validatedParams = getLearningSessionSchema.parse(params);
 
-    console.log("Learning session request for user:", session.user.id);
     const learningService = new LearningService(supabase);
     const response = await learningService.getNextCard(session.user.id, validatedParams.session_id);
 
@@ -54,7 +53,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    console.error("Error in GET /api/learn/session:", error);
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",

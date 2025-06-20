@@ -19,6 +19,11 @@ interface FlashcardCandidate {
   back: string;
 }
 
+interface AIResponseFlashcard {
+  front?: unknown;
+  back?: unknown;
+}
+
 interface AIGenerationResult {
   candidates: FlashcardCandidate[];
   model: string;
@@ -104,8 +109,8 @@ Odpowiedz TYLKO w formacie JSON bez dodatkowych komentarzy:
       }
 
       const candidates: FlashcardCandidate[] = parsedContent.flashcards
-        .filter((card: any) => card.front && card.back)
-        .map((card: any) => ({
+        .filter((card: AIResponseFlashcard) => card.front && card.back)
+        .map((card: AIResponseFlashcard) => ({
           front: String(card.front).substring(0, 200).trim(),
           back: String(card.back).substring(0, 500).trim(),
         }))
@@ -121,14 +126,11 @@ Odpowiedz TYLKO w formacie JSON bez dodatkowych komentarzy:
         usage: data.usage,
       };
     } catch (parseError) {
-      console.error("Failed to parse AI response:", content);
       throw new Error(
         `Failed to parse AI response: ${parseError instanceof Error ? parseError.message : "Invalid JSON"}`
       );
     }
   } catch (error) {
-    console.error("OpenRouter AI call failed:", error);
-
     if (error instanceof Error) {
       throw error;
     }

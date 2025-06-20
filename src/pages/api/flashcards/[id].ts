@@ -1,6 +1,5 @@
 import type { APIRoute } from "astro";
 import { ZodError } from "zod";
-import { FlashcardService } from "../../../lib/services/flashcard.service";
 import { updateFlashcardSchema } from "../../../lib/schemas/flashcard.schema";
 
 export const GET: APIRoute = async ({ params, locals }) => {
@@ -70,8 +69,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
         headers: { "Content-Type": "application/json" },
       }
     );
-  } catch (error) {
-    console.error("Error getting flashcard:", error);
+  } catch {
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
@@ -121,7 +119,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
     let requestData;
     try {
       requestData = await request.json();
-    } catch (parseError) {
+    } catch {
       return new Response(
         JSON.stringify({
           error: "Bad Request",
@@ -191,7 +189,6 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       );
     }
 
-    console.error("Error updating flashcard:", error);
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
@@ -264,8 +261,7 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
         headers: { "Content-Type": "application/json" },
       }
     );
-  } catch (error) {
-    console.error("Error deleting flashcard:", error);
+  } catch {
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",

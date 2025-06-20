@@ -1,6 +1,5 @@
 import { describe, it, expect } from "vitest";
 import { createFlashcardSchema } from "../flashcard.schema";
-import { ZodError } from "zod";
 
 describe("createFlashcardSchema", () => {
   it("should validate valid flashcard data", () => {

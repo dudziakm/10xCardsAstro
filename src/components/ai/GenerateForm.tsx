@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
+import type { FlashcardDTO } from "../../types";
 
 interface GenerateFormProps {
-  onGenerated?: (flashcards: any[]) => void;
+  onGenerated?: (flashcards: FlashcardDTO[]) => void;
   onCancel?: () => void;
 }
 

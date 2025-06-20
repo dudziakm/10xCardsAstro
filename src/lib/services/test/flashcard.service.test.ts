@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { FlashcardService } from "../flashcard.service";
 import { ZodError } from "zod";
 
@@ -18,7 +19,7 @@ describe("FlashcardService", () => {
     // Reset mocks
     vi.clearAllMocks();
     // Create service with mock
-    service = new FlashcardService(mockSupabase as any);
+    service = new FlashcardService(mockSupabase as unknown as SupabaseClient);
   });
 
   it("should create a flashcard successfully", async () => {

@@ -21,7 +21,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     let requestData: GenerateFlashcardsRequestDTO;
     try {
       requestData = await request.json();
-    } catch (e) {
+    } catch {
       return new Response(
         JSON.stringify({
           error: "Bad Request",
@@ -55,7 +55,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof ZodError) {
       return new Response(
         JSON.stringify({
@@ -67,14 +67,11 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    // Log the detailed error server-side
-    console.error("Error in POST /api/flashcards/generate:", error);
-
     // Generic error for the client
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
-        message: error.message || "Failed to generate flashcards due to an internal error.",
+        message: error instanceof Error ? error.message : "Failed to generate flashcards due to an internal error.",
       }),
       { status: 500, headers: { "Content-Type": "application/json" } }
     );

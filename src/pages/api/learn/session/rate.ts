@@ -54,7 +54,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
       );
     }
 
-    console.error("Error in POST /api/learn/session/rate:", error);
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",

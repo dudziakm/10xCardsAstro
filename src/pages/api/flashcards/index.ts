@@ -22,16 +22,12 @@ export const POST: APIRoute = async ({ request, locals }) => {
     let requestData;
     try {
       requestData = await request.json();
-      console.log("Request data:", JSON.stringify(requestData));
-    } catch (parseError) {
-      console.error("Error parsing request body:", parseError);
+    } catch {
       return new Response(JSON.stringify({ error: "Bad Request", message: "Invalid JSON in request body" }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
     }
-
-    console.log("Session user ID:", session.user.id);
 
     // Create flashcard service
     const flashcardService = new FlashcardService(supabase);
@@ -46,8 +42,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
         headers: { "Content-Type": "application/json" },
       });
     } catch (serviceError) {
-      console.error("Error in flashcard service:", serviceError);
-
       // Return detailed error information
       return new Response(
         JSON.stringify({
@@ -78,7 +72,6 @@ export const POST: APIRoute = async ({ request, locals }) => {
     }
 
     // Handle other errors
-    console.error("Error creating flashcard:", error);
 
     return new Response(
       JSON.stringify({
@@ -115,7 +108,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Extract URL parameters
     const url = new URL(request.url);
     const sourceParam = url.searchParams.get("source");
-    const params: any = {
+    const params: Record<string, string> = {
       page: url.searchParams.get("page") || "1",
       limit: url.searchParams.get("limit") || "10",
       sort: url.searchParams.get("sort") || "updated_at",
@@ -133,7 +126,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Validate parameters
-    console.log("Params before validation:", JSON.stringify(params));
     const validatedParams = listFlashcardsSchema.parse(params);
 
     // Create flashcard service
@@ -164,7 +156,6 @@ export const GET: APIRoute = async ({ request, locals }) => {
     }
 
     // Handle other errors
-    console.error("Error listing flashcards:", error);
 
     return new Response(
       JSON.stringify({

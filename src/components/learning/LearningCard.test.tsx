@@ -40,7 +40,8 @@ describe("LearningCard", () => {
     render(<LearningCard card={mockCard} onRate={mockOnRate} />);
 
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       expect(screen.getByText("A JavaScript library for building user interfaces")).toBeInTheDocument();
@@ -53,7 +54,8 @@ describe("LearningCard", () => {
     render(<LearningCard card={mockCard} onRate={mockOnRate} />);
 
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       expect(screen.getByText("Jak dobrze pamiętałeś odpowiedź?")).toBeInTheDocument();
@@ -72,11 +74,13 @@ describe("LearningCard", () => {
 
     // Flip the card first
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       const ratingButton = screen.getByText("Dobrze").closest("button");
-      fireEvent.click(ratingButton!);
+      expect(ratingButton).toBeTruthy();
+      fireEvent.click(ratingButton as HTMLElement);
     });
 
     expect(mockOnRate).toHaveBeenCalledWith(4);
@@ -87,11 +91,13 @@ describe("LearningCard", () => {
 
     // Flip and rate
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       const ratingButton = screen.getByText("Bardzo dobrze").closest("button");
-      fireEvent.click(ratingButton!);
+      expect(ratingButton).toBeTruthy();
+      fireEvent.click(ratingButton as HTMLElement);
     });
 
     await waitFor(() => {
@@ -105,7 +111,8 @@ describe("LearningCard", () => {
 
     // Flip the card
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       const ratingButtons = screen.getAllByRole("button");
@@ -127,15 +134,18 @@ describe("LearningCard", () => {
 
     // Flip and rate
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       const ratingButton = screen.getByText("Dobrze").closest("button");
-      fireEvent.click(ratingButton!);
+      expect(ratingButton).toBeTruthy();
+      fireEvent.click(ratingButton as HTMLElement);
     });
 
     // Try to click the card again
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     // Should still show the rated state
     expect(screen.getByText("✓ Oceniono! Ładowanie następnej fiszki...")).toBeInTheDocument();
@@ -146,7 +156,8 @@ describe("LearningCard", () => {
 
     // Flip the card
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       expect(screen.getByText("1 = Następny przegląd za 1 dzień")).toBeInTheDocument();
@@ -176,7 +187,8 @@ describe("LearningCard", () => {
 
     // Flip the card
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.click(cardElement!);
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement);
 
     await waitFor(() => {
       const ratingButtons = screen.getAllByRole("button");
@@ -195,13 +207,17 @@ describe("LearningCard", () => {
 
     // Flip the card with keyboard
     const cardElement = screen.getByText("What is React?").closest("div");
-    fireEvent.keyDown(cardElement!, { key: "Enter" });
-    fireEvent.click(cardElement!); // Simulate click since we don't have keyboard handler
+    expect(cardElement).toBeTruthy();
+    fireEvent.keyDown(cardElement as HTMLElement, { key: "Enter" });
+    expect(cardElement).toBeTruthy();
+    fireEvent.click(cardElement as HTMLElement); // Simulate click since we don't have keyboard handler
 
     await waitFor(() => {
       const ratingButton = screen.getByText("Dobrze").closest("button");
-      fireEvent.keyDown(ratingButton!, { key: "Enter" });
-      fireEvent.click(ratingButton!);
+      expect(ratingButton).toBeTruthy();
+      fireEvent.keyDown(ratingButton as HTMLElement, { key: "Enter" });
+      expect(ratingButton).toBeTruthy();
+      fireEvent.click(ratingButton as HTMLElement);
     });
 
     expect(mockOnRate).toHaveBeenCalledWith(4);

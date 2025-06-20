@@ -245,8 +245,6 @@ describe("Learning Session API Integration Tests", () => {
 
   describe("Session Management", () => {
     it("should track session duration correctly", async () => {
-      const sessionStart = new Date(Date.now() - 10 * 60 * 1000); // 10 minutes ago
-
       const mockResult = {
         flashcard_id: "card-123",
         rating: 3,

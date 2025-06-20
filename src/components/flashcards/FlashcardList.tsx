@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import type { FlashcardDTO, FlashcardListResponseDTO, PaginationDTO } from "../../types";
 import { FlashcardCard } from "./FlashcardCard";
 import { Button } from "../ui/button";
@@ -34,46 +34,49 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
   const [searchQuery, setSearchQuery] = useState("");
   const [sourceFilter, setSourceFilter] = useState<"all" | "manual" | "ai">("all");
 
-  const fetchFlashcards = async (page = 1, search = searchQuery, source = sourceFilter) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const fetchFlashcards = useCallback(
+    async (page = 1, search = searchQuery, source = sourceFilter) => {
+      try {
+        setLoading(true);
+        setError(null);
 
-      const params = new URLSearchParams({
-        page: page.toString(),
-        limit: "10",
-        sort: "updated_at",
-        order: "desc",
-      });
+        const params = new URLSearchParams({
+          page: page.toString(),
+          limit: "10",
+          sort: "updated_at",
+          order: "desc",
+        });
 
-      if (search.trim()) {
-        params.append("search", search.trim());
+        if (search.trim()) {
+          params.append("search", search.trim());
+        }
+
+        if (source !== "all") {
+          params.append("source", source);
+        }
+
+        const response = await fetch(`/api/flashcards?${params.toString()}`);
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.message || "Failed to fetch flashcards");
+        }
+
+        const data: FlashcardListResponseDTO = await response.json();
+        setFlashcards(data.data);
+        setPagination(data.pagination);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "An error occurred");
+      } finally {
+        setLoading(false);
       }
-
-      if (source !== "all") {
-        params.append("source", source);
-      }
-
-      const response = await fetch(`/api/flashcards?${params.toString()}`);
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Failed to fetch flashcards");
-      }
-
-      const data: FlashcardListResponseDTO = await response.json();
-      setFlashcards(data.data);
-      setPagination(data.pagination);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [searchQuery, sourceFilter]
+  );
 
   useEffect(() => {
     fetchFlashcards();
-  }, []);
+  }, [fetchFlashcards]);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -201,7 +204,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
               key={flashcard.id}
               flashcard={flashcard}
               onEdit={defaultHandlers.onEdit}
-              onDelete={handleDelete}
+              onDelete={onDelete || handleDelete}
               onView={defaultHandlers.onView}
             />
           ))}

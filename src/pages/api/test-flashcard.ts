@@ -5,9 +5,6 @@ export const GET: APIRoute = async ({ locals }) => {
   const userId = session?.user?.id || "4d4918b3-fcb8-4ece-93c9-3272e8cbacc0";
 
   try {
-    console.log("Testing direct insert to flashcards table");
-    console.log("User ID:", userId);
-
     // Attempt to directly insert a test flashcard
     const { data, error } = await supabase
       .from("flashcards")
@@ -20,7 +17,6 @@ export const GET: APIRoute = async ({ locals }) => {
       .select();
 
     if (error) {
-      console.error("Insert error:", error);
       return new Response(
         JSON.stringify({
           success: false,
@@ -48,7 +44,6 @@ export const GET: APIRoute = async ({ locals }) => {
       }
     );
   } catch (err) {
-    console.error("Unexpected error:", err);
     return new Response(
       JSON.stringify({
         success: false,

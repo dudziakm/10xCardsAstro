@@ -22,7 +22,7 @@ describe("FlashcardForm", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (global.fetch as any).mockClear();
+    (global.fetch as vi.Mock).mockClear();
   });
 
   describe("Create Mode", () => {
@@ -38,7 +38,7 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
       const mockResponse = { ...mockFlashcard, id: "new-flashcard-123" };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
       });
@@ -80,7 +80,7 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
       const updatedFlashcard = { ...mockFlashcard, front: "Updated question?" };
 
-      (global.fetch as any).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(updatedFlashcard),
       });
@@ -115,7 +115,7 @@ describe("FlashcardForm", () => {
       mockElement.setAttribute("data-flashcard-id", "test-flashcard-123");
       vi.spyOn(document, "querySelector").mockReturnValue(mockElement);
 
-      (global.fetch as any).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockFlashcard),
       });
@@ -189,7 +189,7 @@ describe("FlashcardForm", () => {
     it("should handle API errors during submission", async () => {
       const user = userEvent.setup();
 
-      (global.fetch as any).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: false,
         json: () => Promise.resolve({ message: "Validation failed" }),
       });
@@ -209,7 +209,7 @@ describe("FlashcardForm", () => {
     it("should handle network errors", async () => {
       const user = userEvent.setup();
 
-      (global.fetch as any).mockRejectedValueOnce(new Error("Network error"));
+      vi.mocked(global.fetch).mockRejectedValueOnce(new Error("Network error"));
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
@@ -228,7 +228,7 @@ describe("FlashcardForm", () => {
       mockElement.setAttribute("data-flashcard-id", "nonexistent-id");
       vi.spyOn(document, "querySelector").mockReturnValue(mockElement);
 
-      (global.fetch as any).mockResolvedValueOnce({
+      (global.fetch as vi.Mock).mockResolvedValueOnce({
         ok: false,
         status: 404,
       });
@@ -247,7 +247,7 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
 
       // Mock a delayed response
-      (global.fetch as any).mockImplementationOnce(
+      vi.mocked(global.fetch).mockImplementationOnce(
         () =>
           new Promise((resolve) =>
             setTimeout(
@@ -275,7 +275,7 @@ describe("FlashcardForm", () => {
     it("should disable form fields during submission", async () => {
       const user = userEvent.setup();
 
-      (global.fetch as any).mockImplementationOnce(
+      vi.mocked(global.fetch).mockImplementationOnce(
         () =>
           new Promise((resolve) =>
             setTimeout(
@@ -313,8 +313,10 @@ describe("FlashcardForm", () => {
 
     it("should redirect to flashcards page when no onCancel provided", () => {
       // Mock window.location
-      delete (window as any).location;
-      window.location = { href: "" } as any;
+      Object.defineProperty(window, "location", {
+        writable: true,
+        value: { href: "" },
+      });
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
@@ -338,8 +340,6 @@ describe("FlashcardForm", () => {
     });
 
     it("should have proper ARIA attributes for error states", async () => {
-      const user = userEvent.setup();
-
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
       fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));

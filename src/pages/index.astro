@@ -67,34 +67,40 @@ import Layout from "../layouts/Layout.astro";
   </main>
 </Layout>
 
-<script>
+<script type="module">
+  /* eslint-disable */
   // Load dashboard stats
   async function loadStats() {
     try {
       const response = await fetch("/api/flashcards?limit=1");
       if (response.ok) {
         const data = await response.json();
-        document.getElementById("total-cards")!.textContent = data.pagination.total_items.toString();
+        const totalCardsEl = document.getElementById("total-cards");
+        if (totalCardsEl) totalCardsEl.textContent = data.pagination.total_items.toString();
 
         // Load manual cards
         const manualResponse = await fetch("/api/flashcards?limit=1&source=manual");
         if (manualResponse.ok) {
           const manualData = await manualResponse.json();
-          document.getElementById("manual-cards")!.textContent = manualData.pagination.total_items.toString();
+          const manualCardsEl = document.getElementById("manual-cards");
+          if (manualCardsEl) manualCardsEl.textContent = manualData.pagination.total_items.toString();
         }
 
         // Load AI cards
         const aiResponse = await fetch("/api/flashcards?limit=1&source=ai");
         if (aiResponse.ok) {
           const aiData = await aiResponse.json();
-          document.getElementById("ai-cards")!.textContent = aiData.pagination.total_items.toString();
+          const aiCardsEl = document.getElementById("ai-cards");
+          if (aiCardsEl) aiCardsEl.textContent = aiData.pagination.total_items.toString();
         }
       }
-    } catch (error) {
-      console.error("Failed to load stats:", error);
-      document.getElementById("total-cards")!.textContent = "0";
-      document.getElementById("manual-cards")!.textContent = "0";
-      document.getElementById("ai-cards")!.textContent = "0";
+    } catch {
+      const totalCardsEl = document.getElementById("total-cards");
+      const manualCardsEl = document.getElementById("manual-cards");
+      const aiCardsEl = document.getElementById("ai-cards");
+      if (totalCardsEl) totalCardsEl.textContent = "0";
+      if (manualCardsEl) manualCardsEl.textContent = "0";
+      if (aiCardsEl) aiCardsEl.textContent = "0";
     }
   }
 

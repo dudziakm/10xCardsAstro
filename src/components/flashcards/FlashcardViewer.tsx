@@ -43,7 +43,7 @@ export function FlashcardViewer({ flashcard, onEdit, onDelete, onBack, showActio
 
       const flashcardData = await response.json();
       setLoadedFlashcard(flashcardData);
-    } catch (err) {
+    } catch {
       setError("Nie udało się załadować fiszki");
     } finally {
       setLoading(false);
@@ -169,6 +169,15 @@ export function FlashcardViewer({ flashcard, onEdit, onDelete, onBack, showActio
           className="relative bg-white border-2 border-gray-200 rounded-xl shadow-lg cursor-pointer transform transition-transform hover:scale-105"
           style={{ minHeight: "300px" }}
           onClick={() => setIsFlipped(!isFlipped)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsFlipped(!isFlipped);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={isFlipped ? "Kliknij aby zobaczyć przód fiszki" : "Kliknij aby zobaczyć tył fiszki"}
         >
           <div className="absolute inset-0 p-6 flex flex-col">
             {/* Card side indicator */}

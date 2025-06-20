@@ -1,4 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { LearningService } from "./learning.service";
 
 // Mock Supabase client
@@ -14,7 +15,7 @@ const mockSupabase = {
     limit: vi.fn().mockReturnThis(),
     gt: vi.fn().mockReturnThis(),
   })),
-} as any;
+} as unknown as SupabaseClient;
 
 describe("LearningService", () => {
   let learningService: LearningService;
@@ -26,7 +27,9 @@ describe("LearningService", () => {
 
   describe("calculateNextReviewDate", () => {
     it("should calculate correct intervals for different ratings", () => {
-      const service = learningService as any; // Access private method
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      }; // Access private method
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -44,7 +47,9 @@ describe("LearningService", () => {
     });
 
     it("should apply difficulty multiplier correctly", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -57,7 +62,9 @@ describe("LearningService", () => {
     });
 
     it("should apply review count multiplier correctly", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -72,7 +79,9 @@ describe("LearningService", () => {
 
   describe("updateDifficultyRating", () => {
     it("should increase difficulty for low ratings", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
 
       // Rating 1 (Again) should increase difficulty
       const newDifficulty1 = service.updateDifficultyRating(2.5, 1);
@@ -84,7 +93,9 @@ describe("LearningService", () => {
     });
 
     it("should decrease difficulty for high ratings", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
 
       // Rating 4 (Easy) should decrease difficulty
       const newDifficulty4 = service.updateDifficultyRating(2.5, 4);
@@ -96,7 +107,9 @@ describe("LearningService", () => {
     });
 
     it("should keep difficulty unchanged for neutral rating", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
 
       // Rating 3 (Good) should keep difficulty same
       const newDifficulty = service.updateDifficultyRating(2.5, 3);
@@ -104,7 +117,9 @@ describe("LearningService", () => {
     });
 
     it("should enforce difficulty bounds", () => {
-      const service = learningService as any;
+      const service = learningService as LearningService & {
+        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+      };
 
       // Should not go below 1.0
       const minDifficulty = service.updateDifficultyRating(1.1, 1);
