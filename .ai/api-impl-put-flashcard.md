@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Update Flashcard (PUT /api/flashcards/{id})
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfikację treści przodu i tyłu fiszki z pełną walidacją danych i kontrolą dostępu.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: PUT
 - **Struktura URL**: `/api/flashcards/{id}`
 - **Parametry URL**:
@@ -21,6 +23,7 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
     ```
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `UpdateFlashcardRequestDTO` - Struktura danych wejściowych
   - `FlashcardDTO` - Struktura odpowiedzi (zaktualizowana fiszka)
@@ -28,6 +31,7 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
   - `updateFlashcardSchema` - walidacja treści przodu i tyłu
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 200 OK**:
   ```json
   {
@@ -70,6 +74,7 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie PUT trafia do endpointu `/api/flashcards/{id}`
 2. Middleware Supabase weryfikuje autoryzację użytkownika
 3. Handler ekstrahuje i waliduje ID z parametru URL
@@ -83,12 +88,14 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
 8. Zwraca odpowiedź z kodem 200 OK
 
 ## 6. Względy bezpieczeństwa
+
 - **Autoryzacja**: Weryfikacja sesji użytkownika
 - **Izolacja danych**: Możliwość edycji tylko własnych fiszek
 - **Walidacja danych**: Sprawdzenie limitów znaków i formatu
 - **UUID validation**: Sprawdzenie poprawności formatu ID
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Błędy walidacji danych lub nieprawidłowy UUID
 - **401 Unauthorized**: Brak ważnej sesji użytkownika
 - **404 Not Found**: Fiszka nie istnieje lub nie należy do użytkownika
@@ -97,63 +104,57 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
 ## 8. Etapy wdrożenia
 
 ### 1. Utworzenie schematu walidacji
+
 1. Dodaj do `src/lib/schemas/flashcard.schema.ts`:
+
    ```typescript
    export const updateFlashcardSchema = z.object({
-     front: z
-       .string()
-       .min(1, 'Front content is required')
-       .max(200, 'Front content cannot exceed 200 characters'),
-     back: z
-       .string()
-       .min(1, 'Back content is required')
-       .max(500, 'Back content cannot exceed 500 characters'),
+     front: z.string().min(1, "Front content is required").max(200, "Front content cannot exceed 200 characters"),
+     back: z.string().min(1, "Back content is required").max(500, "Back content cannot exceed 500 characters"),
    });
 
    export type UpdateFlashcardInput = z.infer<typeof updateFlashcardSchema>;
    ```
 
 ### 2. Rozszerzenie FlashcardService
+
 1. Dodaj metodę do `src/lib/services/flashcard.service.ts`:
+
    ```typescript
    import type { UpdateFlashcardInput } from "../schemas/flashcard.schema";
 
    export class FlashcardService {
      // ... existing methods
 
-     async updateFlashcard(
-       userId: string, 
-       flashcardId: string, 
-       data: UpdateFlashcardInput
-     ): Promise<FlashcardDTO> {
+     async updateFlashcard(userId: string, flashcardId: string, data: UpdateFlashcardInput): Promise<FlashcardDTO> {
        // Validate UUID format
        const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
        if (!uuidRegex.test(flashcardId)) {
-         throw new Error('INVALID_UUID');
+         throw new Error("INVALID_UUID");
        }
 
        // First check if flashcard exists and belongs to user
        const { data: existingFlashcard, error: checkError } = await this.supabase
-         .from('flashcards')
-         .select('id')
-         .eq('id', flashcardId)
-         .eq('user_id', userId)
+         .from("flashcards")
+         .select("id")
+         .eq("id", flashcardId)
+         .eq("user_id", userId)
          .single();
 
        if (checkError || !existingFlashcard) {
-         throw new Error('FLASHCARD_NOT_FOUND');
+         throw new Error("FLASHCARD_NOT_FOUND");
        }
 
        // Update the flashcard
        const { data: updatedFlashcard, error: updateError } = await this.supabase
-         .from('flashcards')
+         .from("flashcards")
          .update({
            front: data.front,
            back: data.back,
            updated_at: new Date().toISOString(),
          })
-         .eq('id', flashcardId)
-         .eq('user_id', userId)
+         .eq("id", flashcardId)
+         .eq("user_id", userId)
          .select()
          .single();
 
@@ -162,7 +163,7 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
        }
 
        if (!updatedFlashcard) {
-         throw new Error('Update failed: No data returned');
+         throw new Error("Update failed: No data returned");
        }
 
        return {
@@ -179,10 +180,12 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
    ```
 
 ### 3. Rozszerzenie endpointu
+
 1. Dodaj metodę PUT do `src/pages/api/flashcards/[id].ts`:
+
    ```typescript
-   import { ZodError } from 'zod';
-   import { updateFlashcardSchema } from '../../../lib/schemas/flashcard.schema';
+   import { ZodError } from "zod";
+   import { updateFlashcardSchema } from "../../../lib/schemas/flashcard.schema";
 
    // ... existing GET method
 
@@ -192,28 +195,28 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
      if (!session) {
        return new Response(
          JSON.stringify({
-           error: 'Unauthorized',
-           message: 'You must be logged in to update flashcards',
+           error: "Unauthorized",
+           message: "You must be logged in to update flashcards",
          }),
          {
            status: 401,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
 
      try {
        const flashcardId = params.id;
-       
+
        if (!flashcardId) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Flashcard ID is required',
+             error: "Bad Request",
+             message: "Flashcard ID is required",
            }),
            {
              status: 400,
-             headers: { 'Content-Type': 'application/json' },
+             headers: { "Content-Type": "application/json" },
            }
          );
        }
@@ -225,12 +228,12 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
        } catch (parseError) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Invalid JSON in request body',
+             error: "Bad Request",
+             message: "Invalid JSON in request body",
            }),
            {
              status: 400,
-             headers: { 'Content-Type': 'application/json' },
+             headers: { "Content-Type": "application/json" },
            }
          );
        }
@@ -238,69 +241,64 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
        const validatedData = updateFlashcardSchema.parse(requestData);
 
        const flashcardService = new FlashcardService(supabase);
-       const updatedFlashcard = await flashcardService.updateFlashcard(
-         session.user.id, 
-         flashcardId, 
-         validatedData
-       );
+       const updatedFlashcard = await flashcardService.updateFlashcard(session.user.id, flashcardId, validatedData);
 
        return new Response(JSON.stringify(updatedFlashcard), {
          status: 200,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof ZodError) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Invalid input data',
+             error: "Bad Request",
+             message: "Invalid input data",
              details: error.errors,
            }),
            {
              status: 400,
-             headers: { 'Content-Type': 'application/json' },
+             headers: { "Content-Type": "application/json" },
            }
          );
        }
 
        if (error instanceof Error) {
-         if (error.message === 'INVALID_UUID') {
+         if (error.message === "INVALID_UUID") {
            return new Response(
              JSON.stringify({
-               error: 'Bad Request',
-               message: 'Invalid flashcard ID format',
+               error: "Bad Request",
+               message: "Invalid flashcard ID format",
              }),
              {
                status: 400,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
 
-         if (error.message === 'FLASHCARD_NOT_FOUND') {
+         if (error.message === "FLASHCARD_NOT_FOUND") {
            return new Response(
              JSON.stringify({
-               error: 'Not Found',
-               message: 'Flashcard not found or access denied',
+               error: "Not Found",
+               message: "Flashcard not found or access denied",
              }),
              {
                status: 404,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
        }
 
-       console.error('Error updating flashcard:', error);
+       console.error("Error updating flashcard:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Failed to update flashcard',
+           error: "Internal Server Error",
+           message: "Failed to update flashcard",
          }),
          {
            status: 500,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
@@ -308,10 +306,12 @@ Endpoint umożliwia edycję istniejącej fiszki użytkownika. Pozwala na modyfik
    ```
 
 ### 4. Aktualizacja timestamp trigger
+
 1. Upewnij się że trigger `handle_updated_at()` działa poprawnie
 2. Przetestuj automatyczne ustawianie `updated_at`
 
 ### 5. Testowanie
+
 1. Test prawidłowej aktualizacji fiszki
 2. Test przekroczenia limitów znaków
 3. Test aktualizacji nieistniejącej fiszki

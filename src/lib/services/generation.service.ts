@@ -1,10 +1,6 @@
-import type { SupabaseClient } from '@supabase/supabase-js';
-import type { 
-  CreateGenerationCommand, 
-  CreateGenerationErrorLogCommand, 
-  FlashcardCandidateDTO 
-} from '../../types';
-import { callOpenRouterAI } from '../ai/openrouter';
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { CreateGenerationCommand, CreateGenerationErrorLogCommand, FlashcardCandidateDTO } from "../../types";
+import { callOpenRouterAI } from "../ai/openrouter";
 
 export class GenerationService {
   constructor(private supabase: SupabaseClient) {}
@@ -12,7 +8,7 @@ export class GenerationService {
   async generateCandidates(
     userId: string,
     prompt: string,
-    count: number = 5
+    count = 5
   ): Promise<{ candidates: FlashcardCandidateDTO[]; generationId: string }> {
     let generationId: string | null = null;
 
@@ -23,18 +19,18 @@ export class GenerationService {
         input_text: prompt.substring(0, 500), // Store preview of prompt
         cards_generated: 0,
         successful: false,
-        model_used: 'unknown',
-        created_at: new Date().toISOString()
+        model_used: "unknown",
+        created_at: new Date().toISOString(),
       };
 
       const { data: generationData, error: generationError } = await this.supabase
-        .from('generations')
+        .from("generations")
         .insert(generationCmd)
-        .select('id')
+        .select("id")
         .single();
 
       if (generationError || !generationData) {
-        throw new Error(`Failed to create generation log: ${generationError?.message || 'No ID returned'}`);
+        throw new Error(`Failed to create generation log: ${generationError?.message || "No ID returned"}`);
       }
       generationId = generationData.id;
 
@@ -47,13 +43,13 @@ export class GenerationService {
 
       // 4. Update generation log (Success)
       const { error: updateError } = await this.supabase
-        .from('generations')
-        .update({ 
-          successful: true, 
-          cards_generated: generatedCount, 
-          model_used: aiResponse.model || 'unknown'
+        .from("generations")
+        .update({
+          successful: true,
+          cards_generated: generatedCount,
+          model_used: aiResponse.model || "unknown",
         })
-        .eq('id', generationId);
+        .eq("id", generationId);
 
       if (updateError) {
         console.error(`Failed to update generation log (success) for ID ${generationId}:`, updateError);
@@ -61,7 +57,6 @@ export class GenerationService {
       }
 
       return { candidates, generationId };
-
     } catch (error: any) {
       console.error("Error during flashcard generation:", error);
 
@@ -69,19 +64,16 @@ export class GenerationService {
         // 5. Log error and update generation log (Failure)
         const errorCmd: CreateGenerationErrorLogCommand = {
           generation_id: generationId,
-          error_message: error.message || 'Unknown generation error',
-          error_code: error.code || 'GENERATION_FAILED',
-          timestamp: new Date().toISOString()
+          error_message: error.message || "Unknown generation error",
+          error_code: error.code || "GENERATION_FAILED",
+          timestamp: new Date().toISOString(),
         };
 
         try {
-          await this.supabase.from('generation_error_logs').insert(errorCmd);
-          await this.supabase
-            .from('generations')
-            .update({ successful: false })
-            .eq('id', generationId);
+          await this.supabase.from("generation_error_logs").insert(errorCmd);
+          await this.supabase.from("generations").update({ successful: false }).eq("id", generationId);
         } catch (logError) {
-          console.error('Failed to log generation error:', logError);
+          console.error("Failed to log generation error:", logError);
         }
       }
 

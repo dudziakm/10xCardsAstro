@@ -1,9 +1,11 @@
 # Windows Permissions Fix - my10xCards
 
 ## Problem
+
 Po naprawie line endings (CRLF → LF), npm nie może zaktualizować pewnych pakietów z powodu problemów z uprawnieniami. Dotyczy to głównie pakietów z Linux binaries w środowisku WSL.
 
 ## Błąd
+
 ```
 EACCES: permission denied, rename 'lightningcss-linux-x64-gnu'
 ```
@@ -11,6 +13,7 @@ EACCES: permission denied, rename 'lightningcss-linux-x64-gnu'
 ## Rozwiązania
 
 ### Opcja 1: Windows PowerShell (POLECANE) ⭐
+
 ```powershell
 # Otwórz PowerShell jako Administrator w Windows
 # Przejdź do projektu
@@ -43,6 +46,7 @@ npm run dev
 ```
 
 ### Opcja 2: Fix WSL permissions
+
 ```bash
 # W WSL jako właściciel
 wsl
@@ -52,7 +56,7 @@ sudo chown -R $(whoami):$(whoami) /mnt/c/10x/10xCardsAstro/node_modules
 
 # Usuń problematyczne pakiety
 rm -rf node_modules/@esbuild
-rm -rf node_modules/@rollup  
+rm -rf node_modules/@rollup
 rm -rf node_modules/@tailwindcss
 rm -rf node_modules/lightningcss-linux-x64-gnu
 
@@ -61,6 +65,7 @@ npm install
 ```
 
 ### Opcja 3: Pełne WSL reset
+
 ```bash
 # Backup aktualnych zmian
 git add -A
@@ -78,7 +83,7 @@ npm install
 ## Co zostało już naprawione ✅
 
 1. **Line endings (CRLF → LF)**: ✅ Naprawione (90 plików)
-2. **Git attributes**: ✅ Utworzone (.gitattributes)  
+2. **Git attributes**: ✅ Utworzone (.gitattributes)
 3. **Prettier config**: ✅ Dodano `"endOfLine": "lf"`
 
 ## Co wymaga naprawy
@@ -94,7 +99,7 @@ Po naprawie npm, sprawdź:
 # 1. Czy aplikacja się uruchamia
 npm run dev
 
-# 2. Czy testy działają (bez Playwright dependencies)  
+# 2. Czy testy działają (bez Playwright dependencies)
 npm run test:manual
 
 # 3. Czy linting działa

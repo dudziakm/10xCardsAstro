@@ -1,12 +1,12 @@
 interface OpenRouterResponse {
   id: string;
   model: string;
-  choices: Array<{
+  choices: {
     message: {
       role: string;
       content: string;
     };
-  }>;
+  }[];
   usage?: {
     prompt_tokens: number;
     completion_tokens: number;
@@ -29,11 +29,11 @@ interface AIGenerationResult {
   };
 }
 
-export async function callOpenRouterAI(inputText: string, count: number = 5): Promise<AIGenerationResult> {
+export async function callOpenRouterAI(inputText: string, count = 5): Promise<AIGenerationResult> {
   const apiKey = import.meta.env.OPENROUTER_API_KEY;
-  
+
   if (!apiKey) {
-    throw new Error('OPENROUTER_API_KEY not configured');
+    throw new Error("OPENROUTER_API_KEY not configured");
   }
 
   const prompt = `Jesteś ekspertem w tworzeniu fiszek edukacyjnych. Na podstawie podanego tekstu stwórz ${count} fiszek do nauki.
@@ -59,28 +59,28 @@ Odpowiedz TYLKO w formacie JSON bez dodatkowych komentarzy:
 }`;
 
   try {
-    const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-      method: 'POST',
+    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+      method: "POST",
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://my10xcards.local',
-        'X-Title': 'my10xCards AI Flashcard Generator'
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://my10xcards.local",
+        "X-Title": "my10xCards AI Flashcard Generator",
       },
       body: JSON.stringify({
-        model: 'anthropic/claude-3-haiku:beta',
+        model: "anthropic/claude-3-haiku:beta",
         messages: [
           {
-            role: 'user',
-            content: prompt
-          }
+            role: "user",
+            content: prompt,
+          },
         ],
         temperature: 0.7,
         max_tokens: 2000,
         top_p: 1,
         frequency_penalty: 0,
-        presence_penalty: 0
-      })
+        presence_penalty: 0,
+      }),
     });
 
     if (!response.ok) {
@@ -89,50 +89,50 @@ Odpowiedz TYLKO w formacie JSON bez dodatkowych komentarzy:
     }
 
     const data: OpenRouterResponse = await response.json();
-    
+
     if (!data.choices || data.choices.length === 0) {
-      throw new Error('No response from AI model');
+      throw new Error("No response from AI model");
     }
 
     const content = data.choices[0].message.content;
-    
+
     try {
       const parsedContent = JSON.parse(content);
-      
+
       if (!parsedContent.flashcards || !Array.isArray(parsedContent.flashcards)) {
-        throw new Error('Invalid AI response format - missing flashcards array');
+        throw new Error("Invalid AI response format - missing flashcards array");
       }
 
       const candidates: FlashcardCandidate[] = parsedContent.flashcards
         .filter((card: any) => card.front && card.back)
         .map((card: any) => ({
           front: String(card.front).substring(0, 200).trim(),
-          back: String(card.back).substring(0, 500).trim()
+          back: String(card.back).substring(0, 500).trim(),
         }))
         .filter((card: FlashcardCandidate) => card.front.length > 0 && card.back.length > 0);
 
       if (candidates.length === 0) {
-        throw new Error('No valid flashcards generated from AI response');
+        throw new Error("No valid flashcards generated from AI response");
       }
 
       return {
         candidates,
         model: data.model,
-        usage: data.usage
+        usage: data.usage,
       };
-
     } catch (parseError) {
-      console.error('Failed to parse AI response:', content);
-      throw new Error(`Failed to parse AI response: ${parseError instanceof Error ? parseError.message : 'Invalid JSON'}`);
+      console.error("Failed to parse AI response:", content);
+      throw new Error(
+        `Failed to parse AI response: ${parseError instanceof Error ? parseError.message : "Invalid JSON"}`
+      );
     }
-
   } catch (error) {
-    console.error('OpenRouter AI call failed:', error);
-    
+    console.error("OpenRouter AI call failed:", error);
+
     if (error instanceof Error) {
       throw error;
     }
-    
-    throw new Error('Unknown error occurred while calling OpenRouter AI');
+
+    throw new Error("Unknown error occurred while calling OpenRouter AI");
   }
 }

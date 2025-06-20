@@ -1,6 +1,6 @@
-import React from 'react';
-import type { FlashcardDTO } from '../../types';
-import { Button } from '../ui/button';
+import React from "react";
+import type { FlashcardDTO } from "../../types";
+import { Button } from "../ui/button";
 
 interface FlashcardCardProps {
   flashcard: FlashcardDTO;
@@ -10,25 +10,19 @@ interface FlashcardCardProps {
   showActions?: boolean;
 }
 
-export function FlashcardCard({ 
-  flashcard, 
-  onEdit, 
-  onDelete, 
-  onView,
-  showActions = true 
-}: FlashcardCardProps) {
+export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions = true }: FlashcardCardProps) {
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("pl-PL", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const truncateText = (text: string, maxLength: number) => {
-    return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    return text.length > maxLength ? text.substring(0, maxLength) + "..." : text;
   };
 
   return (
@@ -48,14 +42,14 @@ export function FlashcardCard({
             </div>
           </div>
         </div>
-        
+
         <div className="flex items-center space-x-2 ml-4">
-          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-            flashcard.source === 'ai' 
-              ? 'bg-purple-100 text-purple-800' 
-              : 'bg-blue-100 text-blue-800'
-          }`}>
-            {flashcard.source === 'ai' ? 'AI' : 'Manual'}
+          <span
+            className={`px-2 py-1 rounded-full text-xs font-medium ${
+              flashcard.source === "ai" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            {flashcard.source === "ai" ? "AI" : "Manual"}
           </span>
         </div>
       </div>
@@ -67,30 +61,22 @@ export function FlashcardCard({
             <div>Zaktualizowano: {formatDate(flashcard.updated_at)}</div>
           )}
         </div>
-        
+
         {showActions && (
           <div className="flex space-x-2">
             {onView && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onView(flashcard.id)}
-              >
+              <Button variant="outline" size="sm" onClick={() => onView(flashcard.id)}>
                 Podgląd
               </Button>
             )}
             {onEdit && (
-              <Button 
-                variant="outline" 
-                size="sm"
-                onClick={() => onEdit(flashcard.id)}
-              >
+              <Button variant="outline" size="sm" onClick={() => onEdit(flashcard.id)}>
                 Edytuj
               </Button>
             )}
             {onDelete && (
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 size="sm"
                 onClick={() => onDelete(flashcard.id)}
                 className="text-red-600 hover:text-red-700 hover:border-red-300"

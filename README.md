@@ -30,6 +30,7 @@ my10xCards is an innovative application designed to simplify the creation of hig
 ## Getting Started Locally
 
 1. **Clone the repository:**
+
    ```bash
    git clone https://github.com/dudziakm/10xCardsAstro.git
    cd 10xCardsAstro
@@ -37,11 +38,13 @@ my10xCards is an innovative application designed to simplify the creation of hig
 
 2. **Use the correct Node.js version:**
    Make sure you are using Node.js version 22.14.0. If you use nvm, run:
+
    ```bash
    nvm use
    ```
 
 3. **Install dependencies:**
+
    ```bash
    npm install
    ```
@@ -68,18 +71,22 @@ The project includes the following npm scripts defined in `package.json`:
 The project's core features include:
 
 - **AI-Generated Flashcards:**
+
   - Accepts text input (1000 to 10,000 characters) to generate up to 10 flashcard candidates.
   - Each flashcard candidate's front is limited to 200 characters and back to 500 characters.
   - Generated cards are presented for review, with options for acceptance, editing, or rejection. Only accepted flashcards are stored.
 
 - **Manual Flashcard Creation:**
+
   - Users can manually create flashcards with validations (front up to 200 characters, back up to 500 characters).
 
 - **Flashcard Management:**
+
   - Features a searchable and paginated list of saved flashcards (e.g., 10 per page).
   - Allows editing and deletion of flashcards.
 
 - **User Account Management:**
+
   - Registration, login, password change, and account deletion via Supabase integration.
 
 - **Learning Session:**

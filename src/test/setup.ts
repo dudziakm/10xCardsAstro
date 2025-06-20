@@ -1,21 +1,21 @@
-import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import "@testing-library/jest-dom";
+import { vi } from "vitest";
 
 // Mock environment variables
 // Mock environment variables properly for Astro imports
-Object.defineProperty(import.meta, 'env', {
+Object.defineProperty(import.meta, "env", {
   value: {
-    OPENROUTER_API_KEY: 'test-api-key',
-    SUPABASE_URL: 'https://test.supabase.co',
-    SUPABASE_ANON_KEY: 'test-anon-key'
+    OPENROUTER_API_KEY: "test-api-key",
+    SUPABASE_URL: "https://test.supabase.co",
+    SUPABASE_ANON_KEY: "test-anon-key",
   },
-  writable: true
+  writable: true,
 });
 
-vi.mock('../db/supabase.client.ts', () => ({
+vi.mock("../db/supabase.client.ts", () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({ 
+      select: vi.fn(() => ({
         eq: vi.fn(() => ({
           single: vi.fn(),
           order: vi.fn(() => ({ limit: vi.fn() })),
@@ -25,7 +25,7 @@ vi.mock('../db/supabase.client.ts', () => ({
         insert: vi.fn(() => ({ select: vi.fn(() => ({ single: vi.fn() })) })),
         update: vi.fn(() => ({ eq: vi.fn() })),
         upsert: vi.fn(),
-        count: 'exact',
+        count: "exact",
         head: true,
       })),
     })),
@@ -36,5 +36,5 @@ vi.mock('../db/supabase.client.ts', () => ({
 global.fetch = vi.fn();
 
 // Mock console methods to reduce noise in tests
-vi.spyOn(console, 'log').mockImplementation(() => {});
-vi.spyOn(console, 'error').mockImplementation(() => {});
+vi.spyOn(console, "log").mockImplementation(() => {});
+vi.spyOn(console, "error").mockImplementation(() => {});

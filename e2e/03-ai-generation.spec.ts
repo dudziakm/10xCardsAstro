@@ -1,42 +1,42 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from "@playwright/test";
 
-test.describe('AI Flashcard Generation', () => {
+test.describe("AI Flashcard Generation", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/generate');
+    await page.goto("/generate");
   });
 
-  test('should display AI generation page correctly (US-001)', async ({ page }) => {
+  test("should display AI generation page correctly (US-001)", async ({ page }) => {
     // Check page title and heading
-    await expect(page.locator('h1')).toContainText('Generuj fiszki z AI');
-    
+    await expect(page.locator("h1")).toContainText("Generuj fiszki z AI");
+
     // Check form elements exist
     await expect(page.locator('textarea[name="inputText"]')).toBeVisible();
     await expect(page.locator('input[name="count"]')).toBeVisible();
-    await expect(page.locator('button[type="submit"]')).toContainText('Generuj fiszki');
-    
+    await expect(page.locator('button[type="submit"]')).toContainText("Generuj fiszki");
+
     // Check instructions
-    await expect(page.locator('text=Wprowadź tekst (1000-10000 znaków)')).toBeVisible();
+    await expect(page.locator("text=Wprowadź tekst (1000-10000 znaków)")).toBeVisible();
   });
 
-  test('should validate input text length (US-001)', async ({ page }) => {
+  test("should validate input text length (US-001)", async ({ page }) => {
     // Test text too short (<1000 chars)
-    const shortText = 'A'.repeat(999);
+    const shortText = "A".repeat(999);
     await page.fill('textarea[name="inputText"]', shortText);
     await page.click('button[type="submit"]');
-    
+
     // Should show validation error
-    await expect(page.locator('text=Tekst musi mieć między 1000 a 10000 znaków')).toBeVisible();
-    
+    await expect(page.locator("text=Tekst musi mieć między 1000 a 10000 znaków")).toBeVisible();
+
     // Test text too long (>10000 chars)
-    const longText = 'A'.repeat(10001);
+    const longText = "A".repeat(10001);
     await page.fill('textarea[name="inputText"]', longText);
     await page.click('button[type="submit"]');
-    
+
     // Should show validation error
-    await expect(page.locator('text=Tekst musi mieć między 1000 a 10000 znaków')).toBeVisible();
+    await expect(page.locator("text=Tekst musi mieć między 1000 a 10000 znaków")).toBeVisible();
   });
 
-  test('should generate flashcards with valid input (US-001)', async ({ page }) => {
+  test("should generate flashcards with valid input (US-001)", async ({ page }) => {
     // Valid input text (1000-10000 chars about React)
     const validText = `
     React is a JavaScript library for building user interfaces. It was developed by Facebook and is now maintained by Facebook and the community. React allows developers to create reusable UI components and manage the state of their applications efficiently. 
@@ -49,36 +49,36 @@ test.describe('AI Flashcard Generation', () => {
     
     React ecosystem includes many useful libraries and tools like React Router for navigation, styled-components for styling, and testing libraries like Jest and React Testing Library. The React community is very active and constantly developing new tools and best practices.
     `.repeat(2); // Make it longer than 1000 chars
-    
+
     await page.fill('textarea[name="inputText"]', validText);
-    
+
     // Set count to 5
-    await page.fill('input[name="count"]', '5');
-    
+    await page.fill('input[name="count"]', "5");
+
     // Submit form
     await page.click('button[type="submit"]');
-    
+
     // Should show loading state
-    await expect(page.locator('text=Generowanie fiszek...')).toBeVisible();
-    
+    await expect(page.locator("text=Generowanie fiszek...")).toBeVisible();
+
     // Wait for generation to complete (may take some time with real API)
     await page.waitForSelector('[data-testid="generated-flashcards"]', { timeout: 30000 });
-    
+
     // Should show generated flashcards
     await expect(page.locator('[data-testid="generated-flashcards"]')).toBeVisible();
-    
+
     // Should show up to 5 flashcards (based on count parameter)
     const generatedCards = page.locator('[data-testid="generated-flashcard"]');
     const cardCount = await generatedCards.count();
     expect(cardCount).toBeGreaterThan(0);
     expect(cardCount).toBeLessThanOrEqual(5);
-    
+
     // Each card should have front and back with proper length limits
     for (let i = 0; i < cardCount; i++) {
       const card = generatedCards.nth(i);
       const frontText = await card.locator('[data-testid="card-front"]').textContent();
       const backText = await card.locator('[data-testid="card-back"]').textContent();
-      
+
       expect(frontText?.length).toBeLessThanOrEqual(200);
       expect(backText?.length).toBeLessThanOrEqual(500);
       expect(frontText?.length).toBeGreaterThan(0);
@@ -86,92 +86,92 @@ test.describe('AI Flashcard Generation', () => {
     }
   });
 
-  test('should handle API errors gracefully (US-001)', async ({ page }) => {
+  test("should handle API errors gracefully (US-001)", async ({ page }) => {
     // Mock API error by intercepting the request
-    await page.route('/api/flashcards/generate', route => {
+    await page.route("/api/flashcards/generate", (route) => {
       route.fulfill({
         status: 500,
-        contentType: 'application/json',
-        body: JSON.stringify({ error: 'API Error: Service unavailable' })
+        contentType: "application/json",
+        body: JSON.stringify({ error: "API Error: Service unavailable" }),
       });
     });
-    
-    const validText = 'A'.repeat(1500); // Valid length
+
+    const validText = "A".repeat(1500); // Valid length
     await page.fill('textarea[name="inputText"]', validText);
     await page.click('button[type="submit"]');
-    
+
     // Should show error message
-    await expect(page.locator('text=Wystąpił błąd podczas generowania')).toBeVisible();
-    
+    await expect(page.locator("text=Wystąpił błąd podczas generowania")).toBeVisible();
+
     // Should allow retry
     await expect(page.locator('button[type="submit"]')).toBeEnabled();
   });
 
-  test('should validate count parameter', async ({ page }) => {
-    const validText = 'A'.repeat(1500);
+  test("should validate count parameter", async ({ page }) => {
+    const validText = "A".repeat(1500);
     await page.fill('textarea[name="inputText"]', validText);
-    
+
     // Test invalid count (0)
-    await page.fill('input[name="count"]', '0');
+    await page.fill('input[name="count"]', "0");
     await page.click('button[type="submit"]');
-    await expect(page.locator('text=Liczba fiszek musi być między 1 a 10')).toBeVisible();
-    
+    await expect(page.locator("text=Liczba fiszek musi być między 1 a 10")).toBeVisible();
+
     // Test invalid count (>10)
-    await page.fill('input[name="count"]', '15');
+    await page.fill('input[name="count"]', "15");
     await page.click('button[type="submit"]');
-    await expect(page.locator('text=Liczba fiszek musi być między 1 a 10')).toBeVisible();
-    
+    await expect(page.locator("text=Liczba fiszek musi być między 1 a 10")).toBeVisible();
+
     // Test valid count
-    await page.fill('input[name="count"]', '3');
+    await page.fill('input[name="count"]', "3");
     // Should not show validation error for valid count
   });
 
-  test('should show character counter for input text', async ({ page }) => {
-    const text = 'Hello world';
+  test("should show character counter for input text", async ({ page }) => {
+    const text = "Hello world";
     await page.fill('textarea[name="inputText"]', text);
-    
+
     // Should show character count
-    await expect(page.locator('text=' + text.length)).toBeVisible();
-    
+    await expect(page.locator("text=" + text.length)).toBeVisible();
+
     // Fill with longer text
-    const longerText = 'A'.repeat(1500);
+    const longerText = "A".repeat(1500);
     await page.fill('textarea[name="inputText"]', longerText);
-    await expect(page.locator('text=1500')).toBeVisible();
+    await expect(page.locator("text=1500")).toBeVisible();
   });
 
-  test('should maintain form state during generation', async ({ page }) => {
-    const inputText = 'A'.repeat(1500);
-    const count = '3';
-    
+  test("should maintain form state during generation", async ({ page }) => {
+    const inputText = "A".repeat(1500);
+    const count = "3";
+
     await page.fill('textarea[name="inputText"]', inputText);
     await page.fill('input[name="count"]', count);
-    
+
     // Mock slow API response
-    await page.route('/api/flashcards/generate', route => {
+    await page.route("/api/flashcards/generate", (route) => {
       setTimeout(() => {
         route.fulfill({
           status: 200,
-          contentType: 'application/json',
+          contentType: "application/json",
           body: JSON.stringify({
             candidates: [
-              { front: 'Test front 1', back: 'Test back 1' },
-              { front: 'Test front 2', back: 'Test back 2' }
-            ]
-          })
+              { front: "Test front 1", back: "Test back 1" },
+              { front: "Test front 2", back: "Test back 2" },
+            ],
+          }),
         });
       }, 1000);
     });
-    
+
     await page.click('button[type="submit"]');
-    
+
     // During loading, form fields should be disabled
     await expect(page.locator('textarea[name="inputText"]')).toBeDisabled();
     await expect(page.locator('input[name="count"]')).toBeDisabled();
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
-    
+
     // Wait for completion
     await page.waitForSelector('[data-testid="generated-flashcards"]');
-    
+
     // After completion, form should be re-enabled
     await expect(page.locator('textarea[name="inputText"]')).toBeEnabled();
     await expect(page.locator('input[name="count"]')).toBeEnabled();

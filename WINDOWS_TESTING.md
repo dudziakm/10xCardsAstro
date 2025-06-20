@@ -1,16 +1,18 @@
 # Windows Testing Setup - my10xCards
 
 ## Problem
+
 Projekt był rozwijany w WSL (Linux), ale próbujesz uruchomić testy w Windows PowerShell. Node_modules są zainstalowane tylko w WSL.
 
 ## Rozwiązania
 
 ### Opcja 1: Uruchom w WSL (POLECANE) ⭐
+
 ```bash
 # Otwórz WSL terminal
 wsl
 
-# Przejdź do projektu 
+# Przejdź do projektu
 cd /mnt/c/10x/10xCardsAstro
 
 # Sprawdź czy serwer działa
@@ -21,6 +23,7 @@ npm run test:e2e
 ```
 
 ### Opcja 2: Skonfiguruj Windows Environment
+
 ```powershell
 # 1. Sprawdź Node.js w Windows
 node --version
@@ -41,6 +44,7 @@ npm run test:e2e
 ```
 
 ### Opcja 3: Dual Environment Setup
+
 ```powershell
 # Zachowaj oba środowiska
 # Skopiuj projekt do osobnego folderu Windows
@@ -61,6 +65,7 @@ npx playwright install
 ## Testowanie Windows vs WSL
 
 ### Windows PowerShell:
+
 ```powershell
 # Sprawdź instalację
 npx playwright --version
@@ -73,8 +78,9 @@ npm run test:e2e:headed
 ```
 
 ### WSL (Linux):
+
 ```bash
-# Sprawdź instalację  
+# Sprawdź instalację
 npx playwright --version
 
 # Uruchom testy
@@ -86,17 +92,18 @@ npm run test:e2e:headed
 
 ## Różnice Windows vs WSL
 
-| Aspekt | Windows | WSL |
-|--------|---------|-----|
-| Przeglądarki | Native Windows | Linux binaries |
-| Wydajność | Szybsze | Wolniejsze (emulacja) |
-| GUI | Pełne wsparcie | Wymaga X11 dla UI |
-| Ścieżki | `C:\` | `/mnt/c/` |
-| npm/node | Windows binaries | Linux binaries |
+| Aspekt       | Windows          | WSL                   |
+| ------------ | ---------------- | --------------------- |
+| Przeglądarki | Native Windows   | Linux binaries        |
+| Wydajność    | Szybsze          | Wolniejsze (emulacja) |
+| GUI          | Pełne wsparcie   | Wymaga X11 dla UI     |
+| Ścieżki      | `C:\`            | `/mnt/c/`             |
+| npm/node     | Windows binaries | Linux binaries        |
 
 ## Rozwiązywanie Problemów
 
 ### "playwright not recognized"
+
 ```powershell
 # Sprawdź czy jest w PATH
 $env:PATH -split ';' | Select-String node
@@ -106,6 +113,7 @@ $env:PATH -split ';' | Select-String node
 ```
 
 ### Problemy z instalacją przeglądarek
+
 ```powershell
 # Windows może wymagać uprawnień administratora
 # Uruchom PowerShell jako Administrator
@@ -113,6 +121,7 @@ npx playwright install
 ```
 
 ### Problemy z portami
+
 ```powershell
 # Sprawdź czy port 3001 jest wolny
 netstat -an | findstr :3001
@@ -130,6 +139,7 @@ netstat -an | findstr :3001
 ## Szybki Test
 
 ### Sprawdź czy wszystko działa:
+
 ```powershell
 # 1. Node.js
 node --version
@@ -160,19 +170,21 @@ npm run test:manual
 ```
 
 **Manual tests sprawdzają:**
+
 - ✅ Homepage loading
-- ✅ All page navigation  
+- ✅ All page navigation
 - ✅ API endpoints functionality
 - ✅ Form validation
 - ✅ AI generation endpoint
 - ✅ Learning session API
 
 **Przykładowy wynik:**
+
 ```
 🚀 Starting Manual E2E Tests
 
 ✅ Homepage loads correctly
-✅ Flashcards page loads correctly  
+✅ Flashcards page loads correctly
 ✅ Generate page loads correctly
 ✅ Learn page loads correctly
 ✅ Flashcards API works (2 flashcards)
@@ -186,7 +198,9 @@ npm run test:manual
 ```
 
 ## Kontakt
+
 Jeśli dalej masz problemy, sprawdź:
+
 - Czy Node.js jest zainstalowany w Windows
 - Czy npm jest w PATH
 - Czy projekt ma wszystkie dependencies

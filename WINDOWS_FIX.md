@@ -1,11 +1,13 @@
 # Windows Environment Fix
 
 ## Problem
+
 Node_modules zawiera mieszankę Linux (WSL) i Windows binaries, co powoduje błędy EACCES i ENOTEMPTY.
 
 ## Rozwiązanie
 
 ### Opcja 1: Kompletne czyszczenie (POLECANE)
+
 ```powershell
 # W PowerShell jako Administrator
 # 1. Zatrzymaj wszystkie procesy Node.js
@@ -32,6 +34,7 @@ npm run dev
 ```
 
 ### Opcja 2: Użyj WSL (PROSTSZE)
+
 ```bash
 # W WSL terminal
 cd /mnt/c/10x/10xCardsAstro
@@ -39,6 +42,7 @@ npm run dev
 ```
 
 ## Weryfikacja
+
 ```powershell
 # Sprawdź czy komendy działają
 node --version

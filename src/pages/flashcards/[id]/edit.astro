@@ -1,12 +1,12 @@
 ---
 // Edit flashcard page
-import Layout from '../../../layouts/Layout.astro';
-import { FlashcardForm } from '../../../components/forms/FlashcardForm';
+import Layout from "../../../layouts/Layout.astro";
+import { FlashcardForm } from "../../../components/forms/FlashcardForm";
 
 const { id } = Astro.params;
 
 if (!id) {
-  return Astro.redirect('/flashcards');
+  return Astro.redirect("/flashcards");
 }
 ---
 
@@ -24,4 +24,3 @@ if (!id) {
     </div>
   </main>
 </Layout>
-

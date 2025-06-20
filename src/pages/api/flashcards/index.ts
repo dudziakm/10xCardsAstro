@@ -100,9 +100,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
   if (!session) {
     return new Response(
-      JSON.stringify({ 
-        error: "Unauthorized", 
-        message: "You must be logged in to access flashcards" 
+      JSON.stringify({
+        error: "Unauthorized",
+        message: "You must be logged in to access flashcards",
       }),
       {
         status: 401,
@@ -114,26 +114,26 @@ export const GET: APIRoute = async ({ request, locals }) => {
   try {
     // Extract URL parameters
     const url = new URL(request.url);
-    const sourceParam = url.searchParams.get('source');
+    const sourceParam = url.searchParams.get("source");
     const params: any = {
-      page: url.searchParams.get('page') || '1',
-      limit: url.searchParams.get('limit') || '10',
-      sort: url.searchParams.get('sort') || 'updated_at',
-      order: url.searchParams.get('order') || 'desc'
+      page: url.searchParams.get("page") || "1",
+      limit: url.searchParams.get("limit") || "10",
+      sort: url.searchParams.get("sort") || "updated_at",
+      order: url.searchParams.get("order") || "desc",
     };
-    
+
     // Only add optional params if they exist
-    const searchParam = url.searchParams.get('search');
+    const searchParam = url.searchParams.get("search");
     if (searchParam) {
       params.search = searchParam;
     }
-    
-    if (sourceParam && ['manual', 'ai'].includes(sourceParam)) {
+
+    if (sourceParam && ["manual", "ai"].includes(sourceParam)) {
       params.source = sourceParam;
     }
 
     // Validate parameters
-    console.log('Params before validation:', JSON.stringify(params));
+    console.log("Params before validation:", JSON.stringify(params));
     const validatedParams = listFlashcardsSchema.parse(params);
 
     // Create flashcard service

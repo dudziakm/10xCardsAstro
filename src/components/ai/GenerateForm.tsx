@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
+import React, { useState } from "react";
+import { Button } from "../ui/button";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
 
 interface GenerateFormProps {
   onGenerated?: (flashcards: any[]) => void;
@@ -8,16 +8,16 @@ interface GenerateFormProps {
 }
 
 export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
-  const [prompt, setPrompt] = useState('');
+  const [prompt, setPrompt] = useState("");
   const [count, setCount] = useState(5);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!prompt.trim()) {
-      setError('Proszę wprowadzić temat do wygenerowania fiszek');
+      setError("Proszę wprowadzić temat do wygenerowania fiszek");
       return;
     }
 
@@ -25,31 +25,31 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
     setError(null);
 
     try {
-      const response = await fetch('/api/flashcards/generate', {
-        method: 'POST',
+      const response = await fetch("/api/flashcards/generate", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           prompt: prompt.trim(),
-          count
-        })
+          count,
+        }),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Nie udało się wygenerować fiszek');
+        throw new Error(errorData.message || "Nie udało się wygenerować fiszek");
       }
 
       const data = await response.json();
-      
+
       if (onGenerated) {
         onGenerated(data.flashcards);
       } else {
-        window.location.href = '/flashcards';
+        window.location.href = "/flashcards";
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Wystąpił błąd podczas generowania');
+      setError(err instanceof Error ? err.message : "Wystąpił błąd podczas generowania");
     } finally {
       setLoading(false);
     }
@@ -59,7 +59,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
     if (onCancel) {
       onCancel();
     } else {
-      window.location.href = '/flashcards';
+      window.location.href = "/flashcards";
     }
   };
 
@@ -120,11 +120,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       </div>
 
       <div className="flex space-x-4">
-        <Button 
-          type="submit" 
-          disabled={loading || !prompt.trim()}
-          className="flex-1 sm:flex-none"
-        >
+        <Button type="submit" disabled={loading || !prompt.trim()} className="flex-1 sm:flex-none">
           {loading ? (
             <div className="flex items-center space-x-2">
               <LoadingSpinner size="sm" color="white" />
@@ -134,20 +130,13 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
             `Wygeneruj ${count} fiszek`
           )}
         </Button>
-        
-        <Button 
-          type="button" 
-          variant="outline" 
-          onClick={handleCancel}
-          disabled={loading}
-        >
+
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
           Anuluj
         </Button>
       </div>
 
-      <div className="text-sm text-gray-500">
-        * Pola wymagane
-      </div>
+      <div className="text-sm text-gray-500">* Pola wymagane</div>
 
       {loading && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">

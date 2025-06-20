@@ -9,6 +9,7 @@ my10xCards is an AI-powered flashcard learning application built with Astro 5, R
 **Note**: This application is currently being built from scratch with AI assistance as part of the 10xdevs training program. The `.ai/` folder contains various planning documents including business requirements (`prd.md`), database plans, API specifications, tech stack details, and implementation notes for individual endpoints.
 
 ### Development Process Flow
+
 1. **Business Requirements** (`prd.md`) - Written in Polish, defines all business requirements
 2. **Project Planning** - Created project structure, AI rules, and project bootstrap
 3. **Database Design** (`db-plan.md`) - Defined database schema and relationships
@@ -41,6 +42,7 @@ npm run format       # Format code with Prettier
 ## High-Level Architecture
 
 ### Technology Stack
+
 - **Frontend**: Astro 5 (SSR) with React 19 islands for interactivity
 - **Styling**: Tailwind CSS 4 with Shadcn/ui components
 - **Backend**: Supabase (PostgreSQL + Auth)
@@ -52,22 +54,26 @@ npm run format       # Format code with Prettier
 ### Key Architectural Patterns
 
 1. **Server-Side Rendering with Islands**
+
    - Astro handles static content and layouts
    - React components only for interactive elements
    - Minimal JavaScript sent to client
 
 2. **API Structure**
+
    - REST endpoints in `/src/pages/api/`
    - Uppercase HTTP method exports (POST, GET)
    - Zod validation for all inputs
    - Service layer pattern for business logic
 
 3. **Authentication Flow**
+
    - Supabase auth handled via middleware
    - Session available in `locals` for API routes
    - Row Level Security (RLS) enforces data isolation
 
 4. **Database Schema**
+
    - `flashcards`: User flashcards with full-text search
    - `generations`: AI generation logs with acceptance tracking
    - `generation_error_logs`: Error tracking
@@ -76,12 +82,14 @@ npm run format       # Format code with Prettier
    - All tables use soft deletes and audit fields
 
 5. **AI Flashcard Generation Flow**
+
    - **Step 1**: POST `/api/flashcards/generate` - generates candidates and creates generation log
    - **Step 2**: POST `/api/flashcards/accept` - user reviews and accepts selected candidates
    - Only accepted candidates are saved as actual flashcards with `source: 'ai'`
    - Generation tracking enables analytics and user experience improvements
 
 6. **Spaced Repetition Learning System**
+
    - Algorithm based on intervals: 1, 2, 4, 7, 14 days for ratings 1-5
    - Dynamic difficulty adjustment based on user performance
    - Learning sessions track progress and provide personalized card selection
@@ -105,13 +113,13 @@ npm run format       # Format code with Prettier
 │   └── learning/   # Learning system components (cards, sessions)
 ├── db/             # Supabase client and types
 ├── layouts/        # Astro layouts
-├── lib/            
+├── lib/
 │   ├── ai/         # AI integration (OpenRouter service)
 │   ├── schemas/    # Zod validation schemas (flashcard, learning)
 │   ├── services/   # Business logic (FlashcardService, LearningService, GenerationService)
 │   └── types/      # TypeScript types
 ├── middleware/     # Auth middleware
-├── pages/          
+├── pages/
 │   ├── api/        # REST API endpoints
 │   │   ├── flashcards/  # CRUD + generate + accept
 │   │   └── learn/       # Learning session endpoints
@@ -126,22 +134,22 @@ npm run format       # Format code with Prettier
 // API route pattern (uppercase exports)
 export const POST: APIRoute = async ({ request, locals }) => {
   const { supabase, session } = locals;
-  
+
   // Auth check
   if (!session) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { 
-      status: 401 
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
     });
   }
-  
+
   // Validation with Zod
   const data = await request.json();
   const validated = schema.parse(data);
-  
+
   // Service layer
   const service = new FlashcardService(supabase);
   const result = await service.create(session.user.id, validated);
-  
+
   return new Response(JSON.stringify(result), { status: 201 });
 };
 ```
@@ -159,6 +167,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 ### Database Migrations
 
 Supabase migrations are in `/supabase/migrations/`. The schema includes:
+
 - User isolation via RLS policies
 - Soft deletes on all tables
 - Full-text search on flashcards
@@ -167,6 +176,7 @@ Supabase migrations are in `/supabase/migrations/`. The schema includes:
 ### Environment Variables
 
 A `.env` file exists with the following keys configured:
+
 - `SUPABASE_URL` - Local Supabase instance URL
 - `SUPABASE_KEY` - Supabase anonymous key
 - `OPENAI_API_KEY` - OpenAI API key
@@ -190,6 +200,6 @@ The application is **fully functional** with:
 ✅ **User Interface** - Modern, responsive UI with React components  
 ✅ **Authentication** - Supabase auth with Row Level Security  
 ✅ **Testing Infrastructure** - Comprehensive unit and integration tests  
-✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment  
+✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment
 
 The application is ready for production use with a complete learning workflow from AI generation to spaced repetition learning.
