@@ -85,7 +85,8 @@ export interface FlashcardListResponseDTO {
 }
 
 export interface GenerateFlashcardsRequestDTO {
-  input_text: string; // 1000-10000 chars
+  prompt: string; // Text prompt for AI generation
+  count?: number; // Number of flashcards to generate (default: 5)
 }
 
 export interface FlashcardCandidateDTO {
@@ -111,18 +112,44 @@ export interface SaveBatchFlashcardsResponseDTO {
 // ----------------------------------------------------------------
 // 6. Learning Session DTOs
 // ----------------------------------------------------------------
-export interface NextLearningFlashcardDTO {
+export interface LearningSessionCardDTO {
   id: string;
   front: string;
+  back: string;
+  last_reviewed?: string;
+  review_count: number;
+  difficulty_rating: number;
 }
 
-export interface ReviewFlashcardRequestDTO {
-  knowledge_level: 1 | 2 | 3 | 4 | 5;
+export interface SessionProgressDTO {
+  session_id: string;
+  cards_reviewed: number;
+  cards_remaining: number;
+  session_start: string;
+  message?: string;
 }
 
-export interface ReviewFlashcardResponseDTO {
-  success: boolean;
+export interface GetLearningSessionResponseDTO {
+  card: LearningSessionCardDTO | null;
+  session: SessionProgressDTO;
+}
+
+export interface RateFlashcardRequestDTO {
+  session_id: string;
+  flashcard_id: string;
+  rating: 1 | 2 | 3 | 4 | 5;
+}
+
+export interface RateFlashcardResponseDTO {
+  flashcard_id: string;
+  rating: number;
   next_review_date: string;
+  review_count: number;
+  difficulty_rating: number;
+  session_progress: {
+    cards_reviewed: number;
+    session_duration_minutes: number;
+  };
 }
 
 // ----------------------------------------------------------------

@@ -12,7 +12,10 @@ export const listFlashcardsSchema = z.object({
   source: z.enum(['manual', 'ai']).optional(),
   sort: z.enum(['created_at', 'updated_at']).default('updated_at'),
   order: z.enum(['asc', 'desc']).default('desc'),
-});
+}).transform((data) => ({
+  ...data,
+  source: data.source || undefined // Ensure undefined instead of empty string
+}));
 
 export const updateFlashcardSchema = z.object({
   front: z
