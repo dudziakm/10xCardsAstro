@@ -26,6 +26,12 @@ npm run dev          # Start dev server on port 3000
 npm run build        # Build for production
 npm run preview      # Preview production build
 
+# Testing
+npm run test         # Run tests in watch mode
+npm run test:run     # Run tests once
+npm run test:ui      # Run tests with UI interface
+npm run test:coverage # Run tests with coverage report
+
 # Code Quality
 npm run lint         # Run ESLint
 npm run lint:fix     # Auto-fix linting issues
@@ -38,8 +44,10 @@ npm run format       # Format code with Prettier
 - **Frontend**: Astro 5 (SSR) with React 19 islands for interactivity
 - **Styling**: Tailwind CSS 4 with Shadcn/ui components
 - **Backend**: Supabase (PostgreSQL + Auth)
-- **AI**: OpenRouter.ai for flashcard generation
+- **AI**: OpenRouter.ai with Claude 3 Haiku for flashcard generation
 - **TypeScript**: Strict mode with Zod validation
+- **Testing**: Vitest with React Testing Library and jsdom
+- **CI/CD**: GitHub Actions with automated testing and security audits
 
 ### Key Architectural Patterns
 
@@ -73,15 +81,32 @@ npm run format       # Format code with Prettier
    - Only accepted candidates are saved as actual flashcards with `source: 'ai'`
    - Generation tracking enables analytics and user experience improvements
 
+6. **Spaced Repetition Learning System**
+   - Algorithm based on intervals: 1, 2, 4, 7, 14 days for ratings 1-5
+   - Dynamic difficulty adjustment based on user performance
+   - Learning sessions track progress and provide personalized card selection
+   - Real-time feedback and progress visualization
+
+7. **Testing Strategy**
+   - Unit tests for business logic (spaced repetition algorithm, AI integration)
+   - Integration tests for API endpoints and database operations
+   - Component tests for React UI with user interaction simulation
+   - Automated CI/CD pipeline with security auditing
+
 ### Project Structure
 
 ```
 /src
 ├── components/      # UI components (Astro & React)
-│   └── ui/         # Shadcn/ui components
+│   ├── ui/         # Shadcn/ui components (buttons, pagination, spinners)
+│   ├── flashcards/ # Flashcard-specific components (list, viewer, search)
+│   ├── forms/      # Form components (flashcard creation/editing)
+│   ├── ai/         # AI generation components
+│   └── learning/   # Learning system components (cards, sessions)
 ├── db/             # Supabase client and types
 ├── layouts/        # Astro layouts
 ├── lib/            
+│   ├── ai/         # AI integration (OpenRouter service)
 │   ├── schemas/    # Zod validation schemas (flashcard, learning)
 │   ├── services/   # Business logic (FlashcardService, LearningService, GenerationService)
 │   └── types/      # TypeScript types
@@ -90,7 +115,8 @@ npm run format       # Format code with Prettier
 │   ├── api/        # REST API endpoints
 │   │   ├── flashcards/  # CRUD + generate + accept
 │   │   └── learn/       # Learning session endpoints
-│   └── *.astro     # Page routes
+│   └── *.astro     # Page routes (home, flashcards, learn, generate)
+├── test/           # Test configuration and utilities
 └── types.ts        # Shared DTOs and entities
 ```
 
@@ -127,6 +153,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
 3. **Component Choice**: Astro for static, React only when interactive
 4. **Auth Context**: Access Supabase via `locals` in API routes, not direct imports
 5. **Service Layer**: Extract business logic to `/src/lib/services/`
+6. **Testing**: Write tests for all business logic and user interactions
+7. **AI Integration**: Use OpenRouter with Claude 3 Haiku for optimal cost/performance balance
 
 ### Database Migrations
 
@@ -151,3 +179,17 @@ A `.env` file exists with the following keys configured:
 - `ANTROPIC_API_KEY` - Anthropic API key
 
 See `.env.example` for the template structure.
+
+### Current Status
+
+The application is **fully functional** with:
+
+✅ **Complete CRUD Operations** - Create, read, update, delete flashcards  
+✅ **AI-Powered Generation** - Generate flashcards using OpenRouter/Claude 3 Haiku  
+✅ **Spaced Repetition Learning** - Scientifically-backed learning algorithm  
+✅ **User Interface** - Modern, responsive UI with React components  
+✅ **Authentication** - Supabase auth with Row Level Security  
+✅ **Testing Infrastructure** - Comprehensive unit and integration tests  
+✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment  
+
+The application is ready for production use with a complete learning workflow from AI generation to spaced repetition learning.
