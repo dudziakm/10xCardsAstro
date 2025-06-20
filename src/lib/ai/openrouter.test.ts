@@ -87,7 +87,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockFlashcards = [
         { front: "What is React?", back: "A JavaScript library for building user interfaces" },
         { front: "What is JSX?", back: "JavaScript XML syntax extension" },
@@ -127,7 +127,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockFlashcards = [
         { front: "Valid Front", back: "Valid Back" },
         { front: "", back: "No front" }, // Invalid - empty front
@@ -171,7 +171,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const longFront = "A".repeat(300); // Exceeds 200 char limit
       const longBack = "B".repeat(600); // Exceeds 500 char limit
 
@@ -212,7 +212,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockResponse = {
         ok: false,
         status: 401,
@@ -234,7 +234,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockResponse = {
         ok: true,
         json: () =>
@@ -267,7 +267,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockResponse = {
         ok: true,
         json: () =>
@@ -302,7 +302,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockResponse = {
         ok: true,
         json: () =>
@@ -328,7 +328,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
 
       await expect(callOpenRouterAI("Test input")).rejects.toThrow("Network error");
@@ -344,7 +344,7 @@ describe("OpenRouter AI Service", () => {
         },
         writable: true,
       });
-      
+
       const mockResponse = {
         ok: true,
         json: () =>
