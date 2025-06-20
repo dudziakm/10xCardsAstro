@@ -33,8 +33,17 @@ jobs:
     - name: Run type checking
       run: npx astro check
       
-    - name: Run tests
+    - name: Run unit tests
       run: npm run test:run -- src/test/simple.test.ts
+      
+    - name: Install Playwright Dependencies
+      run: sudo npx playwright install-deps
+      
+    - name: Install Playwright
+      run: npx playwright install chromium
+      
+    - name: Run E2E tests
+      run: npm run test:e2e
       
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
