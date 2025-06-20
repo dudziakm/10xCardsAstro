@@ -8,6 +8,16 @@ my10xCards is an AI-powered flashcard learning application built with Astro 5, R
 
 **Note**: This application is currently being built from scratch with AI assistance as part of the 10xdevs training program. The `.ai/` folder contains various planning documents including business requirements (`prd.md`), database plans, API specifications, tech stack details, and implementation notes for individual endpoints.
 
+### Development Process Flow
+1. **Business Requirements** (`prd.md`) - Written in Polish, defines all business requirements
+2. **Project Planning** - Created project structure, AI rules, and project bootstrap
+3. **Database Design** (`db-plan.md`) - Defined database schema and relationships
+4. **API Contracts** - Generated REST API endpoints and contracts
+5. **UI Planning** (`ui-plan.md`) - Started UI/UX planning and component structure
+6. **Implementation Notes** - Individual endpoint implementation details in `.ai/api-impl-*.md` files
+
+All documentation is in Polish, but code implementation is in English.
+
 ## Essential Development Commands
 
 ```bash
@@ -51,9 +61,17 @@ npm run format       # Format code with Prettier
 
 4. **Database Schema**
    - `flashcards`: User flashcards with full-text search
-   - `generations`: AI generation logs
+   - `generations`: AI generation logs with acceptance tracking
    - `generation_error_logs`: Error tracking
+   - `learning_sessions`: Learning session management
+   - `flashcard_progress`: Spaced repetition progress tracking
    - All tables use soft deletes and audit fields
+
+5. **AI Flashcard Generation Flow**
+   - **Step 1**: POST `/api/flashcards/generate` - generates candidates and creates generation log
+   - **Step 2**: POST `/api/flashcards/accept` - user reviews and accepts selected candidates
+   - Only accepted candidates are saved as actual flashcards with `source: 'ai'`
+   - Generation tracking enables analytics and user experience improvements
 
 ### Project Structure
 
@@ -64,12 +82,14 @@ npm run format       # Format code with Prettier
 ├── db/             # Supabase client and types
 ├── layouts/        # Astro layouts
 ├── lib/            
-│   ├── schemas/    # Zod validation schemas
-│   ├── services/   # Business logic services
+│   ├── schemas/    # Zod validation schemas (flashcard, learning)
+│   ├── services/   # Business logic (FlashcardService, LearningService, GenerationService)
 │   └── types/      # TypeScript types
 ├── middleware/     # Auth middleware
 ├── pages/          
 │   ├── api/        # REST API endpoints
+│   │   ├── flashcards/  # CRUD + generate + accept
+│   │   └── learn/       # Learning session endpoints
 │   └── *.astro     # Page routes
 └── types.ts        # Shared DTOs and entities
 ```

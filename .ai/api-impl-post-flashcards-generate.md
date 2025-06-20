@@ -190,9 +190,14 @@ Endpoint ten przyjmuje blok tekstu i wykorzystuje zewnętrzną usługę AI (Open
 
          // 3. Parse AI response (implement robust parsing and validation)
          // Założenie: aiResponse zawiera listę { front: string, back: string }
-         // Należy dodać walidację struktury odpowiedzi AI!
+         // Walidacja struktury odpowiedzi AI
          if (aiResponse && Array.isArray(aiResponse.candidates)) {
-            candidates = aiResponse.candidates.map((c: any) => ({ front: String(c.front), back: String(c.back) })); // Proste mapowanie, wymaga walidacji!
+            candidates = aiResponse.candidates
+              .filter((c: any) => c.front && c.back)
+              .map((c: any) => ({ 
+                front: String(c.front).substring(0, 200), 
+                back: String(c.back).substring(0, 500) 
+              }));
             generatedCount = candidates.length;
             generationSuccess = true;
          } else {
