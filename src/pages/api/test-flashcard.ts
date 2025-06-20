@@ -63,7 +63,7 @@ export const POST: APIRoute = async ({ locals }) => {
 
   try {
     // Get list of tables
-    const { data: tables, error: tablesError } = await supabase
+    const { data: tables, error: tablesError } = await (supabase as any)
       .from("pg_tables")
       .select("schemaname, tablename")
       .eq("schemaname", "public");
@@ -76,7 +76,7 @@ export const POST: APIRoute = async ({ locals }) => {
     }
 
     // Try to get columns for flashcards table
-    const { data: columns, error: columnsError } = await supabase.rpc("get_table_columns", {
+    const { data: columns, error: columnsError } = await (supabase as any).rpc("get_table_columns", {
       table_name: "flashcards",
     });
 

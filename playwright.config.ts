@@ -34,9 +34,9 @@ export default defineConfig({
     actionTimeout: 10000,
 
     /* Global timeout for expect assertions */
-    expect: {
-      timeout: 5000,
-    },
+    // expect: {
+    //   timeout: 5000,
+    // },
   },
 
   /* Configure projects for major browsers */

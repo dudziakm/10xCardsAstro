@@ -5,7 +5,7 @@ export const GET: APIRoute = async ({ locals }) => {
 
   try {
     // Test database connection
-    const { data: tables, error: tablesError } = await supabase
+    const { data: tables, error: tablesError } = await (supabase as any)
       .from("information_schema.tables")
       .select("table_name")
       .eq("table_schema", "public");
@@ -31,7 +31,7 @@ export const GET: APIRoute = async ({ locals }) => {
     return new Response(
       JSON.stringify({
         status: "connected",
-        tables: tables?.map((t) => t.table_name) || [],
+        tables: tables?.map((t: any) => t.table_name) || [],
         flashcards_accessible: !flashcardsError,
         generations_accessible: !generationsError,
         errors: {

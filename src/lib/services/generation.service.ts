@@ -19,7 +19,6 @@ export class GenerationService {
         input_text: prompt.substring(0, 500), // Store preview of prompt
         cards_generated: 0,
         successful: false,
-        model_used: "unknown",
         created_at: new Date().toISOString(),
       };
 
@@ -55,7 +54,7 @@ export class GenerationService {
         // Continue despite update error, but log it
       }
 
-      return { candidates, generationId };
+      return { candidates, generationId: generationId! };
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown generation error";
       const errorCode =
@@ -79,7 +78,7 @@ export class GenerationService {
       }
 
       // Rethrow the error to be handled by the API route
-      throw new Error(`Generation failed: ${error.message}`);
+      throw new Error(`Generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 }
