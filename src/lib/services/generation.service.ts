@@ -54,7 +54,10 @@ export class GenerationService {
         // Continue despite update error, but log it
       }
 
-      return { candidates, generationId: generationId! };
+      if (!generationId) {
+        throw new Error("Generation ID not available");
+      }
+      return { candidates, generationId };
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Unknown generation error";
       const errorCode =
@@ -78,7 +81,7 @@ export class GenerationService {
       }
 
       // Rethrow the error to be handled by the API route
-      throw new Error(`Generation failed: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      throw new Error(`Generation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
     }
   }
 }

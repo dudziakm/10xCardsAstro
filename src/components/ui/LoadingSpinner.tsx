@@ -1,4 +1,3 @@
-
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   color?: "blue" | "gray" | "white";
