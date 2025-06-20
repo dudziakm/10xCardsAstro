@@ -28,35 +28,35 @@ describe("LearningService", () => {
   describe("calculateNextReviewDate", () => {
     it("should calculate correct intervals for different ratings", () => {
       const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+        calculateNextReviewDate: (rating: number, reviewCount: number, currentDifficulty: number) => Date;
       }; // Access private method
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
       // Rating 1 (Again) - 1 day
-      const nextReview1 = service.calculateNextReviewDate(1, 1, 2.5);
+      const nextReview1 = service.calculateNextReviewDate(1, 0, 2.5);
       expect(nextReview1.getDate()).toBe(2); // Jan 2
 
       // Rating 3 (Good) - 4 days
-      const nextReview3 = service.calculateNextReviewDate(3, 1, 2.5);
+      const nextReview3 = service.calculateNextReviewDate(3, 0, 2.5);
       expect(nextReview3.getDate()).toBe(5); // Jan 5
 
       // Rating 5 (Easy) - 14 days
-      const nextReview5 = service.calculateNextReviewDate(5, 1, 2.5);
+      const nextReview5 = service.calculateNextReviewDate(5, 0, 2.5);
       expect(nextReview5.getDate()).toBe(15); // Jan 15
     });
 
     it("should apply difficulty multiplier correctly", () => {
       const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
+        calculateNextReviewDate: (rating: number, reviewCount: number, currentDifficulty: number) => Date;
       };
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
       // High difficulty (5.0) should increase interval
-      const nextReviewHard = service.calculateNextReviewDate(3, 1, 5.0);
+      const nextReviewHard = service.calculateNextReviewDate(3, 0, 5.0);
       // Low difficulty (1.0) should decrease interval
-      const nextReviewEasy = service.calculateNextReviewDate(3, 1, 1.0);
+      const nextReviewEasy = service.calculateNextReviewDate(3, 0, 1.0);
 
       expect(nextReviewHard.getDate()).toBeGreaterThan(nextReviewEasy.getDate());
     });

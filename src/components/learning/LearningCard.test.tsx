@@ -231,6 +231,6 @@ describe("LearningCard", () => {
 
     render(<LearningCard card={cardWithSpecificDate} onRate={mockOnRate} />);
 
-    expect(screen.getByText("Ostatnio: 15.3.2024")).toBeInTheDocument();
+    expect(screen.getByText("Ostatnio: 15.03.2024")).toBeInTheDocument();
   });
 });
