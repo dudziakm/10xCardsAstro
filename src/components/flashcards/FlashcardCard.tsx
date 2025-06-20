@@ -1,4 +1,3 @@
-import React from "react";
 import type { FlashcardDTO } from "../../types";
 import { Button } from "../ui/button";
 

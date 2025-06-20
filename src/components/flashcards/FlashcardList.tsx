@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import type { FlashcardDTO, FlashcardListResponseDTO, PaginationDTO } from "../../types";
 import { FlashcardCard } from "./FlashcardCard";
 import { Button } from "../ui/button";

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { FlashcardForm } from "./FlashcardForm";
@@ -8,7 +8,7 @@ const mockFlashcard: FlashcardDTO = {
   id: "test-flashcard-123",
   front: "What is React?",
   back: "A JavaScript library for building user interfaces",
-  user_id: "user-123",
+  source: "manual",
   created_at: "2024-01-01T10:00:00Z",
   updated_at: "2024-01-01T10:00:00Z",
 };
@@ -22,7 +22,7 @@ describe("FlashcardForm", () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (global.fetch as vi.Mock).mockClear();
+    (global.fetch as Mock).mockClear();
   });
 
   describe("Create Mode", () => {
@@ -38,10 +38,10 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
       const mockResponse = { ...mockFlashcard, id: "new-flashcard-123" };
 
-      (global.fetch as vi.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockResponse),
-      });
+      } as unknown as Response);
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
@@ -80,10 +80,10 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
       const updatedFlashcard = { ...mockFlashcard, front: "Updated question?" };
 
-      (global.fetch as vi.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(updatedFlashcard),
-      });
+      } as unknown as Response);
 
       render(<FlashcardForm mode="edit" flashcard={mockFlashcard} onSave={mockOnSave} />);
 
@@ -115,10 +115,10 @@ describe("FlashcardForm", () => {
       mockElement.setAttribute("data-flashcard-id", "test-flashcard-123");
       vi.spyOn(document, "querySelector").mockReturnValue(mockElement);
 
-      (global.fetch as vi.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockFlashcard),
-      });
+      } as unknown as Response);
 
       render(<FlashcardForm mode="edit" onSave={mockOnSave} />);
 
@@ -189,10 +189,10 @@ describe("FlashcardForm", () => {
     it("should handle API errors during submission", async () => {
       const user = userEvent.setup();
 
-      (global.fetch as vi.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: false,
         json: () => Promise.resolve({ message: "Validation failed" }),
-      });
+      } as unknown as Response);
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
@@ -209,7 +209,7 @@ describe("FlashcardForm", () => {
     it("should handle network errors", async () => {
       const user = userEvent.setup();
 
-      vi.mocked(global.fetch).mockRejectedValueOnce(new Error("Network error"));
+      (global.fetch as Mock).mockRejectedValueOnce(new Error("Network error"));
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
@@ -228,10 +228,10 @@ describe("FlashcardForm", () => {
       mockElement.setAttribute("data-flashcard-id", "nonexistent-id");
       vi.spyOn(document, "querySelector").mockReturnValue(mockElement);
 
-      (global.fetch as vi.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: false,
         status: 404,
-      });
+      } as unknown as Response);
 
       render(<FlashcardForm mode="edit" onSave={mockOnSave} />);
 
@@ -247,7 +247,7 @@ describe("FlashcardForm", () => {
       const user = userEvent.setup();
 
       // Mock a delayed response
-      vi.mocked(global.fetch).mockImplementationOnce(
+      (global.fetch as Mock).mockImplementationOnce(
         () =>
           new Promise((resolve) =>
             setTimeout(
@@ -255,7 +255,7 @@ describe("FlashcardForm", () => {
                 resolve({
                   ok: true,
                   json: () => Promise.resolve(mockFlashcard),
-                }),
+                } as unknown as Response),
               100
             )
           )
@@ -275,7 +275,7 @@ describe("FlashcardForm", () => {
     it("should disable form fields during submission", async () => {
       const user = userEvent.setup();
 
-      vi.mocked(global.fetch).mockImplementationOnce(
+      (global.fetch as Mock).mockImplementationOnce(
         () =>
           new Promise((resolve) =>
             setTimeout(
@@ -283,7 +283,7 @@ describe("FlashcardForm", () => {
                 resolve({
                   ok: true,
                   json: () => Promise.resolve(mockFlashcard),
-                }),
+                } as unknown as Response),
               100
             )
           )

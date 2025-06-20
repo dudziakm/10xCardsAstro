@@ -170,7 +170,7 @@ describe("LearningCard", () => {
       id: "new-card-123",
       front: "New question?",
       back: "New answer",
-      last_reviewed: null,
+      last_reviewed: undefined,
       review_count: 0,
       difficulty_rating: 2.5,
     };

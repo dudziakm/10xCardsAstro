@@ -27,9 +27,7 @@ describe("LearningService", () => {
 
   describe("calculateNextReviewDate", () => {
     it("should calculate correct intervals for different ratings", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, reviewCount: number, currentDifficulty: number) => Date;
-      }; // Access private method
+      const service = learningService as any; // Access private method
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -47,9 +45,7 @@ describe("LearningService", () => {
     });
 
     it("should apply difficulty multiplier correctly", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, reviewCount: number, currentDifficulty: number) => Date;
-      };
+      const service = learningService as any;
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -62,9 +58,7 @@ describe("LearningService", () => {
     });
 
     it("should apply review count multiplier correctly", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
-      };
+      const service = learningService as any;
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
       vi.setSystemTime(baseDate);
 
@@ -79,9 +73,7 @@ describe("LearningService", () => {
 
   describe("updateDifficultyRating", () => {
     it("should increase difficulty for low ratings", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
-      };
+      const service = learningService as any;
 
       // Rating 1 (Again) should increase difficulty
       const newDifficulty1 = service.updateDifficultyRating(2.5, 1);
@@ -93,9 +85,7 @@ describe("LearningService", () => {
     });
 
     it("should decrease difficulty for high ratings", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
-      };
+      const service = learningService as any;
 
       // Rating 4 (Easy) should decrease difficulty
       const newDifficulty4 = service.updateDifficultyRating(2.5, 4);
@@ -107,9 +97,7 @@ describe("LearningService", () => {
     });
 
     it("should keep difficulty unchanged for neutral rating", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
-      };
+      const service = learningService as any;
 
       // Rating 3 (Good) should keep difficulty same
       const newDifficulty = service.updateDifficultyRating(2.5, 3);
@@ -117,9 +105,7 @@ describe("LearningService", () => {
     });
 
     it("should enforce difficulty bounds", () => {
-      const service = learningService as LearningService & {
-        calculateNextReviewDate: (rating: number, interval: number, easeFactor: number) => Date;
-      };
+      const service = learningService as any;
 
       // Should not go below 1.0
       const minDifficulty = service.updateDifficultyRating(1.1, 1);
@@ -140,7 +126,7 @@ describe("LearningService", () => {
         started_at: new Date().toISOString(),
       };
 
-      mockSupabase.from.mockReturnValue({
+      (mockSupabase.from as any).mockReturnValue({
         insert: vi.fn().mockReturnValue({
           select: vi.fn().mockReturnValue({
             single: vi.fn().mockResolvedValue({ data: mockSession, error: null }),
@@ -168,7 +154,7 @@ describe("LearningService", () => {
         started_at: new Date().toISOString(),
       };
 
-      mockSupabase.from.mockReturnValue({
+      (mockSupabase.from as any).mockReturnValue({
         insert: vi.fn().mockReturnValue({
           select: vi.fn().mockReturnValue({
             single: vi.fn().mockResolvedValue({ data: mockSession, error: null }),
@@ -206,7 +192,7 @@ describe("LearningService", () => {
       const mockFlashcard = { id: "card-123", user_id: "user-123", front: "Test", back: "Answer" };
       const mockProgress = { difficulty_rating: 2.5, review_count: 1 };
 
-      mockSupabase.from.mockImplementation((table) => {
+      (mockSupabase.from as any).mockImplementation((table: any) => {
         if (table === "learning_sessions") {
           return {
             select: vi.fn().mockReturnValue({
