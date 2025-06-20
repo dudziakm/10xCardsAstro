@@ -1,0 +1,63 @@
+---
+// Test page for API endpoints
+---
+
+<html>
+<head>
+    <title>API Test Page</title>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <h1>my10xCards API Test</h1>
+    
+    <div id="results"></div>
+    
+    <h2>Test Flashcards</h2>
+    <button onclick="testGetFlashcards()">GET /api/flashcards</button>
+    <button onclick="testCreateFlashcard()">POST /api/flashcards</button>
+    
+    <h2>Test Database</h2>
+    <button onclick="testDatabase()">Test Database Connection</button>
+
+    <script>
+        const results = document.getElementById('results');
+        
+        function log(message) {
+            results.innerHTML += '<p>' + message + '</p>';
+        }
+        
+        async function testGetFlashcards() {
+            try {
+                log('Testing GET /api/flashcards...');
+                const response = await axios.get('/api/flashcards');
+                log('SUCCESS: ' + JSON.stringify(response.data, null, 2));
+            } catch (error) {
+                log('ERROR: ' + error.response?.data?.message || error.message);
+            }
+        }
+        
+        async function testCreateFlashcard() {
+            try {
+                log('Testing POST /api/flashcards...');
+                const response = await axios.post('/api/flashcards', {
+                    front: 'Test Question',
+                    back: 'Test Answer'
+                });
+                log('SUCCESS: ' + JSON.stringify(response.data, null, 2));
+            } catch (error) {
+                log('ERROR: ' + error.response?.data?.message || error.message);
+            }
+        }
+        
+        async function testDatabase() {
+            try {
+                log('Testing database connection...');
+                const response = await axios.get('/api/test-db');
+                log('SUCCESS: ' + JSON.stringify(response.data, null, 2));
+            } catch (error) {
+                log('ERROR: ' + error.response?.data?.message || error.message);
+            }
+        }
+    </script>
+</body>
+</html>

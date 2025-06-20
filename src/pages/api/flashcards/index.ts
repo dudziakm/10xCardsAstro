@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import { FlashcardService } from "../../../lib/services/flashcard.service";
 import { ZodError } from "zod";
+import { listFlashcardsSchema } from "../../../lib/schemas/flashcard.schema";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   // Ensure user is authenticated
@@ -78,6 +79,82 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Handle other errors
     console.error("Error creating flashcard:", error);
+
+    return new Response(
+      JSON.stringify({
+        error: "Internal Server Error",
+        message: "An unexpected error occurred",
+        details: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+};
+
+export const GET: APIRoute = async ({ request, locals }) => {
+  // Ensure user is authenticated
+  const { supabase, session } = locals;
+
+  if (!session) {
+    return new Response(
+      JSON.stringify({ 
+        error: "Unauthorized", 
+        message: "You must be logged in to access flashcards" 
+      }),
+      {
+        status: 401,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
+  }
+
+  try {
+    // Extract URL parameters
+    const url = new URL(request.url);
+    const params = {
+      page: url.searchParams.get('page') || '1',
+      limit: url.searchParams.get('limit') || '10',
+      search: url.searchParams.get('search') || undefined,
+      source: url.searchParams.get('source') as 'manual' | 'ai' | undefined,
+      sort: url.searchParams.get('sort') || 'updated_at',
+      order: url.searchParams.get('order') || 'desc'
+    };
+
+    // Validate parameters
+    const validatedParams = listFlashcardsSchema.parse(params);
+
+    // Create flashcard service
+    const flashcardService = new FlashcardService(supabase);
+
+    // Get flashcards
+    const response = await flashcardService.listFlashcards(session.user.id, validatedParams);
+
+    // Return successful response
+    return new Response(JSON.stringify(response), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    // Handle validation errors
+    if (error instanceof ZodError) {
+      return new Response(
+        JSON.stringify({
+          error: "Bad Request",
+          message: "Invalid query parameters",
+          details: error.errors,
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Handle other errors
+    console.error("Error listing flashcards:", error);
 
     return new Response(
       JSON.stringify({
