@@ -114,16 +114,26 @@ export const GET: APIRoute = async ({ request, locals }) => {
   try {
     // Extract URL parameters
     const url = new URL(request.url);
-    const params = {
+    const sourceParam = url.searchParams.get('source');
+    const params: any = {
       page: url.searchParams.get('page') || '1',
       limit: url.searchParams.get('limit') || '10',
-      search: url.searchParams.get('search') || undefined,
-      source: url.searchParams.get('source') as 'manual' | 'ai' | undefined,
       sort: url.searchParams.get('sort') || 'updated_at',
       order: url.searchParams.get('order') || 'desc'
     };
+    
+    // Only add optional params if they exist
+    const searchParam = url.searchParams.get('search');
+    if (searchParam) {
+      params.search = searchParam;
+    }
+    
+    if (sourceParam && ['manual', 'ai'].includes(sourceParam)) {
+      params.source = sourceParam;
+    }
 
     // Validate parameters
+    console.log('Params before validation:', JSON.stringify(params));
     const validatedParams = listFlashcardsSchema.parse(params);
 
     // Create flashcard service

@@ -8,6 +8,7 @@ export class LearningService {
   constructor(private supabase: SupabaseClient) {}
 
   async getNextCard(userId: string, sessionId?: string): Promise<GetLearningSessionResponseDTO> {
+    console.log('LearningService.getNextCard called with:', { userId, sessionId });
     // Get or create session
     let session;
     if (sessionId) {
@@ -25,6 +26,7 @@ export class LearningService {
       session = data;
     } else {
       // Create new session
+      console.log('Creating learning session for userId:', userId);
       const { data, error } = await this.supabase
         .from('learning_sessions')
         .insert({ user_id: userId })
@@ -32,20 +34,21 @@ export class LearningService {
         .single();
       
       if (error || !data) {
-        throw new Error('Failed to create learning session');
+        console.error('Learning session creation error:', error);
+        throw new Error(`Failed to create learning session: ${error?.message || 'No data returned'}`);
       }
       session = data;
     }
 
     // Get next card using simple spaced repetition algorithm
-    // First, try to get cards due for review
+    // First, try to get cards due for review (or never reviewed)
     const currentTime = new Date().toISOString();
     
-    const { data: cards } = await this.supabase
+    const { data: cards, error: cardsError } = await this.supabase
       .from('flashcards')
       .select(`
         id, front, back,
-        flashcard_progress (
+        flashcard_progress!left (
           last_reviewed,
           review_count,
           difficulty_rating,
@@ -53,20 +56,54 @@ export class LearningService {
         )
       `)
       .eq('user_id', userId)
-      .or(`flashcard_progress.next_review_date.is.null,flashcard_progress.next_review_date.lte.${currentTime}`)
-      .limit(1);
+      .order('created_at', { ascending: true })
+      .limit(10);
+
+    console.log('Cards query result:', { 
+      cardsCount: cards?.length || 0, 
+      cardsError, 
+      userId,
+      cards: cards?.map(c => ({ 
+        id: c.id, 
+        front: c.front.substring(0, 20), 
+        progress: c.flashcard_progress?.[0] || 'no progress' 
+      }))
+    });
 
     let card = null;
     if (cards && cards.length > 0) {
-      const selectedCard = cards[0];
-      card = {
-        id: selectedCard.id,
-        front: selectedCard.front,
-        back: selectedCard.back,
-        last_reviewed: selectedCard.flashcard_progress?.[0]?.last_reviewed,
-        review_count: selectedCard.flashcard_progress?.[0]?.review_count || 0,
-        difficulty_rating: selectedCard.flashcard_progress?.[0]?.difficulty_rating || 2.5
-      };
+      // Filter cards that are due for review (no progress record or next_review_date <= now)
+      const currentDate = new Date();
+      const dueCards = cards.filter(c => {
+        const progress = c.flashcard_progress?.[0];
+        console.log('Checking card:', c.id, 'progress:', progress);
+        if (!progress) {
+          console.log('Card has no progress - including');
+          return true; // Never reviewed
+        }
+        if (!progress.next_review_date) {
+          console.log('Card has no next_review_date - including');
+          return true; // No next review date set
+        }
+        const nextReview = new Date(progress.next_review_date);
+        console.log('Card next review:', nextReview, 'vs current:', currentDate);
+        return nextReview <= currentDate;
+      });
+      
+      console.log('Due cards count:', dueCards.length);
+      
+      if (dueCards.length > 0) {
+        const selectedCard = dueCards[0];
+        card = {
+          id: selectedCard.id,
+          front: selectedCard.front,
+          back: selectedCard.back,
+          last_reviewed: selectedCard.flashcard_progress?.[0]?.last_reviewed,
+          review_count: selectedCard.flashcard_progress?.[0]?.review_count || 0,
+          difficulty_rating: selectedCard.flashcard_progress?.[0]?.difficulty_rating || 2.5
+        };
+        console.log('Selected card for learning:', card.id);
+      }
     }
 
     // Update session stats if card was found
