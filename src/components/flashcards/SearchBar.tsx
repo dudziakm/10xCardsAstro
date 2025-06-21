@@ -5,10 +5,16 @@ interface SearchBarProps {
   onSearch: (query: string) => void;
   placeholder?: string;
   className?: string;
-  'data-testid'?: string;
+  "data-testid"?: string;
 }
 
-export function SearchBar({ value, onSearch, placeholder = "Szukaj...", className = "", 'data-testid': testId }: SearchBarProps) {
+export function SearchBar({
+  value,
+  onSearch,
+  placeholder = "Szukaj...",
+  className = "",
+  "data-testid": testId,
+}: SearchBarProps) {
   const [inputValue, setInputValue] = useState(value);
 
   const handleSubmit = (e: React.FormEvent) => {

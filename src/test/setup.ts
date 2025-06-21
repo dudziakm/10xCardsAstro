@@ -15,18 +15,18 @@ Object.defineProperty(import.meta, "env", {
 vi.mock("../db/supabase.client.ts", () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn(() => ({
+      select: vi.fn((query, options) => ({
         eq: vi.fn(() => ({
           single: vi.fn(),
           order: vi.fn(() => ({ limit: vi.fn() })),
           limit: vi.fn(),
-          gt: vi.fn(),
+          gt: vi.fn(() => ({ data: null, count: 0 })),
         })),
         insert: vi.fn(() => ({ select: vi.fn(() => ({ single: vi.fn() })) })),
         update: vi.fn(() => ({ eq: vi.fn() })),
         upsert: vi.fn(),
-        count: "exact",
-        head: true,
+        count: options?.count || undefined,
+        head: options?.head || undefined,
       })),
     })),
   },

@@ -43,12 +43,12 @@ export default defineConfig({
     {
       name: "setup-main",
       testMatch: /.*\.setup\.ts/,
-      testNamePattern: /.*main user.*/,
+      grep: /main user/,
     },
     {
       name: "setup-extra",
       testMatch: /.*\.setup\.ts/,
-      testNamePattern: /.*extra user.*/,
+      grep: /extra user/,
     },
 
     // Main user tests

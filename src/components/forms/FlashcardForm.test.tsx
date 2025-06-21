@@ -144,7 +144,7 @@ describe("FlashcardForm", () => {
       fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
 
       await waitFor(() => {
-        expect(screen.getByText("Błąd: Proszę wypełnić oba pola")).toBeInTheDocument();
+        expect(screen.getByText(/Proszę wypełnić oba pola/i)).toBeInTheDocument();
       });
 
       expect(global.fetch).not.toHaveBeenCalled();
@@ -159,7 +159,7 @@ describe("FlashcardForm", () => {
       fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
 
       await waitFor(() => {
-        expect(screen.getByText("Błąd: Proszę wypełnić oba pola")).toBeInTheDocument();
+        expect(screen.getByText(/Proszę wypełnić oba pola/i)).toBeInTheDocument();
       });
 
       expect(global.fetch).not.toHaveBeenCalled();

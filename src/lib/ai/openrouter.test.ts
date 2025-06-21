@@ -9,24 +9,28 @@ describe("OpenRouter AI Service", () => {
 
   describe("callOpenRouterAI", () => {
     it("should throw error when API key is missing", async () => {
+      const originalEnv = import.meta.env;
       Object.defineProperty(import.meta, "env", {
-        value: {},
+        value: {
+          ...originalEnv,
+          OPENROUTER_API_KEY: undefined,
+        },
         writable: true,
+        configurable: true,
       });
 
       await expect(callOpenRouterAI("test input")).rejects.toThrow("OPENROUTER_API_KEY not configured");
+      
+      // Restore original env
+      Object.defineProperty(import.meta, "env", {
+        value: originalEnv,
+        writable: true,
+        configurable: true,
+      });
     });
 
     it("should make correct API request with proper headers", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
+      // Use the env from setup.ts which already has the API key
       const mockResponse = {
         ok: true,
         json: () =>

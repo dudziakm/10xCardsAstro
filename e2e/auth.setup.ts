@@ -14,8 +14,8 @@ try {
       envVars[key.trim()] = value.trim();
     }
   });
-} catch (error) {
-  console.error("Could not load .env file:", error);
+} catch {
+  // Could not load .env file - likely in CI environment
 }
 
 const authFileMain = "playwright/.auth/user-main.json";

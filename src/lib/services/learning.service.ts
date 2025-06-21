@@ -219,7 +219,8 @@ export class LearningService {
   }
 
   private updateDifficultyRating(currentRating: number, userRating: number): number {
-    const adjustment = (userRating - 3) * 0.1;
+    // Invert the adjustment - lower ratings increase difficulty, higher ratings decrease it
+    const adjustment = (3 - userRating) * 0.2;
     return Math.max(1.0, Math.min(5.0, currentRating + adjustment));
   }
 }

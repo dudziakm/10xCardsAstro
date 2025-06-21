@@ -7,10 +7,17 @@ interface FlashcardCardProps {
   onDelete?: (id: string) => void;
   onView?: (id: string) => void;
   showActions?: boolean;
-  'data-testid'?: string;
+  "data-testid"?: string;
 }
 
-export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions = true, 'data-testid': testId }: FlashcardCardProps) {
+export function FlashcardCard({
+  flashcard,
+  onEdit,
+  onDelete,
+  onView,
+  showActions = true,
+  "data-testid": testId,
+}: FlashcardCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pl-PL", {
       day: "numeric",
@@ -24,7 +31,10 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full" data-testid={testId}>
+    <div
+      className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full"
+      data-testid={testId}
+    >
       {/* Header z source badge */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2">

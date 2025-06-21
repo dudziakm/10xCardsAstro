@@ -112,6 +112,8 @@ The application is **fully functional** with all core features implemented:
 - Added global navigation with mobile support
 - Simplified CI/CD to use only Chrome and Node.js 20
 - Improved development experience and error handling
+- **Migrated to online Supabase** - Full production-ready database
+- **Updated CI/CD for online deployment** - Separated unit/E2E tests, non-blocking E2E
 
 ## License
 

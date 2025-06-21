@@ -26,7 +26,7 @@ test.describe("User Data Isolation", () => {
     } else {
       // If there are some flashcards, they should only belong to this user
       // We can verify this by checking that none contain content we know belongs to main user
-      console.log(`Extra user has ${flashcardCount} flashcards - verifying they belong to this user`);
+      // Extra user has flashcards - verifying they belong to this user
 
       // Check each flashcard to ensure it doesn't contain main user's data
       for (let i = 0; i < flashcardCount; i++) {
