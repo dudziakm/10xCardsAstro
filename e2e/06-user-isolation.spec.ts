@@ -52,8 +52,8 @@ test.describe("User Data Isolation", () => {
     const frontText = "Extra User Question: What is Node.js?";
     const backText = "Extra User Answer: A JavaScript runtime built on Chrome's V8 engine";
 
-    await page.fill('textarea[name="front"]', frontText);
-    await page.fill('textarea[name="back"]', backText);
+    await page.fill('textarea[id="front"]', frontText);
+    await page.fill('textarea[id="back"]', backText);
 
     // Submit the form
     await page.click('button[type="submit"]');
@@ -77,8 +77,8 @@ test.describe("User Data Isolation", () => {
     const hasFlashcards = await page.locator('[data-testid="learning-card"]').isVisible();
 
     if (!hasFlashcards) {
-      // Should show message about no flashcards available for learning
-      await expect(page.locator("text=Brak fiszek do nauki")).toBeVisible();
+      // Should show session ended message when no cards available
+      await expect(page.locator("text=Sesja nauki zakończona!")).toBeVisible();
     } else {
       // If there are flashcards, they should only belong to this user
       await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
