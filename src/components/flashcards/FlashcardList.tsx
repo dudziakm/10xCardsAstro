@@ -207,7 +207,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
 
       {/* Flashcards grid */}
       {flashcards.length === 0 ? (
-        <div className="text-center py-12">
+        <div className="text-center py-12" data-testid="empty-state">
           <div className="text-gray-500 mb-4">
             {searchQuery || sourceFilter !== "all"
               ? "Nie znaleziono fiszek pasujących do kryteriów wyszukiwania."
