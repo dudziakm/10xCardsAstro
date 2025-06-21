@@ -14,7 +14,7 @@ try {
       envVars[key.trim()] = value.trim();
     }
   });
-} catch (error) {
+} catch {
   // Could not load .env file - likely in CI environment
 }
 
