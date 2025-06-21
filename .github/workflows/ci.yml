@@ -44,6 +44,11 @@ jobs:
 
       - name: Run E2E tests
         run: npm run test:e2e
+        env:
+          # Required for Astro server to start properly
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL || 'https://localhost:54321' }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY || 'dummy-key' }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY || 'dummy-key' }}
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4
