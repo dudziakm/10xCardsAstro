@@ -26,7 +26,7 @@ test.describe("Flashcard CRUD Operations", () => {
 
     // Should navigate to create form
     await expect(page).toHaveURL("/flashcards/new");
-    
+
     // Fill in the form
     const frontText = "What is React?";
     const backText = "A JavaScript library for building user interfaces";
@@ -54,7 +54,7 @@ test.describe("Flashcard CRUD Operations", () => {
     // The form may use HTML5 validation or custom validation
     const frontField = page.locator('textarea[name="front"]');
     const backField = page.locator('textarea[name="back"]');
-    
+
     // Check required validation
     await expect(frontField).toBeVisible();
     await expect(backField).toBeVisible();
@@ -62,7 +62,7 @@ test.describe("Flashcard CRUD Operations", () => {
     // Test with valid input
     await page.fill('textarea[name="front"]', "Valid front text");
     await page.fill('textarea[name="back"]', "Valid back text");
-    
+
     // Form should accept valid input
     await expect(frontField).toHaveValue("Valid front text");
     await expect(backField).toHaveValue("Valid back text");

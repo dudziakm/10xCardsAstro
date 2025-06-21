@@ -151,7 +151,9 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Moje fiszki</h2>
         <div className="flex space-x-3">
-          <Button onClick={defaultHandlers.onCreateNew} data-testid="create-flashcard">Dodaj fiszkę</Button>
+          <Button onClick={defaultHandlers.onCreateNew} data-testid="create-flashcard">
+            Dodaj fiszkę
+          </Button>
           <Button onClick={defaultHandlers.onGenerateAI} variant="outline">
             Generuj AI
           </Button>
@@ -161,7 +163,12 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
       {/* Search and filters */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="flex-1">
-          <SearchBar value={searchQuery} onSearch={handleSearch} placeholder="Szukaj w fiszkach..." data-testid="search-bar" />
+          <SearchBar
+            value={searchQuery}
+            onSearch={handleSearch}
+            placeholder="Szukaj w fiszkach..."
+            data-testid="search-bar"
+          />
         </div>
         <div className="flex space-x-2">
           <Button
@@ -204,7 +211,9 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
               : "Nie masz jeszcze żadnych fiszek."}
           </div>
           {!searchQuery && sourceFilter === "all" && (
-            <Button onClick={defaultHandlers.onCreateNew} data-testid="create-first-flashcard">Utwórz swoją pierwszą fiszkę</Button>
+            <Button onClick={defaultHandlers.onCreateNew} data-testid="create-first-flashcard">
+              Utwórz swoją pierwszą fiszkę
+            </Button>
           )}
         </div>
       ) : (
