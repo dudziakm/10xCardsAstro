@@ -82,6 +82,7 @@ export function FlashcardCard({
               size="sm"
               onClick={() => onView(flashcard.id)}
               className="text-blue-600 border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400"
+              data-testid="view-flashcard"
             >
               👁️ Podgląd
             </Button>

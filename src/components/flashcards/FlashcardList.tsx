@@ -154,7 +154,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
           <Button onClick={defaultHandlers.onCreateNew} data-testid="create-flashcard">
             Dodaj fiszkę
           </Button>
-          <Button onClick={defaultHandlers.onGenerateAI} variant="outline">
+          <Button onClick={defaultHandlers.onGenerateAI} variant="outline" data-testid="generate-ai-button">
             Generuj AI
           </Button>
         </div>
@@ -175,6 +175,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
             variant={sourceFilter === "all" ? "default" : "outline"}
             size="sm"
             onClick={() => handleSourceFilter("all")}
+            data-testid="filter-all"
           >
             Wszystkie
           </Button>
@@ -182,6 +183,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
             variant={sourceFilter === "manual" ? "default" : "outline"}
             size="sm"
             onClick={() => handleSourceFilter("manual")}
+            data-testid="filter-manual"
           >
             Manualne
           </Button>
@@ -189,6 +191,7 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
             variant={sourceFilter === "ai" ? "default" : "outline"}
             size="sm"
             onClick={() => handleSourceFilter("ai")}
+            data-testid="filter-ai"
           >
             AI
           </Button>

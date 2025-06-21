@@ -13,22 +13,52 @@ test.describe("Smoke Tests - Basic Functionality", () => {
     await expect(page.locator("text=Generuj AI").first()).toBeVisible();
   });
 
-  test("can navigate to flashcards page", async ({ page }) => {
+  test("should navigate to flashcards page", async ({ page }) => {
     await page.goto("/");
-    await page.click('a[href="/flashcards"]');
+
+    // Declare elements first
+    const flashcardsLink = page.locator('[data-testid="action-my-flashcards"]');
+
+    await expect(flashcardsLink).toBeVisible();
+
+    // Navigate to flashcards
+    await flashcardsLink.click();
+
+    // Check for correct URL and title
     await expect(page).toHaveURL("/flashcards");
+    await expect(page.locator("main h2")).toContainText("Moje fiszki");
   });
 
-  test("can navigate to generate page", async ({ page }) => {
+  test("should navigate to AI generation page", async ({ page }) => {
     await page.goto("/");
-    await page.click('a[href="/generate"]');
+
+    // Declare elements first
+    const generateLink = page.locator('[data-testid="action-generate-ai"]');
+
+    await expect(generateLink).toBeVisible();
+
+    // Navigate to generate page
+    await generateLink.click();
+
+    // Check for correct URL and title
     await expect(page).toHaveURL("/generate");
+    await expect(page.locator("main h1, main h2")).toContainText("Generuj fiszki AI");
   });
 
-  test("can navigate to learn page", async ({ page }) => {
+  test("should navigate to learning session page", async ({ page }) => {
     await page.goto("/");
-    await page.click('a[href="/learn"]');
+
+    // Declare elements first
+    const learnLink = page.locator('[data-testid="action-learn"]');
+
+    await expect(learnLink).toBeVisible();
+
+    // Navigate to learn page
+    await learnLink.click();
+
+    // Check for correct URL and title
     await expect(page).toHaveURL("/learn");
+    await expect(page.locator("h1")).toContainText("Sesja nauki");
   });
 
   test("API endpoints are accessible", async ({ page }) => {

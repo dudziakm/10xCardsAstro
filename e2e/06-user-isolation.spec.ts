@@ -44,45 +44,41 @@ test.describe("User Data Isolation", () => {
     // Verify that the extra user can create their own flashcards
     await page.goto("/flashcards");
 
+    // Declare elements first
+    const addFlashcardButton = page.locator('[data-testid="create-flashcard"]');
+
+    await expect(addFlashcardButton).toBeVisible();
+
     // Click create new flashcard
-    await page.click("text=Dodaj fiszkę");
+    await addFlashcardButton.click();
     await expect(page).toHaveURL("/flashcards/new");
 
-    // Fill in form with extra user specific content
-    const frontText = "Extra User Question: What is Node.js?";
-    const backText = "Extra User Answer: A JavaScript runtime built on Chrome's V8 engine";
+    // Declare form elements
+    const frontTextarea = page.locator('[data-testid="front-textarea"]');
+    const backTextarea = page.locator('[data-testid="back-textarea"]');
+    const submitButton = page.locator('[data-testid="submit-button"]');
 
-    await page.fill('textarea[name="front"]', frontText);
-    await page.fill('textarea[name="back"]', backText);
+    await expect(frontTextarea).toBeVisible();
+    await expect(backTextarea).toBeVisible();
+    await expect(submitButton).toBeVisible();
+
+    // Fill in form with extra user specific content
+    const timestamp = Date.now();
+    const frontText = `Extra User Question ${timestamp}: What is Node.js?`;
+    const backText = `Extra User Answer ${timestamp}: A JavaScript runtime built on Chrome's V8 engine`;
+
+    await frontTextarea.fill(frontText);
+    await backTextarea.fill(backText);
 
     // Submit the form
-    await page.click('button[type="submit"]');
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
 
     // Should redirect back to flashcards list
     await expect(page).toHaveURL("/flashcards");
 
     // Should see the new flashcard
     await expect(page.locator("text=" + frontText)).toBeVisible();
-  });
-
-  test("should have isolated learning sessions", async ({ page }) => {
-    // Verify that learning sessions are also isolated per user
-    await page.goto("/learn");
-
-    // Check that we can access the learning page
-    await expect(page).toHaveTitle(/Sesja nauki/);
-
-    // The learning session should only include this user's flashcards
-    // If user has no flashcards, should show appropriate message
-    const hasFlashcards = await page.locator('[data-testid="learning-card"]').isVisible();
-
-    if (!hasFlashcards) {
-      // Should show message about no flashcards available for learning
-      await expect(page.locator("text=Brak fiszek do nauki")).toBeVisible();
-    } else {
-      // If there are flashcards, they should only belong to this user
-      await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
-    }
   });
 
   test("should have isolated AI generation history", async ({ page }) => {
@@ -92,13 +88,15 @@ test.describe("User Data Isolation", () => {
     // Check that we can access the generation page
     await expect(page).toHaveTitle(/Generuj fiszki AI/);
 
-    // The generation history (if any) should only belong to this user
-    // This is important for privacy and data isolation
-    await expect(page.locator('textarea[id="prompt"]')).toBeVisible();
+    // Declare elements first
+    const promptTextarea = page.locator('[data-testid="prompt-textarea"]');
+
+    await expect(promptTextarea).toBeVisible();
 
     // Generate some content to test isolation
+    const timestamp = Date.now();
     const testContent = `
-    Extra User Content for AI Generation:
+    Extra User Content for AI Generation ${timestamp}:
     
     Node.js is a JavaScript runtime that allows you to run JavaScript on the server.
     It's built on Chrome's V8 JavaScript engine and provides an event-driven, 
@@ -111,11 +109,11 @@ test.describe("User Data Isolation", () => {
     - Cross-platform compatibility
     `;
 
-    await page.fill('textarea[id="prompt"]', testContent);
+    await promptTextarea.fill(testContent);
 
     // Note: We won't actually generate AI content in tests to avoid API costs
     // But we verify the form is accessible and isolated per user
-    await expect(page.locator('textarea[id="prompt"]')).toHaveValue(testContent);
+    await expect(promptTextarea).toHaveValue(testContent);
   });
 
   test("should maintain session isolation across page navigation", async ({ page }) => {

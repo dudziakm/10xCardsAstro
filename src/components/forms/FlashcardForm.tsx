@@ -158,11 +158,12 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
       )}
 
       <div>
-        <label htmlFor="front" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="front" className="block text-sm font-medium text-gray-700 mb-2" data-testid="front-label">
           Przód fiszki *
         </label>
         <textarea
           id="front"
+          data-testid="front-textarea"
           value={formData.front}
           onChange={(e) => setFormData((prev) => ({ ...prev, front: e.target.value }))}
           placeholder="Wprowadź pytanie lub pojęcie..."
@@ -173,11 +174,12 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
       </div>
 
       <div>
-        <label htmlFor="back" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="back" className="block text-sm font-medium text-gray-700 mb-2" data-testid="back-label">
           Tył fiszki *
         </label>
         <textarea
           id="back"
+          data-testid="back-textarea"
           value={formData.back}
           onChange={(e) => setFormData((prev) => ({ ...prev, back: e.target.value }))}
           placeholder="Wprowadź odpowiedź lub wyjaśnienie..."
@@ -190,6 +192,7 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
       <div className="flex space-x-4">
         <Button
           type="submit"
+          data-testid="submit-button"
           disabled={loading || !formData.front.trim() || !formData.back.trim()}
           className="flex-1 sm:flex-none"
         >
@@ -205,7 +208,7 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
           )}
         </Button>
 
-        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading} data-testid="cancel-button">
           Anuluj
         </Button>
       </div>

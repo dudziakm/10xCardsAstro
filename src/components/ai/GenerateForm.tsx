@@ -146,11 +146,12 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       </div>
 
       <div>
-        <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 mb-2" data-testid="prompt-label">
           Temat do nauki *
         </label>
         <textarea
           id="prompt"
+          data-testid="prompt-textarea"
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           placeholder="Np. podstawy programowania w JavaScript, historia Polski w XX wieku, wzory matematyczne..."
@@ -164,11 +165,12 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       </div>
 
       <div>
-        <label htmlFor="count" className="block text-sm font-medium text-gray-700 mb-2">
+        <label htmlFor="count" className="block text-sm font-medium text-gray-700 mb-2" data-testid="count-label">
           Liczba fiszek do wygenerowania
         </label>
         <select
           id="count"
+          data-testid="count-select"
           value={count}
           onChange={(e) => setCount(parseInt(e.target.value))}
           className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -186,7 +188,12 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       </div>
 
       <div className="flex space-x-4">
-        <Button type="submit" disabled={loading || !prompt.trim()} className="flex-1 sm:flex-none">
+        <Button
+          type="submit"
+          disabled={loading || !prompt.trim()}
+          className="flex-1 sm:flex-none"
+          data-testid="generate-button"
+        >
           {loading ? (
             <div className="flex items-center space-x-2">
               <LoadingSpinner size="sm" color="white" />
@@ -197,7 +204,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
           )}
         </Button>
 
-        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading}>
+        <Button type="button" variant="outline" onClick={handleCancel} disabled={loading} data-testid="cancel-button">
           Anuluj
         </Button>
       </div>
