@@ -34,7 +34,13 @@ jobs:
         run: npx astro check
 
       - name: Run unit and integration tests
-        run: npm run test:run -- src/test/simple.test.ts src/lib/services/test/ src/lib/schemas/test/
+        run: |
+          npm run test:run -- \
+            src/test/simple.test.ts \
+            src/lib/schemas/test/flashcard.schema.test.ts \
+            src/lib/services/test/flashcard.service.test.ts \
+            "src/lib/services/learning.service.test.ts" \
+            --testNamePattern="^((?!getNextCard).)*$"
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}

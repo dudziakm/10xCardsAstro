@@ -151,6 +151,12 @@ export function FlashcardForm({ flashcard, onSave, onCancel, mode = "create" }: 
         </div>
       )}
 
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-800 rounded-md p-3 mb-4">
+          <p className="text-sm">Błąd: {error}</p>
+        </div>
+      )}
+
       <div>
         <label htmlFor="front" className="block text-sm font-medium text-gray-700 mb-2">
           Przód fiszki *
