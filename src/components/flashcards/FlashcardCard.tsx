@@ -12,11 +12,9 @@ interface FlashcardCardProps {
 export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions = true }: FlashcardCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pl-PL", {
-      year: "numeric",
-      month: "short",
       day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -26,23 +24,9 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+      {/* Header z source badge */}
       <div className="flex justify-between items-start mb-3">
-        <div className="flex-1">
-          <div className="mb-2">
-            <div className="text-sm font-medium text-gray-500 mb-1">Przód:</div>
-            <div className="text-gray-900" title={flashcard.front}>
-              {truncateText(flashcard.front, 100)}
-            </div>
-          </div>
-          <div className="mb-2">
-            <div className="text-sm font-medium text-gray-500 mb-1">Tył:</div>
-            <div className="text-gray-700" title={flashcard.back}>
-              {truncateText(flashcard.back, 150)}
-            </div>
-          </div>
-        </div>
-
-        <div className="flex items-center space-x-2 ml-4">
+        <div className="flex items-center gap-2">
           <span
             className={`px-2 py-1 rounded-full text-xs font-medium ${
               flashcard.source === "ai" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
@@ -50,42 +34,56 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
           >
             {flashcard.source === "ai" ? "AI" : "Manual"}
           </span>
+          <span className="text-xs text-gray-500">
+            {flashcard.updated_at !== flashcard.created_at ? 
+              `Edytowano: ${formatDate(flashcard.updated_at)}` : 
+              `Utworzono: ${formatDate(flashcard.created_at)}`
+            }
+          </span>
         </div>
       </div>
 
-      <div className="flex justify-between items-center text-sm text-gray-500">
+      {/* Zawartość fiszki */}
+      <div className="space-y-3 mb-4">
         <div>
-          <div>Utworzono: {formatDate(flashcard.created_at)}</div>
-          {flashcard.updated_at !== flashcard.created_at && (
-            <div>Zaktualizowano: {formatDate(flashcard.updated_at)}</div>
+          <div className="text-sm font-medium text-gray-500 mb-1">Przód:</div>
+          <div className="text-gray-900" title={flashcard.front}>
+            {truncateText(flashcard.front, 100)}
+          </div>
+        </div>
+        <div>
+          <div className="text-sm font-medium text-gray-500 mb-1">Tył:</div>
+          <div className="text-gray-700" title={flashcard.back}>
+            {truncateText(flashcard.back, 150)}
+          </div>
+        </div>
+      </div>
+
+      {/* Akcje na dole */}
+      {showActions && (
+        <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
+          {onView && (
+            <Button variant="outline" size="sm" onClick={() => onView(flashcard.id)}>
+              Podgląd
+            </Button>
+          )}
+          {onEdit && (
+            <Button variant="outline" size="sm" onClick={() => onEdit(flashcard.id)}>
+              Edytuj
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onDelete(flashcard.id)}
+              className="text-red-600 hover:text-red-700 hover:border-red-300"
+            >
+              Usuń
+            </Button>
           )}
         </div>
-
-        {showActions && (
-          <div className="flex space-x-2">
-            {onView && (
-              <Button variant="outline" size="sm" onClick={() => onView(flashcard.id)}>
-                Podgląd
-              </Button>
-            )}
-            {onEdit && (
-              <Button variant="outline" size="sm" onClick={() => onEdit(flashcard.id)}>
-                Edytuj
-              </Button>
-            )}
-            {onDelete && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => onDelete(flashcard.id)}
-                className="text-red-600 hover:text-red-700 hover:border-red-300"
-              >
-                Usuń
-              </Button>
-            )}
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 }

@@ -109,11 +109,11 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
                 key={rating}
                 onClick={() => handleRate(rating as 1 | 2 | 3 | 4 | 5)}
                 disabled={isLoading}
-                className={`${getRatingColor(rating)} text-white border-0 py-3 text-sm`}
+                className={`${getRatingColor(rating)} text-white border-0 py-4 px-3 text-sm h-auto min-h-[60px] flex flex-col items-center justify-center`}
               >
-                <div className="text-center">
-                  <div className="font-bold text-lg">{rating}</div>
-                  <div className="text-xs">{getRatingLabel(rating)}</div>
+                <div className="font-bold text-lg leading-tight">{rating}</div>
+                <div className="text-xs leading-tight mt-1 whitespace-normal text-center">
+                  {getRatingLabel(rating)}
                 </div>
               </Button>
             ))}

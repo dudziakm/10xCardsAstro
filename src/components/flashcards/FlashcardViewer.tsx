@@ -5,13 +5,14 @@ import type { FlashcardDTO } from "../../types";
 
 interface FlashcardViewerProps {
   flashcard?: FlashcardDTO;
+  flashcardId?: string;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   onBack?: () => void;
   showActions?: boolean;
 }
 
-export function FlashcardViewer({ flashcard, onEdit, onDelete, onBack, showActions = true }: FlashcardViewerProps) {
+export function FlashcardViewer({ flashcard, flashcardId, onEdit, onDelete, onBack, showActions = true }: FlashcardViewerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [loadedFlashcard, setLoadedFlashcard] = useState<FlashcardDTO | null>(flashcard || null);
   const [loading, setLoading] = useState(!flashcard);
@@ -19,13 +20,10 @@ export function FlashcardViewer({ flashcard, onEdit, onDelete, onBack, showActio
 
   // Load flashcard if not provided
   useEffect(() => {
-    if (!flashcard && !loadedFlashcard) {
-      const flashcardId = document.querySelector("[data-flashcard-id]")?.getAttribute("data-flashcard-id");
-      if (flashcardId) {
-        loadFlashcard(flashcardId);
-      }
+    if (!flashcard && !loadedFlashcard && flashcardId) {
+      loadFlashcard(flashcardId);
     }
-  }, [flashcard, loadedFlashcard]);
+  }, [flashcard, loadedFlashcard, flashcardId]);
 
   const loadFlashcard = async (id: string) => {
     try {

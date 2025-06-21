@@ -46,6 +46,7 @@ export class FlashcardService {
       .from("flashcards")
       .select("id, front, back, source, created_at, updated_at", { count: "exact" })
       .eq("user_id", userId)
+      .is("deleted_at", null)
       .order(sort, { ascending: order === "asc" });
 
     // Apply source filter if provided

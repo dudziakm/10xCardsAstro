@@ -40,6 +40,7 @@ export const GET: APIRoute = async ({ params, locals }) => {
       .select("*")
       .eq("id", flashcardId)
       .eq("user_id", session.user.id)
+      .is("deleted_at", null)
       .single();
 
     if (error || !flashcard) {
@@ -144,6 +145,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
       })
       .eq("id", flashcardId)
       .eq("user_id", session.user.id)
+      .is("deleted_at", null)
       .select()
       .single();
 
@@ -234,7 +236,41 @@ export const DELETE: APIRoute = async ({ params, locals }) => {
       );
     }
 
-    // Delete the flashcard
+    // Check if flashcard exists and is not already deleted
+    const { data: existingFlashcard, error: checkError } = await supabase
+      .from("flashcards")
+      .select("id, deleted_at")
+      .eq("id", flashcardId)
+      .eq("user_id", session.user.id)
+      .single();
+
+    if (checkError || !existingFlashcard) {
+      return new Response(
+        JSON.stringify({
+          error: "Not Found",
+          message: "Flashcard not found or access denied",
+        }),
+        {
+          status: 404,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    if (existingFlashcard.deleted_at) {
+      return new Response(
+        JSON.stringify({
+          error: "Already Deleted",
+          message: "Flashcard is already deleted",
+        }),
+        {
+          status: 409,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Delete the flashcard (will trigger soft delete)
     const { error } = await supabase.from("flashcards").delete().eq("id", flashcardId).eq("user_id", session.user.id);
 
     if (error) {

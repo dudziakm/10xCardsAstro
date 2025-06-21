@@ -11,7 +11,7 @@ if (!id) {
 ---
 
 <Layout title="Szczegóły fiszki">
-  <main class="container mx-auto px-4 py-8">
-    <FlashcardViewer client:load data-flashcard-id={id} />
-  </main>
+  <div class="container mx-auto px-4 py-8">
+    <FlashcardViewer client:load flashcardId={id} />
+  </div>
 </Layout>
