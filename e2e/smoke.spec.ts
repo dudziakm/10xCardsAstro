@@ -15,12 +15,12 @@ test.describe("Smoke Tests - Basic Functionality", () => {
 
   test("should navigate to flashcards page", async ({ page }) => {
     await page.goto("/");
-    
+
     // Declare elements first
     const flashcardsLink = page.locator('[data-testid="action-my-flashcards"]');
-    
+
     await expect(flashcardsLink).toBeVisible();
-    
+
     // Navigate to flashcards
     await flashcardsLink.click();
 
@@ -31,12 +31,12 @@ test.describe("Smoke Tests - Basic Functionality", () => {
 
   test("should navigate to AI generation page", async ({ page }) => {
     await page.goto("/");
-    
+
     // Declare elements first
     const generateLink = page.locator('[data-testid="action-generate-ai"]');
-    
+
     await expect(generateLink).toBeVisible();
-    
+
     // Navigate to generate page
     await generateLink.click();
 
@@ -47,12 +47,12 @@ test.describe("Smoke Tests - Basic Functionality", () => {
 
   test("should navigate to learning session page", async ({ page }) => {
     await page.goto("/");
-    
+
     // Declare elements first
     const learnLink = page.locator('[data-testid="action-learn"]');
-    
+
     await expect(learnLink).toBeVisible();
-    
+
     // Navigate to learn page
     await learnLink.click();
 

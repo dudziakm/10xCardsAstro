@@ -188,7 +188,12 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       </div>
 
       <div className="flex space-x-4">
-        <Button type="submit" disabled={loading || !prompt.trim()} className="flex-1 sm:flex-none" data-testid="generate-button">
+        <Button
+          type="submit"
+          disabled={loading || !prompt.trim()}
+          className="flex-1 sm:flex-none"
+          data-testid="generate-button"
+        >
           {loading ? (
             <div className="flex items-center space-x-2">
               <LoadingSpinner size="sm" color="white" />
