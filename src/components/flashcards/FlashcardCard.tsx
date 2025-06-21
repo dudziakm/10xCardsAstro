@@ -23,7 +23,7 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
       {/* Header z source badge */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2">
@@ -44,16 +44,20 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
       </div>
 
       {/* Zawartość fiszki */}
-      <div className="space-y-3 mb-4">
-        <div>
-          <div className="text-sm font-medium text-gray-500 mb-1">Przód:</div>
-          <div className="text-gray-900" title={flashcard.front}>
+      <div className="space-y-4 mb-4 flex-1">
+        <div className="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-400">
+          <div className="flex items-center mb-2">
+            <span className="text-blue-600 text-sm font-semibold">📄 Przód</span>
+          </div>
+          <div className="text-gray-900 text-sm leading-relaxed" title={flashcard.front}>
             {truncateText(flashcard.front, 100)}
           </div>
         </div>
-        <div>
-          <div className="text-sm font-medium text-gray-500 mb-1">Tył:</div>
-          <div className="text-gray-700" title={flashcard.back}>
+        <div className="bg-green-50 rounded-lg p-3 border-l-4 border-green-400">
+          <div className="flex items-center mb-2">
+            <span className="text-green-600 text-sm font-semibold">📝 Tył</span>
+          </div>
+          <div className="text-gray-800 text-sm leading-relaxed" title={flashcard.back}>
             {truncateText(flashcard.back, 150)}
           </div>
         </div>
@@ -63,13 +67,23 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
       {showActions && (
         <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
           {onView && (
-            <Button variant="outline" size="sm" onClick={() => onView(flashcard.id)}>
-              Podgląd
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onView(flashcard.id)}
+              className="text-blue-600 border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400"
+            >
+              👁️ Podgląd
             </Button>
           )}
           {onEdit && (
-            <Button variant="outline" size="sm" onClick={() => onEdit(flashcard.id)}>
-              Edytuj
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => onEdit(flashcard.id)}
+              className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-400"
+            >
+              ✏️ Edytuj
             </Button>
           )}
           {onDelete && (
@@ -77,9 +91,9 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
               variant="outline"
               size="sm"
               onClick={() => onDelete(flashcard.id)}
-              className="text-red-600 hover:text-red-700 hover:border-red-300"
+              className="text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 hover:border-red-400"
             >
-              Usuń
+              🗑️ Usuń
             </Button>
           )}
         </div>

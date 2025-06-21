@@ -10,24 +10,27 @@ import Layout from "../layouts/Layout.astro";
     </div>
 
     <div class="grid md:grid-cols-3 gap-6 mb-8">
-      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      <a href="/flashcards?filter=all" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer transform hover:scale-105">
         <div class="text-center">
           <div class="text-3xl font-bold text-blue-600 mb-2" id="total-cards">-</div>
           <div class="text-gray-600">Wszystkich fiszek</div>
+          <div class="text-xs text-blue-500 mt-1">Kliknij aby zobaczyć wszystkie</div>
         </div>
-      </div>
-      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      </a>
+      <a href="/flashcards?filter=manual" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-green-300 transition-all cursor-pointer transform hover:scale-105">
         <div class="text-center">
           <div class="text-3xl font-bold text-green-600 mb-2" id="manual-cards">-</div>
           <div class="text-gray-600">Fiszek manualnych</div>
+          <div class="text-xs text-green-500 mt-1">Kliknij aby zobaczyć manualne</div>
         </div>
-      </div>
-      <div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+      </a>
+      <a href="/flashcards?filter=ai" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-purple-300 transition-all cursor-pointer transform hover:scale-105">
         <div class="text-center">
           <div class="text-3xl font-bold text-purple-600 mb-2" id="ai-cards">-</div>
           <div class="text-gray-600">Fiszek AI</div>
+          <div class="text-xs text-purple-500 mt-1">Kliknij aby zobaczyć AI</div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">

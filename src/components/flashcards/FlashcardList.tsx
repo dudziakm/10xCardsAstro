@@ -32,7 +32,17 @@ export function FlashcardList({ onEdit, onDelete, onView, onCreateNew, onGenerat
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sourceFilter, setSourceFilter] = useState<"all" | "manual" | "ai">("all");
+  const [sourceFilter, setSourceFilter] = useState<"all" | "manual" | "ai">(() => {
+    // Check URL parameters for initial filter
+    if (typeof window !== "undefined") {
+      const urlParams = new URLSearchParams(window.location.search);
+      const filter = urlParams.get("filter");
+      if (filter === "manual" || filter === "ai" || filter === "all") {
+        return filter;
+      }
+    }
+    return "all";
+  });
 
   const fetchFlashcards = useCallback(
     async (page = 1, search = searchQuery, source = sourceFilter) => {
