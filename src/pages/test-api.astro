@@ -1,5 +1,5 @@
 ---
-// Test page for API endpoints
+// Test page for API endpoints - Development only
 ---
 
 <html>
@@ -13,13 +13,13 @@
     <div id="results"></div>
 
     <h2>Test Flashcards</h2>
-    <button onclick="testGetFlashcards()">GET /api/flashcards</button>
-    <button onclick="testCreateFlashcard()">POST /api/flashcards</button>
+    <button onclick="window.testGetFlashcards()">GET /api/flashcards</button>
+    <button onclick="window.testCreateFlashcard()">POST /api/flashcards</button>
 
     <h2>Test Database</h2>
-    <button onclick="testDatabase()">Test Database Connection</button>
+    <button onclick="window.testDatabase()">Test Database Connection</button>
 
-    <script type="module">
+    <script type="module" is:inline>
       /* eslint-disable */
       const results = document.getElementById("results");
 
@@ -29,8 +29,8 @@
         }
       }
 
-      // Used by onclick in HTML
-      async function testGetFlashcards() {
+      // Make functions globally available for onclick handlers
+      window.testGetFlashcards = async function () {
         try {
           log("Testing GET /api/flashcards...");
           const response = await axios.get("/api/flashcards");
@@ -38,10 +38,9 @@
         } catch (error) {
           log("ERROR: " + error.response?.data?.message || error.message);
         }
-      }
+      };
 
-      // Used by onclick in HTML
-      async function testCreateFlashcard() {
+      window.testCreateFlashcard = async function () {
         try {
           log("Testing POST /api/flashcards...");
           const response = await axios.post("/api/flashcards", {
@@ -52,10 +51,9 @@
         } catch (error) {
           log("ERROR: " + error.response?.data?.message || error.message);
         }
-      }
+      };
 
-      // Used by onclick in HTML
-      async function testDatabase() {
+      window.testDatabase = async function () {
         try {
           log("Testing database connection...");
           const response = await axios.get("/api/test-db");
@@ -63,7 +61,7 @@
         } catch (error) {
           log("ERROR: " + error.response?.data?.message || error.message);
         }
-      }
+      };
     </script>
   </body>
 </html>

@@ -65,38 +65,49 @@ import Layout from "../../layouts/Layout.astro";
 
 <script>
   /* eslint-disable */
-  document.getElementById("signup-form").addEventListener("submit", async (e) => {
-    e.preventDefault();
+  document.addEventListener("DOMContentLoaded", () => {
+    const signupForm = document.getElementById("signup-form") as HTMLFormElement;
+    const messageDiv = document.getElementById("message") as HTMLDivElement;
+    const emailInput = document.getElementById("email") as HTMLInputElement;
+    const passwordInput = document.getElementById("password") as HTMLInputElement;
 
-    const messageDiv = document.getElementById("message");
-    const email = document.getElementById("email").value;
-    const password = document.getElementById("password").value;
+    if (!signupForm || !messageDiv || !emailInput || !passwordInput) {
+      console.error("Required form elements not found");
+      return;
+    }
 
-    try {
-      const response = await fetch("/api/auth/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+    signupForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
 
-      const data = await response.json();
+      const email = emailInput.value;
+      const password = passwordInput.value;
 
-      if (response.ok) {
-        messageDiv.className = "bg-green-50 border border-green-200 rounded-lg p-4 mb-4";
-        messageDiv.innerHTML = `<div class="text-green-800"><strong>Sukces:</strong> ${data.message}</div>`;
-        messageDiv.classList.remove("hidden");
-        document.getElementById("signup-form").reset();
-      } else {
+      try {
+        const response = await fetch("/api/auth/signup", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          messageDiv.className = "bg-green-50 border border-green-200 rounded-lg p-4 mb-4";
+          messageDiv.innerHTML = `<div class="text-green-800"><strong>Sukces:</strong> ${data.message}</div>`;
+          messageDiv.classList.remove("hidden");
+          signupForm.reset();
+        } else {
+          messageDiv.className = "bg-red-50 border border-red-200 rounded-lg p-4 mb-4";
+          messageDiv.innerHTML = `<div class="text-red-800"><strong>Błąd:</strong> ${data.error}</div>`;
+          messageDiv.classList.remove("hidden");
+        }
+      } catch {
         messageDiv.className = "bg-red-50 border border-red-200 rounded-lg p-4 mb-4";
-        messageDiv.innerHTML = `<div class="text-red-800"><strong>Błąd:</strong> ${data.error}</div>`;
+        messageDiv.innerHTML = '<div class="text-red-800"><strong>Błąd:</strong> Wystąpił problem z połączeniem</div>';
         messageDiv.classList.remove("hidden");
       }
-    } catch {
-      messageDiv.className = "bg-red-50 border border-red-200 rounded-lg p-4 mb-4";
-      messageDiv.innerHTML = '<div class="text-red-800"><strong>Błąd:</strong> Wystąpił problem z połączeniem</div>';
-      messageDiv.classList.remove("hidden");
-    }
+    });
   });
 </script>

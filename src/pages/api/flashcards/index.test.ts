@@ -163,7 +163,7 @@ describe("Flashcards API Integration Tests", () => {
       };
 
       const mockFlashcardService = {
-        createFlashcard: vi.fn().mockImplementation((userId, data) => {
+        createFlashcard: vi.fn().mockImplementation((_userId, data) => {
           // Simulate sanitization
           const sanitized = {
             ...data,

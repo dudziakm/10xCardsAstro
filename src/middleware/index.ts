@@ -1,18 +1,7 @@
 import { defineMiddleware } from "astro:middleware";
 import { supabaseAdminClient } from "../db/supabase.client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
-// Add session typing to locals
-declare module "astro" {
-  interface Locals {
-    supabase: SupabaseClient;
-    session: {
-      user: {
-        id: string;
-      };
-    } | null;
-  }
-}
+// Session typing is defined in src/lib/types/locals.ts
 
 export const onRequest = defineMiddleware(async ({ locals, request, cookies, url, redirect }, next) => {
   // Set the Supabase client in locals
