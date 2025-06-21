@@ -7,8 +7,8 @@ test.describe("Flashcard CRUD Operations", () => {
   });
 
   test("should display flashcards list page (US-004)", async ({ page }) => {
-    // Check page title and heading
-    await expect(page.locator("h2")).toContainText("Moje fiszki");
+    // Check page title and heading - use more specific selector to avoid navigation
+    await expect(page.locator("main h2")).toContainText("Moje fiszki");
 
     // Check if flashcards list is visible
     await expect(page.locator('[data-testid="flashcards-list"]')).toBeVisible();
@@ -31,8 +31,8 @@ test.describe("Flashcard CRUD Operations", () => {
     const frontText = "What is React?";
     const backText = "A JavaScript library for building user interfaces";
 
-    await page.fill('textarea[name="front"]', frontText);
-    await page.fill('textarea[name="back"]', backText);
+    await page.fill('textarea[id="front"]', frontText);
+    await page.fill('textarea[id="back"]', backText);
 
     // Submit the form
     await page.click('button[type="submit"]');
@@ -52,16 +52,16 @@ test.describe("Flashcard CRUD Operations", () => {
 
     // Should see validation errors - check for actual form validation messages
     // The form may use HTML5 validation or custom validation
-    const frontField = page.locator('textarea[name="front"]');
-    const backField = page.locator('textarea[name="back"]');
+    const frontField = page.locator('textarea[id="front"]');
+    const backField = page.locator('textarea[id="back"]');
 
     // Check required validation
     await expect(frontField).toBeVisible();
     await expect(backField).toBeVisible();
 
     // Test with valid input
-    await page.fill('textarea[name="front"]', "Valid front text");
-    await page.fill('textarea[name="back"]', "Valid back text");
+    await page.fill('textarea[id="front"]', "Valid front text");
+    await page.fill('textarea[id="back"]', "Valid back text");
 
     // Form should accept valid input
     await expect(frontField).toHaveValue("Valid front text");
@@ -82,7 +82,7 @@ test.describe("Flashcard CRUD Operations", () => {
 
       // Modify the flashcard
       const newFrontText = "Updated: What is Vue.js?";
-      await page.fill('textarea[name="front"]', newFrontText);
+      await page.fill('textarea[id="front"]', newFrontText);
 
       // Save changes
       await page.click('button[type="submit"]');

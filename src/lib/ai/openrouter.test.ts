@@ -20,7 +20,7 @@ describe("OpenRouter AI Service", () => {
       });
 
       await expect(callOpenRouterAI("test input")).rejects.toThrow("OPENROUTER_API_KEY not configured");
-      
+
       // Restore original env
       Object.defineProperty(import.meta, "env", {
         value: originalEnv,

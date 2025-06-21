@@ -10,11 +10,11 @@ test.describe("Homepage and Navigation", () => {
     // Check main heading
     await expect(page.locator("h1")).toContainText("my10xCards");
 
-    // Check homepage cards exist
-    await expect(page.locator("text=Moje fiszki")).toBeVisible();
-    await expect(page.locator("text=Dodaj fiszkę")).toBeVisible();
-    await expect(page.locator("text=Generuj AI")).toBeVisible();
-    await expect(page.locator("text=Ucz się")).toBeVisible();
+    // Check homepage cards exist (use more specific selectors to avoid navigation duplicates)
+    await expect(page.locator("a[href='/flashcards'] .font-semibold")).toContainText("Moje fiszki");
+    await expect(page.locator("a[href='/flashcards/new'] .font-semibold")).toContainText("Dodaj fiszkę");
+    await expect(page.locator("a[href='/generate'] .font-semibold")).toContainText("Generuj AI");
+    await expect(page.locator("a[href='/learn'] .font-semibold")).toContainText("Ucz się");
 
     // Check key navigation links from homepage cards
     await expect(page.locator('a[href="/flashcards"]')).toBeVisible();
@@ -64,7 +64,7 @@ test.describe("Homepage and Navigation", () => {
 
     // Check that content is still accessible
     await expect(page.locator("h1")).toBeVisible();
-    await expect(page.locator("text=Moje fiszki")).toBeVisible();
+    await expect(page.locator("a[href='/flashcards'] .font-semibold")).toContainText("Moje fiszki");
 
     // Check mobile navigation works
     await page.click('a[href="/flashcards"]');

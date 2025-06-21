@@ -34,7 +34,7 @@ test.describe("AI Flashcard Review and Acceptance", () => {
 
     // Generate some flashcards first
     const validText = "A".repeat(1500);
-    await page.fill('textarea[name="inputText"]', validText);
+    await page.fill('textarea[id="prompt"]', validText);
     await page.click('button[type="submit"]');
 
     // Wait for generation to complete
