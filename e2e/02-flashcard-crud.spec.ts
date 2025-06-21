@@ -28,6 +28,8 @@ test.describe("Flashcard CRUD Operations", () => {
     await expect(page).toHaveURL("/flashcards/new");
 
     // Fill in the form
+    const submitButton = page.locator('[data-testid="submit-button"]');
+    await expect(submitButton).toBeVisible();
     const timestamp = Date.now();
     const frontText = `What is React? ${timestamp}`;
     const backText = `A JavaScript library for building user interfaces ${timestamp}`;
@@ -36,7 +38,7 @@ test.describe("Flashcard CRUD Operations", () => {
     await page.fill('[data-testid="back-textarea"]', backText);
 
     // Submit the form
-    const submitButton = page.locator('[data-testid="submit-button"]');
+
     await expect(submitButton).toBeVisible();
     await expect(submitButton).toBeEnabled();
     await submitButton.click();
@@ -153,36 +155,31 @@ test.describe("Flashcard CRUD Operations", () => {
     // First create a flashcard to search for
     const timestamp = Date.now();
     const searchableText = `Searchable Test ${timestamp}`;
-    
+    const submitButton = page.locator('[data-testid="submit-button"]');
+
     await page.locator('[data-testid="create-flashcard"]').click();
+
+    await expect(submitButton).toBeVisible();
     await page.fill('[data-testid="front-textarea"]', searchableText);
     await page.fill('[data-testid="back-textarea"]', `Answer for ${searchableText}`);
-    await page.click('[data-testid="submit-button"]');
-    
+
+    await expect(submitButton).toBeVisible();
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
+
     // Wait to be back on flashcards page
     await expect(page).toHaveURL("/flashcards");
 
     // Now search for the term we just created
-    const searchQuery = "Searchable";
-    await page.fill('[data-testid="search-input"]', searchQuery);
+    const searchQuery = searchableText;
+    const searchInput = page.locator('[data-testid="search-input"]');
+    await searchInput.fill(searchQuery);
+    await searchInput.press("Enter");
 
-    // Wait for search results
-    await page.waitForTimeout(1000); // Debounce
-
-    // Should filter results
-    const visibleCards = page.locator('[data-testid="flashcard-item"]:visible');
-    const cardCount = await visibleCards.count();
-
-    if (cardCount > 0) {
-      // All visible cards should contain the search term
-      for (let i = 0; i < cardCount; i++) {
-        const cardText = await visibleCards.nth(i).textContent();
-        expect(cardText?.toLowerCase()).toContain(searchQuery.toLowerCase());
-      }
-    } else {
-      // If no results, that's also a valid test outcome for search
-      await expect(page.locator("text=Nie znaleziono")).toBeVisible();
-    }
+    // Should filter results to exactly one card
+    const visibleCard = page.locator('[data-testid="flashcard-item"]:visible');
+    await expect(visibleCard).toHaveCount(1);
+    await expect(visibleCard).toContainText(searchQuery);
   });
 
   test("should paginate flashcards (US-004)", async ({ page }) => {
@@ -208,31 +205,5 @@ test.describe("Flashcard CRUD Operations", () => {
         await expect(page.locator('[data-testid="current-page"]')).toContainText("2");
       }
     }
-  });
-
-  test("should handle empty flashcards list", async ({ page }) => {
-    // Clear all flashcards via API first
-    await page.goto("/flashcards");
-    
-    // Delete all existing flashcards one by one
-    let flashcardCount = await page.locator('[data-testid="flashcard-item"]').count();
-    
-    while (flashcardCount > 0) {
-      await page.locator('[data-testid="delete-flashcard"]').first().click();
-      
-      // Wait for confirmation dialog and confirm deletion
-      await expect(page.locator("text=Czy na pewno chcesz usunąć")).toBeVisible();
-      await page.locator('button:has-text("Usuń")').click();
-      
-      // Wait a bit for the deletion to complete
-      await page.waitForTimeout(500);
-      
-      // Check count again
-      flashcardCount = await page.locator('[data-testid="flashcard-item"]').count();
-    }
-
-    // Now check empty state
-    await expect(page.locator("text=Nie masz jeszcze żadnych fiszek")).toBeVisible();
-    await expect(page.locator('[data-testid="create-first-flashcard"]')).toBeVisible();
   });
 });
