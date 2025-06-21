@@ -26,10 +26,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Handle reset request
     if (reset) {
       // Reset all flashcard progress for the current user
-      const { error: deleteError } = await supabase
-        .from("flashcard_progress")
-        .delete()
-        .eq("user_id", session.user.id);
+      const { error: deleteError } = await supabase.from("flashcard_progress").delete().eq("user_id", session.user.id);
 
       if (deleteError) {
         throw new Error(`Error resetting flashcard progress: ${deleteError.message}`);

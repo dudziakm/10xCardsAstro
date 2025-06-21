@@ -72,7 +72,7 @@ export class AIGenerationPage extends BasePage {
   async waitForGeneration() {
     // Wait for loading state
     await expect(this.loadingSpinner).toBeVisible({ timeout: 10000 });
-    
+
     // Wait for generation to complete
     await this.waitForElement(this.generatedFlashcards, 30000);
   }
@@ -91,7 +91,7 @@ export class AIGenerationPage extends BasePage {
    */
   async verifyGeneratedFlashcards(expectedCount = 5) {
     await this.waitForElement(this.generatedFlashcards);
-    
+
     // Count generated cards
     const candidateCards = this.page.locator('[data-testid^="candidate-card-"]');
     const cardCount = await candidateCards.count();
@@ -111,7 +111,9 @@ export class AIGenerationPage extends BasePage {
    * Create a long prompt for testing
    */
   createLongPrompt(baseText: string, timestamp: number): string {
-    return `${baseText} ${timestamp}. JavaScript library for building user interfaces. Components and state management. `.repeat(20);
+    return `${baseText} ${timestamp}. JavaScript library for building user interfaces. Components and state management. `.repeat(
+      20
+    );
   }
 
   /**

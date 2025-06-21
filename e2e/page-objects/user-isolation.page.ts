@@ -1,11 +1,10 @@
-import { expect, Page } from "@playwright/test";
+import { expect } from "@playwright/test";
 import { BasePage } from "./base.page";
 
 /**
  * Page object for User Isolation testing
  */
 export class UserIsolationPage extends BasePage {
-
   /**
    * Sign out current user (mock implementation)
    */
@@ -24,7 +23,7 @@ export class UserIsolationPage extends BasePage {
   async signInAsUser(userId: string) {
     // Mock signin by setting user ID in storage
     await this.page.evaluate((id) => {
-      localStorage.setItem('mock-user-id', id);
+      localStorage.setItem("mock-user-id", id);
     }, userId);
     await this.page.reload();
   }
@@ -34,7 +33,7 @@ export class UserIsolationPage extends BasePage {
    */
   async verifyUserIsolation(expectedEmpty = true) {
     await this.goto("/flashcards");
-    
+
     if (expectedEmpty) {
       await expect(this.getByTestId("empty-state")).toBeVisible();
     } else {
@@ -47,15 +46,15 @@ export class UserIsolationPage extends BasePage {
    */
   async createTestFlashcard(front: string, back: string) {
     await this.goto("/flashcards/new");
-    
+
     const frontInput = this.getByTestId("front-textarea");
     const backInput = this.getByTestId("back-textarea");
     const submitButton = this.getByTestId("submit-button");
-    
+
     await this.fillInput(frontInput, front);
     await this.fillInput(backInput, back);
     await this.clickButton(submitButton);
-    
+
     await this.verifyUrl("/flashcards");
   }
 
@@ -88,8 +87,8 @@ export class UserIsolationPage extends BasePage {
             flashcards: [],
             total: 0,
             page: 1,
-            limit: 10
-          })
+            limit: 10,
+          }),
         });
       } else {
         route.continue();

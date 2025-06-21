@@ -34,28 +34,29 @@ export class LearningPage extends BasePage {
    */
   async verifyPageLoaded() {
     await expect(this.pageHeading).toContainText("Sesja nauki");
-    
+
     // Wait for either learning card or session ended message
     await this.page.waitForFunction(() => {
       const learningCard = document.querySelector('[data-testid="learning-card"]');
-      const sessionEnded = document.querySelector('h2') && 
-        document.querySelector('h2').textContent && 
-        document.querySelector('h2').textContent.includes('Sesja nauki zakończona!');
+      const sessionEnded =
+        document.querySelector("h2") &&
+        document.querySelector("h2").textContent &&
+        document.querySelector("h2").textContent.includes("Sesja nauki zakończona!");
       return learningCard || sessionEnded;
     });
-    
+
     // If we have a learning card, that's success
     const hasLearningCard = await this.learningCard.isVisible();
     if (hasLearningCard) {
       return;
     }
-    
+
     // If we have session ended, that means no cards available
     const hasSessionEnded = await this.page.locator("text=Sesja nauki zakończona!").isVisible();
     if (hasSessionEnded) {
       throw new Error("No cards available for learning session");
     }
-    
+
     throw new Error("Unexpected state on learning page");
   }
 
@@ -83,7 +84,7 @@ export class LearningPage extends BasePage {
     if (rating < 1 || rating > 5) {
       throw new Error("Rating must be between 1 and 5");
     }
-    
+
     const ratingButton = this.getRatingButton(rating);
     await this.clickButton(ratingButton);
   }
@@ -191,7 +192,7 @@ export class LearningPage extends BasePage {
    */
   async resetLearningProgress() {
     const response = await this.page.request.get("/api/learn/session?reset=true");
-    
+
     if (!response.ok()) {
       const responseText = await response.text();
       throw new Error(`Failed to reset learning progress: ${response.status()} - ${responseText}`);

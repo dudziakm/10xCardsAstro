@@ -8,7 +8,7 @@ test.describe("AI Flashcard Review and Acceptance", () => {
   test.beforeEach(async ({ page }) => {
     aiGenerationPage = new AIGenerationPage(page);
     aiReviewPage = new AIReviewPage(page);
-    
+
     await aiGenerationPage.navigate();
 
     // Generate some flashcards first

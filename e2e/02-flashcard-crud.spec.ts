@@ -126,7 +126,7 @@ test.describe("Flashcard CRUD Operations", () => {
 
     // Wait to ensure we're back on flashcards page with the new card
     await flashcardsPage.verifyPageLoaded();
-    
+
     // Wait for the flashcard to appear in the list
     await expect(page.locator(`text=${searchableText}`).first()).toBeVisible();
 

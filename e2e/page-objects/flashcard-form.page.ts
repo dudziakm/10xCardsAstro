@@ -76,7 +76,7 @@ export class FlashcardFormPage extends BasePage {
    */
   async deleteFlashcard() {
     await this.clickButton(this.deleteButton);
-    
+
     // Confirm deletion
     const confirmButton = this.getByTestId("confirm-delete");
     await this.clickButton(confirmButton);

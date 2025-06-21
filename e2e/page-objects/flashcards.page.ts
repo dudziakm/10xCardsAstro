@@ -92,7 +92,7 @@ export class FlashcardsPage extends BasePage {
   async deleteFlashcard(index: number) {
     const deleteButton = this.getByTestId(`delete-flashcard-${index}`);
     await this.clickButton(deleteButton);
-    
+
     // Confirm deletion
     const confirmButton = this.getByTestId("confirm-delete");
     await this.clickButton(confirmButton);

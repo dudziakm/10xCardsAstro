@@ -68,7 +68,7 @@ export class AIReviewPage extends BasePage {
    */
   async selectAll() {
     await this.clickButton(this.selectAllButton);
-    
+
     // Verify first checkbox is checked
     const firstCheckbox = this.getCandidateCheckbox(0);
     await expect(firstCheckbox).toBeChecked();
@@ -79,7 +79,7 @@ export class AIReviewPage extends BasePage {
    */
   async selectNone() {
     await this.clickButton(this.selectNoneButton);
-    
+
     // Verify first checkbox is unchecked
     const firstCheckbox = this.getCandidateCheckbox(0);
     await expect(firstCheckbox).not.toBeChecked();
