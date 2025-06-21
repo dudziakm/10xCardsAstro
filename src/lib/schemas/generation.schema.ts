@@ -18,11 +18,15 @@ export type GenerateFlashcardsInput = z.infer<typeof generateFlashcardsSchema>;
 
 export const acceptCandidatesSchema = z.object({
   generation_id: z.string().uuid("Nieprawidłowy ID generacji"),
-  accepted_candidates: z.array(z.object({
-    front: z.string().min(1, "Przód fiszki nie może być pusty"),
-    back: z.string().min(1, "Tył fiszki nie może być pusty"),
-    difficulty: z.number().int().min(1).max(5).default(3).optional(),
-  })).min(1, "Musisz wybrać co najmniej jedną fiszkę")
+  accepted_candidates: z
+    .array(
+      z.object({
+        front: z.string().min(1, "Przód fiszki nie może być pusty"),
+        back: z.string().min(1, "Tył fiszki nie może być pusty"),
+        difficulty: z.number().int().min(1).max(5).default(3).optional(),
+      })
+    )
+    .min(1, "Musisz wybrać co najmniej jedną fiszkę"),
 });
 
 export type AcceptCandidatesInput = z.infer<typeof acceptCandidatesSchema>;

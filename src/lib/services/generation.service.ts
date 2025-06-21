@@ -1,5 +1,11 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { CreateGenerationCommand, CreateGenerationErrorLogCommand, FlashcardCandidateDTO, CreateFlashcardCommand, FlashcardDTO } from "../../types";
+import type {
+  CreateGenerationCommand,
+  CreateGenerationErrorLogCommand,
+  FlashcardCandidateDTO,
+  CreateFlashcardCommand,
+  FlashcardDTO,
+} from "../../types";
 import { callOpenRouterAI } from "../ai/openrouter";
 import type { AcceptCandidatesInput } from "../schemas/generation.schema";
 
@@ -110,7 +116,7 @@ export class GenerationService {
       }
 
       // 2. Convert candidates to flashcard commands
-      const flashcardCommands: CreateFlashcardCommand[] = accepted_candidates.map(candidate => ({
+      const flashcardCommands: CreateFlashcardCommand[] = accepted_candidates.map((candidate) => ({
         user_id: userId,
         front: candidate.front,
         back: candidate.back,
@@ -139,11 +145,11 @@ export class GenerationService {
 
       if (updateError) {
         // Continue despite update error
-        console.warn("Failed to update generation log:", updateError.message);
+        // Failed to update generation log - could log in production
       }
 
       // 5. Return DTOs
-      const flashcardDTOs: FlashcardDTO[] = insertedFlashcards.map(flashcard => ({
+      const flashcardDTOs: FlashcardDTO[] = insertedFlashcards.map((flashcard) => ({
         id: flashcard.id,
         front: flashcard.front,
         back: flashcard.back,

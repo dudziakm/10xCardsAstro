@@ -35,10 +35,9 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
             {flashcard.source === "ai" ? "AI" : "Manual"}
           </span>
           <span className="text-xs text-gray-500">
-            {flashcard.updated_at !== flashcard.created_at ? 
-              `Edytowano: ${formatDate(flashcard.updated_at)}` : 
-              `Utworzono: ${formatDate(flashcard.created_at)}`
-            }
+            {flashcard.updated_at !== flashcard.created_at
+              ? `Edytowano: ${formatDate(flashcard.updated_at)}`
+              : `Utworzono: ${formatDate(flashcard.created_at)}`}
           </span>
         </div>
       </div>
@@ -67,9 +66,9 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
       {showActions && (
         <div className="flex justify-end space-x-2 pt-3 border-t border-gray-100">
           {onView && (
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => onView(flashcard.id)}
               className="text-blue-600 border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400"
             >
@@ -77,9 +76,9 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
             </Button>
           )}
           {onEdit && (
-            <Button 
-              variant="outline" 
-              size="sm" 
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => onEdit(flashcard.id)}
               className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-400"
             >

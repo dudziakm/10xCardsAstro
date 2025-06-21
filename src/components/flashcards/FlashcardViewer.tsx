@@ -12,7 +12,14 @@ interface FlashcardViewerProps {
   showActions?: boolean;
 }
 
-export function FlashcardViewer({ flashcard, flashcardId, onEdit, onDelete, onBack, showActions = true }: FlashcardViewerProps) {
+export function FlashcardViewer({
+  flashcard,
+  flashcardId,
+  onEdit,
+  onDelete,
+  onBack,
+  showActions = true,
+}: FlashcardViewerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [loadedFlashcard, setLoadedFlashcard] = useState<FlashcardDTO | null>(flashcard || null);
   const [loading, setLoading] = useState(!flashcard);

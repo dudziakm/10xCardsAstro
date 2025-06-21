@@ -9,12 +9,12 @@ interface CandidateReviewProps {
   isLoading?: boolean;
 }
 
-export default function CandidateReview({ 
-  candidates, 
-  generationId, 
-  onAccept, 
+export default function CandidateReview({
+  candidates,
+  generationId,
+  onAccept,
   onCancel,
-  isLoading = false 
+  isLoading = false,
 }: CandidateReviewProps) {
   const [selectedCandidates, setSelectedCandidates] = useState<Set<number>>(new Set());
 
@@ -52,9 +52,7 @@ export default function CandidateReview({
     <div className="max-w-4xl mx-auto p-6">
       <div className="bg-white shadow-sm rounded-lg border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            Przejrzyj wygenerowane fiszki
-          </h2>
+          <h2 className="text-xl font-semibold text-gray-900">Przejrzyj wygenerowane fiszki</h2>
           <p className="text-sm text-gray-600 mt-1">
             Wybierz fiszki, które chcesz dodać do swojej kolekcji ({selectedCount}/{totalCount} wybrane)
           </p>
@@ -87,11 +85,17 @@ export default function CandidateReview({
             <div
               key={index}
               className={`p-6 cursor-pointer transition-colors ${
-                selectedCandidates.has(index)
-                  ? "bg-blue-50 border-l-4 border-l-blue-500"
-                  : "hover:bg-gray-50"
+                selectedCandidates.has(index) ? "bg-blue-50 border-l-4 border-l-blue-500" : "hover:bg-gray-50"
               }`}
               onClick={() => !isLoading && toggleCandidate(index)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  if (!isLoading) toggleCandidate(index);
+                }
+              }}
+              role="button"
+              tabIndex={0}
             >
               <div className="flex items-start gap-4">
                 <input
@@ -104,20 +108,12 @@ export default function CandidateReview({
                 <div className="flex-1 min-w-0">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-2">
-                        Przód fiszki
-                      </h3>
-                      <p className="text-sm text-gray-700 bg-white p-3 rounded border">
-                        {candidate.front}
-                      </p>
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">Przód fiszki</h3>
+                      <p className="text-sm text-gray-700 bg-white p-3 rounded border">{candidate.front}</p>
                     </div>
                     <div>
-                      <h3 className="text-sm font-medium text-gray-900 mb-2">
-                        Tył fiszki
-                      </h3>
-                      <p className="text-sm text-gray-700 bg-white p-3 rounded border">
-                        {candidate.back}
-                      </p>
+                      <h3 className="text-sm font-medium text-gray-900 mb-2">Tył fiszki</h3>
+                      <p className="text-sm text-gray-700 bg-white p-3 rounded border">{candidate.back}</p>
                     </div>
                   </div>
                   {candidate.difficulty && (
@@ -136,7 +132,9 @@ export default function CandidateReview({
         <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
           <div className="text-sm text-gray-600">
             {selectedCount > 0 && (
-              <>Dodasz {selectedCount} {selectedCount === 1 ? "fiszkę" : "fiszek"} do swojej kolekcji</>
+              <>
+                Dodasz {selectedCount} {selectedCount === 1 ? "fiszkę" : "fiszek"} do swojej kolekcji
+              </>
             )}
           </div>
           <div className="flex items-center gap-3">

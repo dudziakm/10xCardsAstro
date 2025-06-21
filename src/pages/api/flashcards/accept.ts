@@ -6,8 +6,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const { supabase, session } = locals;
 
   if (!session) {
-    return new Response(JSON.stringify({ error: "Unauthorized" }), { 
-      status: 401 
+    return new Response(JSON.stringify({ error: "Unauthorized" }), {
+      status: 401,
     });
   }
 
@@ -18,21 +18,21 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const generationService = new GenerationService(supabase);
     const result = await generationService.acceptCandidates(session.user.id, validatedData);
 
-    return new Response(JSON.stringify(result), { 
+    return new Response(JSON.stringify(result), {
       status: 200,
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error: unknown) {
-    console.error("Error accepting candidates:", error);
-    
+    // Error accepting candidates - could be logged in production
+
     if (error instanceof Error) {
-      return new Response(JSON.stringify({ error: error.message }), { 
-        status: 400 
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
       });
     }
 
-    return new Response(JSON.stringify({ error: "Wystąpił nieoczekiwany błąd" }), { 
-      status: 500 
+    return new Response(JSON.stringify({ error: "Wystąpił nieoczekiwany błąd" }), {
+      status: 500,
     });
   }
 };

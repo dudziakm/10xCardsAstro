@@ -98,15 +98,16 @@ The project's core features include:
 
 The application is **fully functional** with all core features implemented:
 
-- ✅ **Complete CRUD Operations** - Create, read, update, delete flashcards  
+- ✅ **Complete CRUD Operations** - Create, read, update, delete flashcards
 - ✅ **AI-Powered Generation** - Two-step process: generate candidates → review → accept
-- ✅ **Spaced Repetition Learning** - Scientifically-backed learning algorithm  
+- ✅ **Spaced Repetition Learning** - Scientifically-backed learning algorithm
 - ✅ **User Interface** - Modern, responsive UI with global navigation
-- ✅ **Authentication** - Supabase auth with Row Level Security  
+- ✅ **Authentication** - Supabase auth with Row Level Security
 - ✅ **Testing Infrastructure** - Unit, integration, and E2E tests
 - ✅ **CI/CD Pipeline** - GitHub Actions with automated testing
 
 **Recent Updates (v1.0.0):**
+
 - Fixed AI flashcard generation flow with candidate review system
 - Added global navigation with mobile support
 - Simplified CI/CD to use only Chrome and Node.js 20

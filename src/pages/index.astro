@@ -1,5 +1,8 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { LoginPrompt } from "../components/auth/LoginPrompt";
+
+const { session } = Astro.locals;
 ---
 
 <Layout title="my10xCards - Twoje fiszki do nauki">
@@ -10,21 +13,30 @@ import Layout from "../layouts/Layout.astro";
     </div>
 
     <div class="grid md:grid-cols-3 gap-6 mb-8">
-      <a href="/flashcards?filter=all" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer transform hover:scale-105">
+      <a
+        href="/flashcards?filter=all"
+        class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-blue-300 transition-all cursor-pointer transform hover:scale-105"
+      >
         <div class="text-center">
           <div class="text-3xl font-bold text-blue-600 mb-2" id="total-cards">-</div>
           <div class="text-gray-600">Wszystkich fiszek</div>
           <div class="text-xs text-blue-500 mt-1">Kliknij aby zobaczyć wszystkie</div>
         </div>
       </a>
-      <a href="/flashcards?filter=manual" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-green-300 transition-all cursor-pointer transform hover:scale-105">
+      <a
+        href="/flashcards?filter=manual"
+        class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-green-300 transition-all cursor-pointer transform hover:scale-105"
+      >
         <div class="text-center">
           <div class="text-3xl font-bold text-green-600 mb-2" id="manual-cards">-</div>
           <div class="text-gray-600">Fiszek manualnych</div>
           <div class="text-xs text-green-500 mt-1">Kliknij aby zobaczyć manualne</div>
         </div>
       </a>
-      <a href="/flashcards?filter=ai" class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-purple-300 transition-all cursor-pointer transform hover:scale-105">
+      <a
+        href="/flashcards?filter=ai"
+        class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm hover:shadow-md hover:border-purple-300 transition-all cursor-pointer transform hover:scale-105"
+      >
         <div class="text-center">
           <div class="text-3xl font-bold text-purple-600 mb-2" id="ai-cards">-</div>
           <div class="text-gray-600">Fiszek AI</div>
@@ -64,9 +76,21 @@ import Layout from "../layouts/Layout.astro";
       </a>
     </div>
 
-    <div class="mt-8 text-center">
-      <p class="text-gray-500">Zaloguj się aby rozpocząć tworzenie i naukę z fiszkami</p>
-    </div>
+    {
+      !session && (
+        <div class="mt-12">
+          <LoginPrompt client:load />
+        </div>
+      )
+    }
+
+    {
+      session && (
+        <div class="mt-8 text-center">
+          <p class="text-green-600 font-medium">👋 Witaj z powrotem! Gotowy na naukę?</p>
+        </div>
+      )
+    }
   </main>
 </Layout>
 
@@ -107,5 +131,9 @@ import Layout from "../layouts/Layout.astro";
     }
   }
 
-  loadStats();
+  // Only load stats if user is logged in
+  const isLoggedIn = document.querySelector("nav").textContent.includes("Wyloguj");
+  if (isLoggedIn) {
+    loadStats();
+  }
 </script>

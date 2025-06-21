@@ -37,6 +37,10 @@ npm run test:coverage # Run tests with coverage report
 npm run lint         # Run ESLint
 npm run lint:fix     # Auto-fix linting issues
 npm run format       # Format code with Prettier
+
+# IMPORTANT: Always run linting after major changes
+# Run `npm run lint:fix && npm run format` after any significant code changes
+# to ensure code quality and prevent CI/CD failures
 ```
 
 ## High-Level Architecture
@@ -203,6 +207,7 @@ The application is **fully functional** with:
 ✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment
 
 **Recent Fixes (v1.0.0):**
+
 - Fixed AI generation flow with candidate review system (`/api/flashcards/accept`)
 - Added `CandidateReview` component for selecting generated flashcards
 - Implemented global navigation with mobile support (`Navigation.astro`)

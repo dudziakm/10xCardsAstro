@@ -14,44 +14,60 @@ declare module "astro" {
   }
 }
 
-export const onRequest = defineMiddleware(async ({ locals, request }, next) => {
-  // Set the Supabase admin client in locals (bypasses RLS for development)
+export const onRequest = defineMiddleware(async ({ locals, request, cookies, url, redirect }, next) => {
+  // Set the Supabase client in locals
   locals.supabase = supabaseAdminClient;
 
   try {
-    // Get authorization header
-    const authHeader = request.headers.get("Authorization");
+    // Try to get session from cookies first
+    const accessToken = cookies.get("supabase-access-token")?.value;
+    const refreshToken = cookies.get("supabase-refresh-token")?.value;
 
-    if (authHeader && authHeader.startsWith("Bearer ")) {
-      const token = authHeader.split(" ")[1];
-
-      // Try to set the auth session using the token
+    if (accessToken && refreshToken) {
+      // Try to set the auth session using tokens from cookies
       const { data, error } = await supabaseAdminClient.auth.setSession({
-        access_token: token,
-        refresh_token: "",
+        access_token: accessToken,
+        refresh_token: refreshToken,
       });
 
-      if (error) {
-        // Continue without session
-      } else if (data.session) {
+      if (!error && data.session) {
         locals.session = data.session;
+      } else {
+        // Clear invalid tokens
+        cookies.delete("supabase-access-token", { path: "/" });
+        cookies.delete("supabase-refresh-token", { path: "/" });
+        locals.session = null;
       }
     } else {
-      // Get session from cookies if no auth header
-      const { data } = await supabaseAdminClient.auth.getSession();
-      locals.session = data.session;
+      // Fallback: Check authorization header
+      const authHeader = request.headers.get("Authorization");
+      if (authHeader && authHeader.startsWith("Bearer ")) {
+        const token = authHeader.split(" ")[1];
+
+        const { data, error } = await supabaseAdminClient.auth.setSession({
+          access_token: token,
+          refresh_token: "",
+        });
+
+        if (!error && data.session) {
+          locals.session = data.session;
+        } else {
+          locals.session = null;
+        }
+      } else {
+        locals.session = null;
+      }
     }
   } catch {
-    // Error handled silently
+    locals.session = null;
   }
 
-  // TEMPORARY: For testing only - create a mock session with a real user ID if no session found
-  if (!locals.session) {
-    locals.session = {
-      user: {
-        id: "4d4918b3-fcb8-4ece-93c9-3272e8cbacc0", // Use the actual user ID from your token
-      },
-    };
+  // Protected routes - require authentication
+  const protectedRoutes = ["/flashcards", "/generate", "/learn"];
+  const isProtectedRoute = protectedRoutes.some((route) => url.pathname.startsWith(route));
+
+  if (isProtectedRoute && !locals.session) {
+    return redirect("/auth/login");
   }
 
   return next();

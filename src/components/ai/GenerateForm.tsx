@@ -47,7 +47,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       }
 
       const data = await response.json();
-      
+
       // Store candidates for review
       setCandidates(data.candidates);
       setGenerationId(data.generation_id);

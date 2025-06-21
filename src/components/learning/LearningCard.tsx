@@ -112,9 +112,7 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
                 className={`${getRatingColor(rating)} text-white border-0 py-4 px-3 text-sm h-auto min-h-[60px] flex flex-col items-center justify-center`}
               >
                 <div className="font-bold text-lg leading-tight">{rating}</div>
-                <div className="text-xs leading-tight mt-1 whitespace-normal text-center">
-                  {getRatingLabel(rating)}
-                </div>
+                <div className="text-xs leading-tight mt-1 whitespace-normal text-center">{getRatingLabel(rating)}</div>
               </Button>
             ))}
           </div>

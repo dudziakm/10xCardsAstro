@@ -129,6 +129,7 @@ Endpoint umożliwia pobieranie paginowanej listy fiszek użytkownika z możliwo�
 ### 2. Rozszerzenie serwisu o metodę listFlashcards
 
 1. Dodaj metodę `listFlashcards` do `FlashcardService` w `src/lib/services/flashcard.service.ts`:
+
    ```typescript
    async listFlashcards(
      userId: string,

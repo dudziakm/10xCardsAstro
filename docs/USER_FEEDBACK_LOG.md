@@ -7,34 +7,40 @@ Ten dokument zawiera uwagi użytkownika oraz zmiany wprowadzone do aplikacji my1
 ### 🔧 **Problemy zgłoszone:**
 
 #### 1. **Usuwanie fiszek nie działało poprawnie**
+
 - **Problem**: Po kliknięciu "Usuń" fiszki nadal się pokazywały, tylko z zaktualizowaną datą
 - **Przyczyna**: Aplikacja używa soft delete (ustawia `deleted_at`), ale brakło filtrów w zapytaniach
 - **Rozwiązanie**: ✅ Dodano `.is("deleted_at", null)` we wszystkich zapytaniach do bazy
 
 #### 2. **Przyciski oceny w sekcji nauki miały ucięty tekst**
+
 - **Problem**: Tekst na przyciskach 1-5 był obcięty, widać było tylko górną część
 - **Przyczyna**: Niewystarczająca wysokość przycisków i złe ustawienia CSS
 - **Rozwiązanie**: ✅ Dodano `min-h-[60px]`, `h-auto`, `leading-tight`, `whitespace-normal`
 
 #### 3. **Podgląd fiszek nie działał**
+
 - **Problem**: Wyświetlał się tylko "Ładowanie fiszki..." bez błędów w konsoli
 - **Przyczyna**: Nieprawidłowe przekazywanie ID fiszki między Astro a React komponentem
 - **Rozwiązanie**: ✅ Zmieniono z `data-flashcard-id` na props `flashcardId`
 
 #### 4. **React production mode error w development**
+
 - **Problem**: Błąd "React is running in production mode, but dead code elimination has not been applied"
 - **Rozwiązanie**: ✅ Uprościono konfigurację Astro, usunięto problematyczne ustawienia
 
 ### 🎨 **Usprawnienia UI zgłoszone przez użytkownika:**
 
 #### 1. **Klikalne kafelki statystyk**
+
 - **Życzenie**: Kafelki "8 Wszystkich fiszek" powinny być klikalne i przekierowywać na odpowiedni filtr
-- **Implementacja**: ✅ 
+- **Implementacja**: ✅
   - Dodano linki: `/flashcards?filter=all`, `/flashcards?filter=manual`, `/flashcards?filter=ai`
   - Dodano hover efekty i animacje
   - FlashcardList automatycznie odczytuje parametr URL i ustawia filtr
 
 #### 2. **Kolorowe przyciski akcji**
+
 - **Życzenie**: Przyciski Podgląd/Edytuj/Usuń powinny mieć ładne kolory
 - **Implementacja**: ✅
   - **Podgląd**: 👁️ Niebieski (`text-blue-600`, `hover:bg-blue-50`)
@@ -43,6 +49,7 @@ Ten dokument zawiera uwagi użytkownika oraz zmiany wprowadzone do aplikacji my1
   - Dodano ikony emoji dla lepszej rozpoznawalności
 
 #### 3. **Przyciski zawsze na dole fiszek**
+
 - **Życzenie**: Przyciski powinny być na samym dole fiszki, nie pod tekstem
 - **Implementacja**: ✅
   - Dodano `flex flex-col h-full` do kontenera fiszki
@@ -50,6 +57,7 @@ Ten dokument zawiera uwagi użytkownika oraz zmiany wprowadzone do aplikacji my1
   - Przyciski są w sekcji na dole z separatorem `border-t`
 
 #### 4. **Lepsza stylizacja Przód/Tył fiszki**
+
 - **Życzenie**: Lepsze wyróżnienie sekcji Przód i Tył fiszki
 - **Implementacja**: ✅
   - **Przód**: 📄 Niebieskie tło (`bg-blue-50`) z lewą bordą (`border-l-4 border-blue-400`)
@@ -59,15 +67,18 @@ Ten dokument zawiera uwagi użytkownika oraz zmiany wprowadzone do aplikacji my1
 ### 🔧 **Dodatkowe usprawnienia techniczne:**
 
 #### 1. **Uproszenie CI/CD**
+
 - Testy tylko na Chrome (usunięto Firefox, Safari, mobile)
 - Tylko Node.js 20 (usunięto matrix z 18.x)
 - Szybsze buildy na GitHub Actions
 
 #### 2. **Aktualizacja wersjonowania**
+
 - `0.0.1` → `1.0.0` (production ready)
 - Nazwa: `10xcardsastro` → `my10x-cards`
 
 #### 3. **Aktualizacja dokumentacji**
+
 - README.md: dodano status "Production Ready (v1.0.0)"
 - CLAUDE.md: dodano sekcję "Recent Fixes"
 - Przeniesiono pliki Windows do `/docs/`
@@ -75,6 +86,7 @@ Ten dokument zawiera uwagi użytkownika oraz zmiany wprowadzone do aplikacji my1
 ### 📊 **Informacje o AI**
 
 **Model używany do generowania fiszek:**
+
 - **Provider**: OpenRouter.ai
 - **Model**: Anthropic Claude 3 Haiku Beta (`anthropic/claude-3-haiku:beta`)
 - **Charakterystyka**: Szybki, ekonomiczny model idealny do prostych zadań jak generowanie fiszek

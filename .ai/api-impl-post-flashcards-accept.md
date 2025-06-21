@@ -148,6 +148,7 @@ Endpoint umożliwia akceptację wybranych kandydatów na fiszki wygenerowanych p
 ### 2. Rozszerzenie FlashcardService
 
 1. Dodaj metodę `acceptCandidates` do `FlashcardService`:
+
    ```typescript
    async acceptCandidates(
      userId: string,
