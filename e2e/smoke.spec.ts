@@ -6,11 +6,11 @@ test.describe("Smoke Tests - Basic Functionality", () => {
 
     // Check basic page structure
     await expect(page).toHaveTitle(/my10xCards/);
-    await expect(page.locator("h1")).toContainText("my10xCards");
+    await expect(page.locator("h1").first()).toContainText("my10xCards");
 
     // Check navigation cards
-    await expect(page.locator("text=Moje fiszki")).toBeVisible();
-    await expect(page.locator("text=Generuj AI")).toBeVisible();
+    await expect(page.locator("text=Moje fiszki").first()).toBeVisible();
+    await expect(page.locator("text=Generuj AI").first()).toBeVisible();
   });
 
   test("can navigate to flashcards page", async ({ page }) => {

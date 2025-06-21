@@ -54,6 +54,7 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
         }`}
         style={{ minHeight: "400px" }}
         onClick={handleFlip}
+        data-testid="learning-card"
         onKeyDown={(e) => {
           if (!isFlipped && !hasRated && (e.key === "Enter" || e.key === " ")) {
             e.preventDefault();
@@ -85,7 +86,9 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
           {/* Card content */}
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <div className="text-xl leading-relaxed mb-4">{isFlipped ? card.back : card.front}</div>
+              <div className="text-xl leading-relaxed mb-4" data-testid={isFlipped ? "card-back" : "card-front"}>
+                {isFlipped ? card.back : card.front}
+              </div>
             </div>
           </div>
 
@@ -110,6 +113,7 @@ export function LearningCard({ card, onRate, isLoading = false }: LearningCardPr
                 onClick={() => handleRate(rating as 1 | 2 | 3 | 4 | 5)}
                 disabled={isLoading}
                 className={`${getRatingColor(rating)} text-white border-0 py-4 px-3 text-sm h-auto min-h-[60px] flex flex-col items-center justify-center`}
+                data-testid={`rating-${rating}`}
               >
                 <div className="font-bold text-lg leading-tight">{rating}</div>
                 <div className="text-xs leading-tight mt-1 whitespace-normal text-center">{getRatingLabel(rating)}</div>

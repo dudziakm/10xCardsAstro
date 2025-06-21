@@ -11,9 +11,9 @@ export default defineConfig({
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
-  retries: process.env.CI ? 2 : 0,
+  retries: process.env.CI ? 0 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 3 : 5,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [["html"], ["json", { outputFile: "test-results/results.json" }], process.env.CI ? ["github"] : ["list"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -39,9 +39,38 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Setup projects - run first to create auth states
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: "setup-main",
+      testMatch: /.*\.setup\.ts/,
+      testNamePattern: /.*main user.*/,
+    },
+    {
+      name: "setup-extra",
+      testMatch: /.*\.setup\.ts/,
+      testNamePattern: /.*extra user.*/,
+    },
+
+    // Main user tests
+    {
+      name: "chromium-main-user",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.auth/user-main.json",
+      },
+      dependencies: ["setup-main"],
+      testIgnore: ["**/06-user-isolation.spec.ts"], // Skip isolation test for main user
+    },
+
+    // Extra user tests (for isolation testing)
+    {
+      name: "chromium-extra-user",
+      use: {
+        ...devices["Desktop Chrome"],
+        storageState: "playwright/.auth/user-extra.json",
+      },
+      dependencies: ["setup-extra"],
+      testMatch: ["**/06-user-isolation.spec.ts"], // Only run isolation test
     },
   ],
 

@@ -53,23 +53,17 @@ test.describe("Learning Session with Spaced Repetition", () => {
     // Check page title and heading
     await expect(page.locator("h1")).toContainText("Sesja nauki");
 
-    // Should show start session button if no active session
-    await expect(page.locator('button:has-text("Rozpocznij sesję nauki")')).toBeVisible();
+    // Should automatically load first card (no start button needed)
+    await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
 
     // Check instructions
-    await expect(page.locator("text=Kliknij aby rozpocząć naukę")).toBeVisible();
+    await expect(page.locator("text=Kliknij aby zobaczyć odpowiedź")).toBeVisible();
   });
 
   test("should start learning session and display first card (US-008)", async ({ page }) => {
     await page.goto("/learn");
 
-    // Start learning session
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
-
-    // Should show loading state
-    await expect(page.locator("text=Ładowanie następnej fiszki...")).toBeVisible();
-
-    // Wait for card to load
+    // Should automatically load first card
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Should display card front only initially
@@ -85,7 +79,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should flip card to show back when clicked (US-008)", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Click on the card to flip it
@@ -98,12 +91,9 @@ test.describe("Learning Session with Spaced Repetition", () => {
     );
 
     // Should show rating buttons
-    await expect(page.locator('[data-testid="rating-buttons"]')).toBeVisible();
-    await expect(page.locator('button:has-text("1")')).toBeVisible(); // Again
-    await expect(page.locator('button:has-text("2")')).toBeVisible(); // Hard
-    await expect(page.locator('button:has-text("3")')).toBeVisible(); // Good
-    await expect(page.locator('button:has-text("4")')).toBeVisible(); // Easy
-    await expect(page.locator('button:has-text("5")')).toBeVisible(); // Very Easy
+    for (let i = 1; i <= 5; i++) {
+      await expect(page.locator(`[data-testid="rating-${i}"]`)).toBeVisible();
+    }
 
     // Should show instruction to rate
     await expect(page.locator("text=Oceń jak dobrze pamiętałeś odpowiedź")).toBeVisible();
@@ -111,17 +101,16 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should rate flashcard and move to next (US-008)", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Flip card
     await page.click('[data-testid="learning-card"]');
 
     // Rate the card (4 = Easy)
-    await page.click('button:has-text("4")');
+    await page.click('[data-testid="rating-4"]');
 
     // Should show rating confirmation
-    await expect(page.locator("text=Oceniono! Ładowanie następnej fiszki...")).toBeVisible();
+    await expect(page.locator("text=Oceniono!")).toBeVisible();
 
     // Mock next card
     await page.route("/api/learn/session", (route) => {
@@ -154,7 +143,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should display session statistics (US-008)", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Should show session progress
@@ -163,7 +151,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
     // After rating a card, stats should update
     await page.click('[data-testid="learning-card"]');
-    await page.click('button:has-text("3")');
+    await page.click('[data-testid="rating-3"]');
 
     // Stats should update (mocked in beforeEach)
     await expect(page.locator('[data-testid="cards-reviewed"]')).toContainText("1");
@@ -171,7 +159,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should show rating labels and intervals (US-008)", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
     await page.click('[data-testid="learning-card"]');
 
@@ -207,7 +194,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
     });
 
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
 
     // Should show no cards message
     await expect(page.locator("text=Brak fiszek do nauki")).toBeVisible();
@@ -219,7 +205,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should show card metadata (difficulty, review count)", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Should show card metadata
@@ -232,7 +217,6 @@ test.describe("Learning Session with Spaced Repetition", () => {
 
   test("should end learning session", async ({ page }) => {
     await page.goto("/learn");
-    await page.click('button:has-text("Rozpocznij sesję nauki")');
     await page.waitForSelector('[data-testid="learning-card"]');
 
     // Should show end session button
