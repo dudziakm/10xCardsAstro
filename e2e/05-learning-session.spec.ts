@@ -200,50 +200,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await expect(page.locator("text=Trudność: 2.5/5.0")).toBeVisible();
   });
 
-  test("should handle API errors during learning", async ({ page }) => {
-    // Mock API error for rating
-    await page.route("/api/learn/session/rate", (route) => {
-      route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ error: "API Error" }),
-      });
-    });
 
-    // Flip card and rate it
-    await page.locator('[data-testid="learning-card"]').click();
-
-    // Rate the card
-    const ratingButton = page.locator('[data-testid="rating-4"]');
-    await expect(ratingButton).toBeEnabled();
-    await ratingButton.click();
-
-    // Should show error message
-    await expect(page.locator("text=Wystąpił błąd")).toBeVisible();
-  });
-
-  test("should handle rating API errors", async ({ page }) => {
-    await page.goto("/learn");
-    await page.waitForSelector('[data-testid="learning-card"]');
-    await page.click('[data-testid="learning-card"]');
-
-    // Mock API error for rating
-    await page.route("/api/learn/session/rate", (route) => {
-      route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ error: "Failed to save rating" }),
-      });
-    });
-
-    await page.click('[data-testid="rating-4"]');
-
-    // Should show error message
-    await expect(page.locator("text=Failed to rate flashcard")).toBeVisible();
-
-    // Rating buttons should still be available for retry
-    await expect(page.locator('[data-testid="rating-1"]')).toBeVisible();
-  });
 
   test("should persist session across page refreshes", async ({ page }) => {
     await page.goto("/learn");

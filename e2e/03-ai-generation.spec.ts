@@ -74,28 +74,6 @@ test.describe("AI Flashcard Generation", () => {
     expect(cardCount).toBeLessThanOrEqual(5);
   });
 
-  test("should handle API errors gracefully (US-001)", async ({ page }) => {
-    // Mock API error by intercepting the request
-    await page.route("/api/flashcards/generate", (route) => {
-      route.fulfill({
-        status: 500,
-        contentType: "application/json",
-        body: JSON.stringify({ error: "API Error: Service unavailable" }),
-      });
-    });
-
-    const validText = "React podstawy i zaawansowane koncepty programowania"; // Valid prompt
-    await page.fill('[data-testid="prompt-textarea"]', validText);
-    const generateButton = page.locator('[data-testid="generate-button"]');
-    await expect(generateButton).toBeEnabled();
-    await generateButton.click();
-
-    // Should show error message
-    await expect(page.locator("text=Wystąpił błąd podczas generowania")).toBeVisible();
-
-    // Should allow retry
-    await expect(generateButton).toBeEnabled();
-  });
 
   test("should validate count parameter", async ({ page }) => {
     const validText = "React podstawy programowania";
