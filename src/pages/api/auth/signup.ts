@@ -38,7 +38,7 @@ export const POST: APIRoute = async ({ request }) => {
         errorMessage = "Nieprawidłowy format email";
       }
 
-      return new Response(JSON.stringify({ error: errorMessage }), {
+      return new Response(JSON.stringify({ error: errorMessage, debug: error.message }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -56,8 +56,8 @@ export const POST: APIRoute = async ({ request }) => {
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch {
-    return new Response(JSON.stringify({ error: "Wystąpił błąd serwera" }), {
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Wystąpił błąd serwera", debug: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

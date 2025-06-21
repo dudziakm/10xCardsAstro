@@ -1,6 +1,8 @@
 import type { APIRoute } from "astro";
 import { supabaseClient } from "../../../db/supabase.client";
 
+console.log('Login API loaded, Supabase URL:', import.meta.env.SUPABASE_URL);
+
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const { email, password } = await request.json();
@@ -18,7 +20,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
     });
 
     if (error) {
-      return new Response(JSON.stringify({ error: "Nieprawidłowy email lub hasło" }), {
+      return new Response(JSON.stringify({ error: "Nieprawidłowy email lub hasło", debug: error.message }), {
         status: 401,
         headers: { "Content-Type": "application/json" },
       });
@@ -30,7 +32,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         path: "/",
         maxAge: 60 * 60 * 24 * 7, // 1 week
         httpOnly: true,
-        secure: true,
+        secure: false, // Allow for localhost
         sameSite: "lax",
       });
 
@@ -38,7 +40,7 @@ export const POST: APIRoute = async ({ request, cookies }) => {
         path: "/",
         maxAge: 60 * 60 * 24 * 30, // 30 days
         httpOnly: true,
-        secure: true,
+        secure: false, // Allow for localhost
         sameSite: "lax",
       });
     }
@@ -53,8 +55,8 @@ export const POST: APIRoute = async ({ request, cookies }) => {
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch {
-    return new Response(JSON.stringify({ error: "Wystąpił błąd serwera" }), {
+  } catch (error) {
+    return new Response(JSON.stringify({ error: "Wystąpił błąd serwera", debug: error instanceof Error ? error.message : String(error) }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

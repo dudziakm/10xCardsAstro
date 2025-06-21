@@ -5,11 +5,11 @@ export const GET: APIRoute = async ({ locals }) => {
   const { supabase } = locals;
 
   try {
-    // Test database connection
-    const { data: tables, error: tablesError } = await (supabase as any)
-      .from("information_schema.tables")
-      .select("table_name")
-      .eq("table_schema", "public");
+    // Test database connection - try direct flashcards table instead
+    const { data: flashcardsTest, error: tablesError } = await supabase
+      .from("flashcards")
+      .select("id")
+      .limit(1);
 
     if (tablesError) {
       return new Response(
@@ -32,7 +32,7 @@ export const GET: APIRoute = async ({ locals }) => {
     return new Response(
       JSON.stringify({
         status: "connected",
-        tables: tables?.map((t: any) => t.table_name) || [],
+        flashcards_test: flashcardsTest,
         flashcards_accessible: !flashcardsError,
         generations_accessible: !generationsError,
         errors: {
