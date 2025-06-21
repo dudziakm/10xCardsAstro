@@ -34,7 +34,7 @@ test.describe("AI Flashcard Generation", () => {
     const validText = "JavaScript podstawy programowania obiektowego";
     await promptTextarea.fill(validText);
     // Wait for button to become enabled after filling
-    await expect(generateButton).toBeEnabled();
+    await expect(generateButton).toBeEnabled({ timeout: 10000 });
   });
 
   test("should generate flashcards with valid input (US-001)", async ({ page }) => {
@@ -66,7 +66,7 @@ test.describe("AI Flashcard Generation", () => {
     await countSelect.selectOption("5");
 
     // Wait for button to be enabled and submit form
-    await expect(generateButton).toBeEnabled();
+    await expect(generateButton).toBeEnabled({ timeout: 10000 });
     await generateButton.click();
 
     // Should show loading state

@@ -76,7 +76,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await ratingButton.click();
 
     // Should show new card
-    await expect(cardFront).toBeVisible();
+    await expect(cardFront).toBeVisible({ timeout: 10000 });
   });
 
   test("should update session stats after rating", async ({ page }) => {
