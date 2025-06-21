@@ -92,6 +92,7 @@ export interface GenerateFlashcardsRequestDTO {
 export interface FlashcardCandidateDTO {
   front: string;
   back: string;
+  difficulty?: number;
 }
 
 export interface GenerateFlashcardsResponseDTO {

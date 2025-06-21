@@ -202,4 +202,11 @@ The application is **fully functional** with:
 ✅ **Testing Infrastructure** - Comprehensive unit and integration tests  
 ✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment
 
+**Recent Fixes (v1.0.0):**
+- Fixed AI generation flow with candidate review system (`/api/flashcards/accept`)
+- Added `CandidateReview` component for selecting generated flashcards
+- Implemented global navigation with mobile support (`Navigation.astro`)
+- Simplified CI/CD configuration for faster builds (Chrome only, Node.js 20)
+- Improved development server stability and error handling
+
 The application is ready for production use with a complete learning workflow from AI generation to spaced repetition learning.

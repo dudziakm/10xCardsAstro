@@ -1,6 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { CreateGenerationCommand, CreateGenerationErrorLogCommand, FlashcardCandidateDTO } from "../../types";
+import type { CreateGenerationCommand, CreateGenerationErrorLogCommand, FlashcardCandidateDTO, CreateFlashcardCommand, FlashcardDTO } from "../../types";
 import { callOpenRouterAI } from "../ai/openrouter";
+import type { AcceptCandidatesInput } from "../schemas/generation.schema";
 
 export class GenerationService {
   constructor(private supabase: SupabaseClient) {}
@@ -82,6 +83,82 @@ export class GenerationService {
 
       // Rethrow the error to be handled by the API route
       throw new Error(`Generation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+    }
+  }
+
+  async acceptCandidates(
+    userId: string,
+    data: AcceptCandidatesInput
+  ): Promise<{ accepted_count: number; flashcards: FlashcardDTO[] }> {
+    const { generation_id, accepted_candidates } = data;
+
+    try {
+      // 1. Verify generation exists and belongs to user
+      const { data: generation, error: genError } = await this.supabase
+        .from("generations")
+        .select("id, user_id, successful")
+        .eq("id", generation_id)
+        .eq("user_id", userId)
+        .single();
+
+      if (genError || !generation) {
+        throw new Error("Generacja nie została znaleziona lub nie należy do użytkownika");
+      }
+
+      if (!generation.successful) {
+        throw new Error("Nie można zaakceptować kandydatów z nieudanej generacji");
+      }
+
+      // 2. Convert candidates to flashcard commands
+      const flashcardCommands: CreateFlashcardCommand[] = accepted_candidates.map(candidate => ({
+        user_id: userId,
+        front: candidate.front,
+        back: candidate.back,
+        source: "ai" as const,
+        created_at: new Date().toISOString(),
+      }));
+
+      // 3. Insert flashcards in batch
+      const { data: insertedFlashcards, error: insertError } = await this.supabase
+        .from("flashcards")
+        .insert(flashcardCommands)
+        .select();
+
+      if (insertError || !insertedFlashcards) {
+        throw new Error(`Nie udało się zapisać fiszek: ${insertError?.message || "Brak danych"}`);
+      }
+
+      // 4. Update generation log with accepted count
+      const { error: updateError } = await this.supabase
+        .from("generations")
+        .update({
+          cards_accepted: accepted_candidates.length,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", generation_id);
+
+      if (updateError) {
+        // Continue despite update error
+        console.warn("Failed to update generation log:", updateError.message);
+      }
+
+      // 5. Return DTOs
+      const flashcardDTOs: FlashcardDTO[] = insertedFlashcards.map(flashcard => ({
+        id: flashcard.id,
+        front: flashcard.front,
+        back: flashcard.back,
+        source: flashcard.source,
+        created_at: flashcard.created_at,
+        updated_at: flashcard.updated_at,
+      }));
+
+      return {
+        accepted_count: accepted_candidates.length,
+        flashcards: flashcardDTOs,
+      };
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Nieznany błąd podczas akceptowania kandydatów";
+      throw new Error(errorMessage);
     }
   }
 }

@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
-import type { FlashcardDTO } from "../../types";
+import CandidateReview from "./CandidateReview";
+import type { FlashcardDTO, FlashcardCandidateDTO } from "../../types";
 
 interface GenerateFormProps {
   onGenerated?: (flashcards: FlashcardDTO[]) => void;
@@ -13,6 +14,9 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
   const [count, setCount] = useState(5);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [candidates, setCandidates] = useState<FlashcardCandidateDTO[] | null>(null);
+  const [generationId, setGenerationId] = useState<string | null>(null);
+  const [acceptLoading, setAcceptLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +47,39 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       }
 
       const data = await response.json();
+      
+      // Store candidates for review
+      setCandidates(data.candidates);
+      setGenerationId(data.generation_id);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Wystąpił błąd podczas generowania");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleAcceptCandidates = async (generationId: string, selectedCandidates: FlashcardCandidateDTO[]) => {
+    setAcceptLoading(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/flashcards/accept", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          generation_id: generationId,
+          accepted_candidates: selectedCandidates,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Nie udało się zaakceptować fiszek");
+      }
+
+      const data = await response.json();
 
       if (onGenerated) {
         onGenerated(data.flashcards);
@@ -50,10 +87,16 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
         window.location.href = "/flashcards";
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Wystąpił błąd podczas generowania");
+      setError(err instanceof Error ? err.message : "Wystąpił błąd podczas akceptowania fiszek");
     } finally {
-      setLoading(false);
+      setAcceptLoading(false);
     }
+  };
+
+  const handleCancelReview = () => {
+    setCandidates(null);
+    setGenerationId(null);
+    setError(null);
   };
 
   const handleCancel = () => {
@@ -63,6 +106,28 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
       window.location.href = "/flashcards";
     }
   };
+
+  // Show candidate review if we have candidates
+  if (candidates && generationId) {
+    return (
+      <div>
+        {error && (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <div className="text-red-800">
+              <strong>Błąd:</strong> {error}
+            </div>
+          </div>
+        )}
+        <CandidateReview
+          candidates={candidates}
+          generationId={generationId}
+          onAccept={handleAcceptCandidates}
+          onCancel={handleCancelReview}
+          isLoading={acceptLoading}
+        />
+      </div>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
