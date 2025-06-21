@@ -6,7 +6,7 @@ test.describe("Smoke Tests - Basic Functionality", () => {
 
     // Check basic page structure
     await expect(page).toHaveTitle(/my10xCards/);
-    await expect(page.locator("h1")).toContainText("my10xCards");
+    await expect(page.locator("h1").first()).toContainText("my10xCards");
 
     // Check navigation cards
     await expect(page.locator("text=Moje fiszki")).toBeVisible();
