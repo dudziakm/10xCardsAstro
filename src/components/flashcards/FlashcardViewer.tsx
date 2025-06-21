@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from '../ui/button';
-import { LoadingSpinner } from '../ui/LoadingSpinner';
-import type { FlashcardDTO } from '../../types';
+import { useState, useEffect } from "react";
+import { Button } from "../ui/button";
+import { LoadingSpinner } from "../ui/LoadingSpinner";
+import type { FlashcardDTO } from "../../types";
 
 interface FlashcardViewerProps {
   flashcard?: FlashcardDTO;
@@ -11,13 +11,7 @@ interface FlashcardViewerProps {
   showActions?: boolean;
 }
 
-export function FlashcardViewer({ 
-  flashcard, 
-  onEdit, 
-  onDelete, 
-  onBack,
-  showActions = true 
-}: FlashcardViewerProps) {
+export function FlashcardViewer({ flashcard, onEdit, onDelete, onBack, showActions = true }: FlashcardViewerProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [loadedFlashcard, setLoadedFlashcard] = useState<FlashcardDTO | null>(flashcard || null);
   const [loading, setLoading] = useState(!flashcard);
@@ -26,7 +20,7 @@ export function FlashcardViewer({
   // Load flashcard if not provided
   useEffect(() => {
     if (!flashcard && !loadedFlashcard) {
-      const flashcardId = document.querySelector('[data-flashcard-id]')?.getAttribute('data-flashcard-id');
+      const flashcardId = document.querySelector("[data-flashcard-id]")?.getAttribute("data-flashcard-id");
       if (flashcardId) {
         loadFlashcard(flashcardId);
       }
@@ -38,19 +32,19 @@ export function FlashcardViewer({
       setLoading(true);
       setError(null);
       const response = await fetch(`/api/flashcards/${id}`);
-      
+
       if (!response.ok) {
         if (response.status === 404) {
-          setError('Fiszka nie została znaleziona');
+          setError("Fiszka nie została znaleziona");
           return;
         }
-        throw new Error('Failed to load flashcard');
+        throw new Error("Failed to load flashcard");
       }
 
       const flashcardData = await response.json();
       setLoadedFlashcard(flashcardData);
-    } catch (err) {
-      setError('Nie udało się załadować fiszki');
+    } catch {
+      setError("Nie udało się załadować fiszki");
     } finally {
       setLoading(false);
     }
@@ -69,27 +63,27 @@ export function FlashcardViewer({
 
   const handleDelete = async () => {
     if (!currentFlashcard) return;
-    if (!confirm('Czy na pewno chcesz usunąć tę fiszkę?')) {
+    if (!confirm("Czy na pewno chcesz usunąć tę fiszkę?")) {
       return;
     }
 
     try {
       const response = await fetch(`/api/flashcards/${currentFlashcard.id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to delete flashcard');
+        throw new Error(errorData.message || "Failed to delete flashcard");
       }
 
       if (onDelete) {
         onDelete(currentFlashcard.id);
       } else {
-        window.location.href = '/flashcards';
+        window.location.href = "/flashcards";
       }
     } catch (err) {
-      alert(err instanceof Error ? err.message : 'Failed to delete flashcard');
+      alert(err instanceof Error ? err.message : "Failed to delete flashcard");
     }
   };
 
@@ -97,17 +91,17 @@ export function FlashcardViewer({
     if (onBack) {
       onBack();
     } else {
-      window.location.href = '/flashcards';
+      window.location.href = "/flashcards";
     }
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pl-PL', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("pl-PL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -125,8 +119,11 @@ export function FlashcardViewer({
         <div className="text-red-800">
           <strong>Błąd:</strong> {error}
         </div>
-        {error === 'Fiszka nie została znaleziona' && (
-          <a href="/flashcards" className="mt-2 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+        {error === "Fiszka nie została znaleziona" && (
+          <a
+            href="/flashcards"
+            className="mt-2 inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+          >
             Powrót do listy
           </a>
         )}
@@ -168,24 +165,31 @@ export function FlashcardViewer({
 
       {/* Flashcard */}
       <div className="max-w-2xl mx-auto">
-        <div 
+        <div
           className="relative bg-white border-2 border-gray-200 rounded-xl shadow-lg cursor-pointer transform transition-transform hover:scale-105"
-          style={{ minHeight: '300px' }}
+          style={{ minHeight: "300px" }}
           onClick={() => setIsFlipped(!isFlipped)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              setIsFlipped(!isFlipped);
+            }
+          }}
+          role="button"
+          tabIndex={0}
+          aria-label={isFlipped ? "Kliknij aby zobaczyć przód fiszki" : "Kliknij aby zobaczyć tył fiszki"}
         >
           <div className="absolute inset-0 p-6 flex flex-col">
             {/* Card side indicator */}
             <div className="flex justify-between items-center mb-4">
-              <div className={`px-3 py-1 rounded-full text-sm font-medium ${
-                isFlipped 
-                  ? 'bg-green-100 text-green-800' 
-                  : 'bg-blue-100 text-blue-800'
-              }`}>
-                {isFlipped ? 'Tył' : 'Przód'}
+              <div
+                className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  isFlipped ? "bg-green-100 text-green-800" : "bg-blue-100 text-blue-800"
+                }`}
+              >
+                {isFlipped ? "Tył" : "Przód"}
               </div>
-              <div className="text-sm text-gray-500">
-                Kliknij aby przewrócić
-              </div>
+              <div className="text-sm text-gray-500">Kliknij aby przewrócić</div>
             </div>
 
             {/* Card content */}
@@ -199,12 +203,12 @@ export function FlashcardViewer({
 
             {/* Source badge */}
             <div className="flex justify-center mt-4">
-              <div className={`px-3 py-1 rounded-full text-xs font-medium ${
-                currentFlashcard.source === 'ai' 
-                  ? 'bg-purple-100 text-purple-800' 
-                  : 'bg-gray-100 text-gray-800'
-              }`}>
-                {currentFlashcard.source === 'ai' ? '🤖 AI' : '✍️ Manualna'}
+              <div
+                className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  currentFlashcard.source === "ai" ? "bg-purple-100 text-purple-800" : "bg-gray-100 text-gray-800"
+                }`}
+              >
+                {currentFlashcard.source === "ai" ? "🤖 AI" : "✍️ Manualna"}
               </div>
             </div>
           </div>
@@ -212,9 +216,7 @@ export function FlashcardViewer({
 
         {/* Instructions */}
         <div className="text-center mt-4">
-          <p className="text-gray-600">
-            Kliknij na fiszkę aby zobaczyć {isFlipped ? 'przód' : 'tył'}
-          </p>
+          <p className="text-gray-600">Kliknij na fiszkę aby zobaczyć {isFlipped ? "przód" : "tył"}</p>
         </div>
       </div>
 
@@ -231,7 +233,7 @@ export function FlashcardViewer({
             </div>
           )}
           <div>
-            <strong>Źródło:</strong> {currentFlashcard.source === 'ai' ? 'Wygenerowana przez AI' : 'Utworzona ręcznie'}
+            <strong>Źródło:</strong> {currentFlashcard.source === "ai" ? "Wygenerowana przez AI" : "Utworzona ręcznie"}
           </div>
           <div>
             <strong>ID:</strong> {currentFlashcard.id}

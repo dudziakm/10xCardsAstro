@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Change Password (POST /api/auth/change-password)
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obecnego hasła dla weryfikacji oraz nowego hasła spełniającego wymogi bezpieczeństwa.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: POST
 - **Struktura URL**: `/api/auth/change-password`
 - **Nagłówki**:
@@ -19,6 +21,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
     ```
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `ChangePasswordRequestDTO` - Struktura danych wejściowych
   - `ChangePasswordResponseDTO` - Struktura odpowiedzi
@@ -26,6 +29,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
   - `changePasswordSchema` - walidacja obecnego i nowego hasła
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 200 OK**:
   ```json
   {
@@ -63,6 +67,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie POST trafia do endpointu `/api/auth/change-password`
 2. Middleware weryfikuje autoryzację użytkownika
 3. Handler parsuje i waliduje dane używając `changePasswordSchema`
@@ -75,6 +80,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
 7. Zwraca odpowiedź z kodem 200 OK
 
 ## 6. Względy bezpieczeństwa
+
 - **Weryfikacja obecnego hasła**: Obowiązkowa weryfikacja przed zmianą
 - **Walidacja nowego hasła**: Sprawdzenie siły hasła
 - **Rate limiting**: Ograniczenie prób zmiany hasła
@@ -82,6 +88,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
 - **Session invalidation**: Opcjonalne wylogowanie ze wszystkich sesji
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Błędy walidacji nowego hasła
 - **401 Unauthorized**: Brak autoryzacji użytkownika
 - **403 Forbidden**: Nieprawidłowe obecne hasło
@@ -91,27 +98,33 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
 ## 8. Etapy wdrożenia
 
 ### 1. Rozszerzenie schematu walidacji
+
 1. Dodaj do `src/lib/schemas/auth.schema.ts`:
+
    ```typescript
-   export const changePasswordSchema = z.object({
-     current_password: z.string().min(1, 'Current password is required'),
-     new_password: z
-       .string()
-       .min(8, 'New password must be at least 8 characters')
-       .regex(
-         /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-         'New password must contain at least one lowercase letter, one uppercase letter, and one number'
-       ),
-   }).refine((data) => data.current_password !== data.new_password, {
-     message: "New password must be different from current password",
-     path: ["new_password"],
-   });
+   export const changePasswordSchema = z
+     .object({
+       current_password: z.string().min(1, "Current password is required"),
+       new_password: z
+         .string()
+         .min(8, "New password must be at least 8 characters")
+         .regex(
+           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+           "New password must contain at least one lowercase letter, one uppercase letter, and one number"
+         ),
+     })
+     .refine((data) => data.current_password !== data.new_password, {
+       message: "New password must be different from current password",
+       path: ["new_password"],
+     });
 
    export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
    ```
 
 ### 2. Rozszerzenie AuthService
+
 1. Dodaj metodę do `src/lib/services/auth.service.ts`:
+
    ```typescript
    import type { ChangePasswordInput } from "../schemas/auth.schema";
 
@@ -121,9 +134,9 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
      async changePassword(userId: string, data: ChangePasswordInput) {
        // First, verify current password by attempting to sign in
        const { data: userData, error: userError } = await this.supabase.auth.getUser();
-       
+
        if (userError || !userData.user) {
-         throw new Error('UNAUTHORIZED');
+         throw new Error("UNAUTHORIZED");
        }
 
        // Verify current password
@@ -133,7 +146,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
        });
 
        if (signInError) {
-         throw new Error('INVALID_CURRENT_PASSWORD');
+         throw new Error("INVALID_CURRENT_PASSWORD");
        }
 
        // Update password
@@ -149,7 +162,7 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
        console.log(`Password changed for user ${userId} at ${new Date().toISOString()}`);
 
        return {
-         message: 'Password changed successfully',
+         message: "Password changed successfully",
          updated_at: updateData.user?.updated_at || new Date().toISOString(),
        };
      }
@@ -157,12 +170,14 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
    ```
 
 ### 3. Implementacja endpointu
+
 1. Stwórz `src/pages/api/auth/change-password.ts`:
+
    ```typescript
-   import type { APIRoute } from 'astro';
-   import { ZodError } from 'zod';
-   import { AuthService } from '../../../lib/services/auth.service';
-   import { changePasswordSchema } from '../../../lib/schemas/auth.schema';
+   import type { APIRoute } from "astro";
+   import { ZodError } from "zod";
+   import { AuthService } from "../../../lib/services/auth.service";
+   import { changePasswordSchema } from "../../../lib/schemas/auth.schema";
 
    export const POST: APIRoute = async ({ request, locals }) => {
      const { supabase, session } = locals;
@@ -171,10 +186,10 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
      if (!session) {
        return new Response(
          JSON.stringify({
-           error: 'Unauthorized',
-           message: 'You must be logged in to change password',
+           error: "Unauthorized",
+           message: "You must be logged in to change password",
          }),
-         { status: 401, headers: { 'Content-Type': 'application/json' } }
+         { status: 401, headers: { "Content-Type": "application/json" } }
        );
      }
 
@@ -187,50 +202,49 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
 
        return new Response(JSON.stringify(response), {
          status: 200,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof ZodError) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Invalid input data',
+             error: "Bad Request",
+             message: "Invalid input data",
              details: error.errors,
            }),
-           { status: 400, headers: { 'Content-Type': 'application/json' } }
+           { status: 400, headers: { "Content-Type": "application/json" } }
          );
        }
 
        if (error instanceof Error) {
-         if (error.message === 'UNAUTHORIZED') {
+         if (error.message === "UNAUTHORIZED") {
            return new Response(
              JSON.stringify({
-               error: 'Unauthorized',
-               message: 'Invalid session',
+               error: "Unauthorized",
+               message: "Invalid session",
              }),
-             { status: 401, headers: { 'Content-Type': 'application/json' } }
+             { status: 401, headers: { "Content-Type": "application/json" } }
            );
          }
 
-         if (error.message === 'INVALID_CURRENT_PASSWORD') {
+         if (error.message === "INVALID_CURRENT_PASSWORD") {
            return new Response(
              JSON.stringify({
-               error: 'Forbidden',
-               message: 'Current password is incorrect',
+               error: "Forbidden",
+               message: "Current password is incorrect",
              }),
-             { status: 403, headers: { 'Content-Type': 'application/json' } }
+             { status: 403, headers: { "Content-Type": "application/json" } }
            );
          }
        }
 
-       console.error('Change password error:', error);
+       console.error("Change password error:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Password change failed',
+           error: "Internal Server Error",
+           message: "Password change failed",
          }),
-         { status: 500, headers: { 'Content-Type': 'application/json' } }
+         { status: 500, headers: { "Content-Type": "application/json" } }
        );
      }
    };
@@ -239,11 +253,13 @@ Endpoint umożliwia zmianę hasła zalogowanego użytkownika. Wymaga podania obe
    ```
 
 ### 4. Dodatkowe funkcje bezpieczeństwa
+
 1. Implementacja rate limiting dla zmian hasła
 2. Email notification o zmianie hasła
 3. Opcjonalne wylogowanie ze wszystkich sesji po zmianie hasła
 
 ### 5. Testowanie
+
 1. Test prawidłowej zmiany hasła
 2. Test nieprawidłowego obecnego hasła
 3. Test słabego nowego hasła

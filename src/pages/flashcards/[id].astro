@@ -1,12 +1,12 @@
 ---
 // Flashcard detail page
-import Layout from '../../layouts/Layout.astro';
-import { FlashcardViewer } from '../../components/flashcards/FlashcardViewer';
+import Layout from "../../layouts/Layout.astro";
+import { FlashcardViewer } from "../../components/flashcards/FlashcardViewer";
 
 const { id } = Astro.params;
 
 if (!id) {
-  return Astro.redirect('/flashcards');
+  return Astro.redirect("/flashcards");
 }
 ---
 

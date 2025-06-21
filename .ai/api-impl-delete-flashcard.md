@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Delete Flashcard (DELETE /api/flashcards/{id})
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia usunięcie istniejącej fiszki użytkownika wraz z wszystkimi powiązanymi danymi (postęp nauki, historia przeglądów). Operacja jest nieodwracalna i wymaga odpowiednich uprawnień.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: DELETE
 - **Struktura URL**: `/api/flashcards/{id}`
 - **Parametry URL**:
@@ -12,11 +14,13 @@ Endpoint umożliwia usunięcie istniejącej fiszki użytkownika wraz z wszystkim
   - Autoryzacja: automatycznie obsługiwana przez middleware Supabase
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `DeleteFlashcardResponseDTO` - Struktura odpowiedzi
 - **Brak walidacji request body** - endpoint nie przyjmuje danych
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 200 OK**:
   ```json
   {
@@ -52,6 +56,7 @@ Endpoint umożliwia usunięcie istniejącej fiszki użytkownika wraz z wszystkim
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie DELETE trafia do endpointu `/api/flashcards/{id}`
 2. Middleware Supabase weryfikuje autoryzację użytkownika
 3. Handler ekstrahuje i waliduje ID z parametru URL
@@ -65,19 +70,23 @@ Endpoint umożliwia usunięcie istniejącej fiszki użytkownika wraz z wszystkim
 7. Zwraca odpowiedź z kodem 200 OK
 
 ## 6. Względy bezpieczeństwa
+
 - **Autoryzacja**: Weryfikacja sesji użytkownika
 - **Izolacja danych**: Możliwość usunięcia tylko własnych fiszek
 - **Kaskadowe usuwanie**: Bezpieczne usuwanie powiązanych danych
 - **UUID validation**: Sprawdzenie poprawności formatu ID
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Nieprawidłowy format UUID
 - **401 Unauthorized**: Brak ważnej sesji użytkownika
 - **404 Not Found**: Fiszka nie istnieje lub nie należy do użytkownika
 - **500 Internal Server Error**: Błędy bazy danych
 
 ## 8. Kaskadowe usuwanie danych
+
 Podczas usuwania fiszki należy usunąć:
+
 1. Rekordy postępu nauki (`flashcard_progress`)
 2. Powiązania w sesjach nauki (aktualizacja statystyk)
 3. Referencje w generacjach AI (jeśli fiszka była wygenerowana)
@@ -85,6 +94,7 @@ Podczas usuwania fiszki należy usunąć:
 ## 9. Etapy wdrożenia
 
 ### 1. Rozszerzenie typów
+
 1. Dodaj do `src/types.ts`:
    ```typescript
    export interface DeleteFlashcardResponseDTO {
@@ -99,7 +109,9 @@ Podczas usuwania fiszki należy usunąć:
    ```
 
 ### 2. Rozszerzenie FlashcardService
+
 1. Dodaj metodę do `src/lib/services/flashcard.service.ts`:
+
    ```typescript
    async deleteFlashcard(userId: string, flashcardId: string): Promise<DeleteFlashcardResponseDTO> {
      // Validate UUID format
@@ -177,7 +189,9 @@ Podczas usuwania fiszki należy usunąć:
    ```
 
 ### 3. Rozszerzenie endpointu
+
 1. Dodaj metodę DELETE do `src/pages/api/flashcards/[id].ts`:
+
    ```typescript
    // ... existing GET and PUT methods
 
@@ -187,28 +201,28 @@ Podczas usuwania fiszki należy usunąć:
      if (!session) {
        return new Response(
          JSON.stringify({
-           error: 'Unauthorized',
-           message: 'You must be logged in to delete flashcards',
+           error: "Unauthorized",
+           message: "You must be logged in to delete flashcards",
          }),
          {
            status: 401,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
 
      try {
        const flashcardId = params.id;
-       
+
        if (!flashcardId) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Flashcard ID is required',
+             error: "Bad Request",
+             message: "Flashcard ID is required",
            }),
            {
              status: 400,
-             headers: { 'Content-Type': 'application/json' },
+             headers: { "Content-Type": "application/json" },
            }
          );
        }
@@ -218,47 +232,46 @@ Podczas usuwania fiszki należy usunąć:
 
        return new Response(JSON.stringify(response), {
          status: 200,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof Error) {
-         if (error.message === 'INVALID_UUID') {
+         if (error.message === "INVALID_UUID") {
            return new Response(
              JSON.stringify({
-               error: 'Bad Request',
-               message: 'Invalid flashcard ID format',
+               error: "Bad Request",
+               message: "Invalid flashcard ID format",
              }),
              {
                status: 400,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
 
-         if (error.message === 'FLASHCARD_NOT_FOUND') {
+         if (error.message === "FLASHCARD_NOT_FOUND") {
            return new Response(
              JSON.stringify({
-               error: 'Not Found',
-               message: 'Flashcard not found or access denied',
+               error: "Not Found",
+               message: "Flashcard not found or access denied",
              }),
              {
                status: 404,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
        }
 
-       console.error('Error deleting flashcard:', error);
+       console.error("Error deleting flashcard:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Failed to delete flashcard',
+           error: "Internal Server Error",
+           message: "Failed to delete flashcard",
          }),
          {
            status: 500,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
@@ -266,16 +279,19 @@ Podczas usuwania fiszki należy usunąć:
    ```
 
 ### 4. Konfiguracja bazy danych
+
 1. Upewnij się że foreign key constraints są poprawnie skonfigurowane
 2. Sprawdź działanie cascade delete dla powiązanych tabel
 3. Skonfiguruj soft delete jeśli wymagane
 
 ### 5. Funkcje dodatkowe
+
 1. Opcjonalne soft delete zamiast hard delete
 2. Backup/export danych przed usunięciem
 3. Undo functionality (przywracanie przez określony czas)
 
 ### 6. Testowanie
+
 1. Test prawidłowego usunięcia fiszki
 2. Test usunięcia nieistniejącej fiszki
 3. Test usunięcia cudzej fiszki

@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: User Login (POST /api/auth/login)
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Auth do weryfikacji poświadczeń i zwrócenia JWT tokena oraz informacji o sesji użytkownika.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: POST
 - **Struktura URL**: `/api/auth/login`
 - **Nagłówki**:
@@ -18,6 +20,7 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
     ```
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `LoginRequestDTO` - Struktura danych wejściowych
   - `LoginResponseDTO` - Struktura odpowiedzi
@@ -25,6 +28,7 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
   - `loginSchema` - walidacja email i hasła
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 200 OK**:
   ```json
   {
@@ -73,6 +77,7 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie POST trafia do endpointu `/api/auth/login`
 2. Handler parsuje i waliduje dane używając `loginSchema`
 3. Handler wywołuje `AuthService.loginUser(email, password)`
@@ -85,12 +90,14 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
 7. Zwraca odpowiedź z kodem 200 OK
 
 ## 6. Względy bezpieczeństwa
+
 - **Rate limiting**: Ograniczenie prób logowania z tego samego IP
 - **Account lockout**: Blokada konta po zbyt wielu nieudanych próbach
 - **Secure cookies**: HttpOnly, Secure, SameSite cookies dla tokenów
 - **Email verification**: Wymaganie potwierdzenia email przed logowaniem
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Błędy walidacji formatu danych
 - **401 Unauthorized**: Nieprawidłowe poświadczenia
 - **403 Forbidden**: Email niepotwierdzony
@@ -100,18 +107,22 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
 ## 8. Etapy wdrożenia
 
 ### 1. Rozszerzenie schematu walidacji
+
 1. Dodaj do `src/lib/schemas/auth.schema.ts`:
+
    ```typescript
    export const loginSchema = z.object({
-     email: z.string().email('Invalid email format'),
-     password: z.string().min(1, 'Password is required'),
+     email: z.string().email("Invalid email format"),
+     password: z.string().min(1, "Password is required"),
    });
 
    export type LoginInput = z.infer<typeof loginSchema>;
    ```
 
 ### 2. Rozszerzenie AuthService
+
 1. Dodaj metodę do `src/lib/services/auth.service.ts`:
+
    ```typescript
    import type { LoginInput } from "../schemas/auth.schema";
 
@@ -125,22 +136,22 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
        });
 
        if (error) {
-         if (error.message.includes('Invalid login credentials')) {
-           throw new Error('INVALID_CREDENTIALS');
+         if (error.message.includes("Invalid login credentials")) {
+           throw new Error("INVALID_CREDENTIALS");
          }
-         if (error.message.includes('Email not confirmed')) {
-           throw new Error('EMAIL_NOT_CONFIRMED');
+         if (error.message.includes("Email not confirmed")) {
+           throw new Error("EMAIL_NOT_CONFIRMED");
          }
          throw new Error(`Login failed: ${error.message}`);
        }
 
        if (!authData.user || !authData.session) {
-         throw new Error('Login failed: No user data returned');
+         throw new Error("Login failed: No user data returned");
        }
 
        // Check if email is confirmed
        if (!authData.user.email_confirmed_at) {
-         throw new Error('EMAIL_NOT_CONFIRMED');
+         throw new Error("EMAIL_NOT_CONFIRMED");
        }
 
        return {
@@ -156,19 +167,21 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
            expires_at: authData.session.expires_at,
            expires_in: authData.session.expires_in,
          },
-         message: 'Login successful',
+         message: "Login successful",
        };
      }
    }
    ```
 
 ### 3. Implementacja endpointu
+
 1. Stwórz `src/pages/api/auth/login.ts`:
+
    ```typescript
-   import type { APIRoute } from 'astro';
-   import { ZodError } from 'zod';
-   import { AuthService } from '../../../lib/services/auth.service';
-   import { loginSchema } from '../../../lib/schemas/auth.schema';
+   import type { APIRoute } from "astro";
+   import { ZodError } from "zod";
+   import { AuthService } from "../../../lib/services/auth.service";
+   import { loginSchema } from "../../../lib/schemas/auth.schema";
 
    export const POST: APIRoute = async ({ request, locals, cookies }) => {
      try {
@@ -179,68 +192,67 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
        const response = await authService.loginUser(validatedData);
 
        // Set secure cookies for session management
-       cookies.set('sb-access-token', response.session.access_token, {
+       cookies.set("sb-access-token", response.session.access_token, {
          httpOnly: true,
          secure: true,
-         sameSite: 'lax',
+         sameSite: "lax",
          maxAge: response.session.expires_in,
-         path: '/',
+         path: "/",
        });
 
-       cookies.set('sb-refresh-token', response.session.refresh_token, {
+       cookies.set("sb-refresh-token", response.session.refresh_token, {
          httpOnly: true,
          secure: true,
-         sameSite: 'lax',
+         sameSite: "lax",
          maxAge: 60 * 60 * 24 * 30, // 30 days
-         path: '/',
+         path: "/",
        });
 
        return new Response(JSON.stringify(response), {
          status: 200,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof ZodError) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Invalid input data',
+             error: "Bad Request",
+             message: "Invalid input data",
              details: error.errors,
            }),
-           { status: 400, headers: { 'Content-Type': 'application/json' } }
+           { status: 400, headers: { "Content-Type": "application/json" } }
          );
        }
 
        if (error instanceof Error) {
-         if (error.message === 'INVALID_CREDENTIALS') {
+         if (error.message === "INVALID_CREDENTIALS") {
            return new Response(
              JSON.stringify({
-               error: 'Unauthorized',
-               message: 'Invalid email or password',
+               error: "Unauthorized",
+               message: "Invalid email or password",
              }),
-             { status: 401, headers: { 'Content-Type': 'application/json' } }
+             { status: 401, headers: { "Content-Type": "application/json" } }
            );
          }
 
-         if (error.message === 'EMAIL_NOT_CONFIRMED') {
+         if (error.message === "EMAIL_NOT_CONFIRMED") {
            return new Response(
              JSON.stringify({
-               error: 'Forbidden',
-               message: 'Email not confirmed. Please check your email for confirmation link.',
+               error: "Forbidden",
+               message: "Email not confirmed. Please check your email for confirmation link.",
              }),
-             { status: 403, headers: { 'Content-Type': 'application/json' } }
+             { status: 403, headers: { "Content-Type": "application/json" } }
            );
          }
        }
 
-       console.error('Login error:', error);
+       console.error("Login error:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Login failed',
+           error: "Internal Server Error",
+           message: "Login failed",
          }),
-         { status: 500, headers: { 'Content-Type': 'application/json' } }
+         { status: 500, headers: { "Content-Type": "application/json" } }
        );
      }
    };
@@ -249,10 +261,12 @@ Endpoint umożliwia logowanie użytkownika do systemu. Wykorzystuje Supabase Aut
    ```
 
 ### 4. Middleware update
+
 1. Zaktualizuj middleware do obsługi sesji z cookies
 2. Dodaj automatyczne odświeżanie tokenów
 
 ### 5. Testowanie
+
 1. Test prawidłowego logowania
 2. Test nieprawidłowych poświadczeń
 3. Test niepotwierdznego email

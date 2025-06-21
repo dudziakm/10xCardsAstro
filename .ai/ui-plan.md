@@ -5,6 +5,7 @@
 Aplikacja my10xCards opiera się na intuicyjnej architekturze interfejsu użytkownika, składającej się z trzech głównych sekcji dostępnych z górnego paska nawigacyjnego: "Moje fiszki", "Generowanie AI" oraz "Sesja nauki". Projekt zakłada prostotę i efektywność, umożliwiając użytkownikom szybkie tworzenie, zarządzanie i naukę z fiszek edukacyjnych.
 
 Struktura UI została zaprojektowana tak, aby odzwierciedlać główne funkcjonalności produktu:
+
 - Autentykacja użytkowników i zarządzanie kontem
 - Przeglądanie i zarządzanie fiszkami
 - Generowanie fiszek za pomocą AI
@@ -15,6 +16,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 ## 2. Lista widoków
 
 ### Strona logowania/rejestracji
+
 - **Ścieżka**: `/auth`
 - **Główny cel**: Umożliwienie użytkownikowi logowania lub założenia nowego konta
 - **Kluczowe informacje**: Formularze logowania i rejestracji z przełączaniem między nimi
@@ -30,6 +32,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Ochrona przed atakami typu brute force przez limity prób logowania
 
 ### Strona główna (dashboard)
+
 - **Ścieżka**: `/`
 - **Główny cel**: Zapewnienie szybkiego dostępu do kluczowych funkcji aplikacji
 - **Kluczowe informacje**: Statystyki fiszek, skróty do głównych funkcji
@@ -43,6 +46,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Responsywny układ dostosowujący się do różnych urządzeń
 
 ### Moje fiszki (lista)
+
 - **Ścieżka**: `/flashcards`
 - **Główny cel**: Wyświetlenie wszystkich fiszek użytkownika z możliwością wyszukiwania i zarządzania
 - **Kluczowe informacje**: Lista fiszek z możliwością filtrowania i wyszukiwania
@@ -60,6 +64,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Responsywny układ list dla różnych urządzeń
 
 ### Tworzenie fiszki (manualnie)
+
 - **Ścieżka**: `/flashcards/create`
 - **Główny cel**: Umożliwienie użytkownikowi manualnego tworzenia nowej fiszki
 - **Kluczowe informacje**: Formularz z polami na przód i tył fiszki
@@ -73,6 +78,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Przyciski dużych rozmiarów dla lepszej dostępności
 
 ### Edycja fiszki
+
 - **Ścieżka**: `/flashcards/edit/{id}`
 - **Główny cel**: Umożliwienie edycji istniejącej fiszki
 - **Kluczowe informacje**: Formularz z aktualnymi danymi fiszki
@@ -86,6 +92,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Komunikaty powodzenia/błędu
 
 ### Generowanie fiszek przez AI - krok 1
+
 - **Ścieżka**: `/flashcards/generate`
 - **Główny cel**: Wprowadzenie tekstu źródłowego do generowania fiszek
 - **Kluczowe informacje**: Pole tekstowe na tekst źródłowy
@@ -100,6 +107,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Wskaźnik ładowania podczas generowania
 
 ### Generowanie fiszek przez AI - krok 2
+
 - **Ścieżka**: `/flashcards/generate/review`
 - **Główny cel**: Recenzja wygenerowanych fiszek i wybór do zapisania
 - **Kluczowe informacje**: Lista wygenerowanych fiszek-kandydatów
@@ -114,6 +122,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Komunikat po zapisaniu fiszek
 
 ### Sesja nauki - przegląd fiszki (przód)
+
 - **Ścieżka**: `/learn`
 - **Główny cel**: Pokazanie przodu fiszki w trybie nauki
 - **Kluczowe informacje**: Treść przodu fiszki
@@ -128,6 +137,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Możliwość zakończenia sesji w dowolnym momencie
 
 ### Sesja nauki - przegląd fiszki (tył) z oceną wiedzy
+
 - **Ścieżka**: `/learn` (ten sam widok, inny stan)
 - **Główny cel**: Pokazanie tyłu fiszki i umożliwienie oceny znajomości
 - **Kluczowe informacje**: Treść tyłu fiszki, przyciski oceny
@@ -141,6 +151,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Animacja przewracania karty dla lepszego UX
 
 ### Profil użytkownika
+
 - **Ścieżka**: `/profile`
 - **Główny cel**: Zarządzanie kontem użytkownika
 - **Kluczowe informacje**: Informacje o koncie, opcje zarządzania
@@ -155,6 +166,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Zabezpieczenie przed przypadkowym usunięciem konta
 
 ### Zmiana hasła
+
 - **Ścieżka**: `/profile/change-password`
 - **Główny cel**: Umożliwienie zmiany hasła
 - **Kluczowe informacje**: Formularz zmiany hasła
@@ -169,6 +181,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
   - Zabezpieczenie przed nieautoryzowaną zmianą
 
 ### Usuwanie konta
+
 - **Ścieżka**: `/profile/delete-account`
 - **Główny cel**: Potwierdzenie i wykonanie usunięcia konta
 - **Kluczowe informacje**: Ostrzeżenie o konsekwencjach, formularz potwierdzenia
@@ -184,6 +197,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 ## 3. Mapa podróży użytkownika
 
 ### Rejestracja i pierwsze kroki
+
 1. Użytkownik wchodzi na stronę -> Widok logowania/rejestracji
 2. Użytkownik rejestruje się -> Widok strony głównej (dashboard)
 3. Użytkownik wybiera "Generowanie AI" -> Widok generowania (krok 1)
@@ -193,6 +207,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 7. Użytkownik przechodzi do "Sesja nauki" -> Rozpoczęcie nauki
 
 ### Codzienna nauka
+
 1. Użytkownik loguje się -> Widok strony głównej
 2. Użytkownik wybiera "Sesja nauki" -> Widok sesji nauki (przód fiszki)
 3. Użytkownik klika, aby zobaczyć tył -> Widok sesji nauki (tył fiszki)
@@ -200,6 +215,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 5. Proces powtarza się do końca sesji lub wyjścia użytkownika
 
 ### Zarządzanie fiszkami
+
 1. Użytkownik loguje się -> Widok strony głównej
 2. Użytkownik wybiera "Moje fiszki" -> Widok listy fiszek
 3. Użytkownik może:
@@ -211,7 +227,9 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 ## 4. Układ i struktura nawigacji
 
 ### Główne elementy nawigacji
+
 1. **Górny pasek nawigacyjny** (widoczny na wszystkich stronach po zalogowaniu):
+
    - Logo (link do strony głównej)
    - "Moje fiszki"
    - "Generowanie AI"
@@ -219,6 +237,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
    - Dropdown profilu użytkownika
 
 2. **Dropdown profilu użytkownika**:
+
    - Email użytkownika
    - "Profil"
    - "Zmień hasło"
@@ -232,6 +251,7 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
    - W sesji nauki: przyciski oceny znajomości, "Zakończ sesję"
 
 ### Przepływ nawigacji
+
 - **Stan przed zalogowaniem**: Dostępna tylko strona logowania/rejestracji
 - **Stan po zalogowaniu**: Dostęp do pełnej nawigacji
 - **Struktura zagnieżdżona**: Główne widoki dostępne z górnego paska, akcje kontekstowe z przycisków w widoku
@@ -239,43 +259,57 @@ Architektura wspiera responsywność, dzięki czemu interfejs dostosowuje się d
 ## 5. Kluczowe komponenty
 
 ### Karta fiszki
+
 Uniwersalny komponent do prezentacji fiszki, używany w różnych kontekstach:
+
 - W widoku listy: kompaktowa wersja
 - W sesji nauki: pełnoekranowa wersja z animacją przewracania
 - W procesie generowania: z checkboxem do zaznaczenia
 
 ### Formularz fiszki
+
 Komponent formularza używany przy tworzeniu i edycji fiszek:
+
 - Pola tekstowe z walidacją i licznikami znaków
 - Przyciski akcji
 - Obsługa błędów walidacji
 
 ### Kontrolki wyszukiwania i filtrowania
+
 Komponent używany w widoku "Moje fiszki":
+
 - Pole wyszukiwania
 - Opcje filtrowania (źródło: AI/manual)
 - Sterowanie sortowaniem
 
 ### Paginacja
+
 Komponent używany wszędzie, gdzie występują listy danych:
+
 - Przyciski nawigacji między stronami
 - Informacja o aktualnej/całkowitej liczbie stron
 - Opcja wyboru liczby elementów na stronę
 
 ### Formularze autentykacji
+
 Komponenty do logowania, rejestracji, zmiany hasła:
+
 - Pola formularza z walidacją
 - Obsługa błędów
 - Przyciski akcji
 
 ### System powiadomień
+
 Komponent do wyświetlania komunikatów:
+
 - Powiadomienia o sukcesie
 - Powiadomienia o błędach
 - Potwierdzenia akcji
 
 ### Przyciski oceny wiedzy
+
 Komponent używany w sesji nauki:
+
 - Przyciski oceny od 1 do 5
 - Opisy znaczenia ocen
-- Wizualne rozróżnienie poziomów 
+- Wizualne rozróżnienie poziomów

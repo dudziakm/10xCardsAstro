@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { APIRoute } from "astro";
 
 export const GET: APIRoute = async ({ locals }) => {
@@ -5,9 +6,6 @@ export const GET: APIRoute = async ({ locals }) => {
   const userId = session?.user?.id || "4d4918b3-fcb8-4ece-93c9-3272e8cbacc0";
 
   try {
-    console.log("Testing direct insert to flashcards table");
-    console.log("User ID:", userId);
-
     // Attempt to directly insert a test flashcard
     const { data, error } = await supabase
       .from("flashcards")
@@ -20,7 +18,6 @@ export const GET: APIRoute = async ({ locals }) => {
       .select();
 
     if (error) {
-      console.error("Insert error:", error);
       return new Response(
         JSON.stringify({
           success: false,
@@ -48,7 +45,6 @@ export const GET: APIRoute = async ({ locals }) => {
       }
     );
   } catch (err) {
-    console.error("Unexpected error:", err);
     return new Response(
       JSON.stringify({
         success: false,
@@ -68,7 +64,7 @@ export const POST: APIRoute = async ({ locals }) => {
 
   try {
     // Get list of tables
-    const { data: tables, error: tablesError } = await supabase
+    const { data: tables, error: tablesError } = await (supabase as any)
       .from("pg_tables")
       .select("schemaname, tablename")
       .eq("schemaname", "public");
@@ -81,7 +77,7 @@ export const POST: APIRoute = async ({ locals }) => {
     }
 
     // Try to get columns for flashcards table
-    const { data: columns, error: columnsError } = await supabase.rpc("get_table_columns", {
+    const { data: columns, error: columnsError } = await (supabase as any).rpc("get_table_columns", {
       table_name: "flashcards",
     });
 

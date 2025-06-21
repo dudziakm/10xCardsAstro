@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Get Flashcard by ID (GET /api/flashcards/{id})
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej ID. Zwraca pełne informacje o fiszce z dodatkowymi metadanymi, takimi jak statystyki nauki i historia modyfikacji.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: GET
 - **Struktura URL**: `/api/flashcards/{id}`
 - **Parametry URL**:
@@ -12,6 +14,7 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
   - Autoryzacja: automatycznie obsługiwana przez middleware Supabase
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `FlashcardDetailDTO` - Rozszerzona reprezentacja fiszki
   - `FlashcardProgressDTO` - Informacje o postępie nauki
@@ -19,6 +22,7 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
   - Walidacja UUID w parametrze URL
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 200 OK**:
   ```json
   {
@@ -60,6 +64,7 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie GET trafia do endpointu `/api/flashcards/{id}`
 2. Middleware Supabase weryfikuje autoryzację użytkownika
 3. Handler ekstrahuje i waliduje ID z parametru URL
@@ -71,11 +76,13 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
 6. Handler zwraca sformatowaną odpowiedź
 
 ## 6. Względy bezpieczeństwa
+
 - **Autoryzacja**: Weryfikacja sesji użytkownika
 - **Izolacja danych**: Dostęp tylko do fiszek zalogowanego użytkownika
 - **UUID validation**: Sprawdzenie poprawności formatu ID
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Nieprawidłowy format UUID
 - **401 Unauthorized**: Brak ważnej sesji użytkownika
 - **404 Not Found**: Fiszka nie istnieje lub nie należy do użytkownika
@@ -84,7 +91,9 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
 ## 8. Etapy wdrożenia
 
 ### 1. Rozszerzenie typów
+
 1. Dodaj do `src/types.ts`:
+
    ```typescript
    export interface FlashcardDetailDTO extends FlashcardDTO {
      progress?: FlashcardProgressDTO;
@@ -99,7 +108,9 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
    ```
 
 ### 2. Rozszerzenie FlashcardService
+
 1. Dodaj metodę do `src/lib/services/flashcard.service.ts`:
+
    ```typescript
    async getFlashcardById(userId: string, flashcardId: string): Promise<FlashcardDetailDTO> {
      // Validate UUID format
@@ -157,10 +168,12 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
    ```
 
 ### 3. Implementacja endpointu
+
 1. Stwórz `src/pages/api/flashcards/[id].ts`:
+
    ```typescript
-   import type { APIRoute } from 'astro';
-   import { FlashcardService } from '../../../lib/services/flashcard.service';
+   import type { APIRoute } from "astro";
+   import { FlashcardService } from "../../../lib/services/flashcard.service";
 
    export const GET: APIRoute = async ({ params, locals }) => {
      const { supabase, session } = locals;
@@ -168,28 +181,28 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
      if (!session) {
        return new Response(
          JSON.stringify({
-           error: 'Unauthorized',
-           message: 'You must be logged in to access flashcards',
+           error: "Unauthorized",
+           message: "You must be logged in to access flashcards",
          }),
          {
            status: 401,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
 
      try {
        const flashcardId = params.id;
-       
+
        if (!flashcardId) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Flashcard ID is required',
+             error: "Bad Request",
+             message: "Flashcard ID is required",
            }),
            {
              status: 400,
-             headers: { 'Content-Type': 'application/json' },
+             headers: { "Content-Type": "application/json" },
            }
          );
        }
@@ -199,47 +212,46 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
 
        return new Response(JSON.stringify(flashcard), {
          status: 200,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof Error) {
-         if (error.message === 'INVALID_UUID') {
+         if (error.message === "INVALID_UUID") {
            return new Response(
              JSON.stringify({
-               error: 'Bad Request',
-               message: 'Invalid flashcard ID format',
+               error: "Bad Request",
+               message: "Invalid flashcard ID format",
              }),
              {
                status: 400,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
 
-         if (error.message === 'FLASHCARD_NOT_FOUND') {
+         if (error.message === "FLASHCARD_NOT_FOUND") {
            return new Response(
              JSON.stringify({
-               error: 'Not Found',
-               message: 'Flashcard not found or access denied',
+               error: "Not Found",
+               message: "Flashcard not found or access denied",
              }),
              {
                status: 404,
-               headers: { 'Content-Type': 'application/json' },
+               headers: { "Content-Type": "application/json" },
              }
            );
          }
        }
 
-       console.error('Error getting flashcard:', error);
+       console.error("Error getting flashcard:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Failed to retrieve flashcard',
+           error: "Internal Server Error",
+           message: "Failed to retrieve flashcard",
          }),
          {
            status: 500,
-           headers: { 'Content-Type': 'application/json' },
+           headers: { "Content-Type": "application/json" },
          }
        );
      }
@@ -249,6 +261,7 @@ Endpoint umożliwia pobranie szczegółów pojedynczej fiszki na podstawie jej I
    ```
 
 ### 4. Testowanie
+
 1. Test pobierania istniejącej fiszki
 2. Test pobierania nieistniejącej fiszki
 3. Test dostępu do cudzej fiszki

@@ -6,7 +6,7 @@
 
 This table is managed by Supabase Auth.
 
-- id: UUID PRIMARY KEY 
+- id: UUID PRIMARY KEY
 - email: VARCHAR(255) NOT NULL UNIQUE
 - encrypted_password: VARCHAR NOT NULL
 - created_at: TIMESTAMPTZ NOT NULL DEFAULT now()
@@ -49,9 +49,11 @@ This table is managed by Supabase Auth.
 ## 2. Relacje między tabelami
 
 1. **auth.users ↔ flashcards**: Jeden-do-wielu. Użytkownik może mieć wiele fiszek, każda fiszka należy do jednego użytkownika.
+
    - Klucz obcy: `flashcards.user_id` → `auth.users.id`
 
 2. **auth.users ↔ generations**: Jeden-do-wielu. Użytkownik może mieć wiele logów generowania, każdy log należy do jednego użytkownika.
+
    - Klucz obcy: `generations.user_id` → `auth.users.id`
 
 3. **generations ↔ generation_error_logs**: Jeden-do-wielu. Proces generowania może mieć wiele logów błędów, każdy log błędu dotyczy jednego procesu generowania.
@@ -96,4 +98,4 @@ Trigger `update_flashcards_updated_at` na tabeli `flashcards` automatycznie aktu
 
 7. **Pełnotekstowe wyszukiwanie**: Zaimplementowano pełnotekstowe wyszukiwanie dla pól front i back w tabeli flashcards, wykorzystując indeksy GIN dla optymalnej wydajności.
 
-8. **Brak tabeli dla sesji nauki**: Zgodnie z notatkami, tabele dla algorytmu powtórek i sesji nauki zostaną zaimplementowane w późniejszym etapie projektu. 
+8. **Brak tabeli dla sesji nauki**: Zgodnie z notatkami, tabele dla algorytmu powtórek i sesji nauki zostaną zaimplementowane w późniejszym etapie projektu.

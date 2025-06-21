@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: Create Flashcard (POST /api/flashcards)
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W przeciwieństwie do fiszek generowanych przez AI, te fiszki będą miały źródło (source) oznaczone jako "manual". Endpoint wymaga autoryzacji i walidacji danych wejściowych.
 
 ## 2. Szczegóły żądania
+
 - Metoda HTTP: POST
 - Struktura URL: `/api/flashcards`
 - Parametry:
@@ -21,6 +23,7 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
   - Content-Type: application/json
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `CreateFlashcardRequestDTO`: Do walidacji danych wejściowych
   - `FlashcardDTO`: Do strukturyzacji odpowiedzi
@@ -28,6 +31,7 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
   - `CreateFlashcardCommand`: Do operacji bazodanowych
 
 ## 4. Szczegóły odpowiedzi
+
 - Status Code: 201 Created
 - Response Body:
   ```json
@@ -46,6 +50,7 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
   - 500 Internal Server Error: Błąd serwera
 
 ## 5. Przepływ danych
+
 1. Otrzymanie żądania POST
 2. Autoryzacja użytkownika za pomocą middleware Supabase
 3. Walidacja danych wejściowych (front, back) przy użyciu Zod
@@ -54,15 +59,17 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
 6. Zwrócenie zapisanej fiszki jako FlashcardDTO z kodem 201 Created
 
 ## 6. Względy bezpieczeństwa
+
 - **Autoryzacja**: Endpoint wymaga autentykacji użytkownika. Wykorzystać middleware Astro do weryfikacji sesji
 - **Walidacja danych**: Wszystkie dane wejściowe muszą być walidowane pod kątem długości i poprawności
 - **Sanityzacja danych**: Zapewnić, że dane tekstowe są odpowiednio sanityzowane
-- **Row Level Security (RLS)**: 
+- **Row Level Security (RLS)**:
   - W produkcji: Wykorzystać polityki RLS Supabase, aby użytkownicy mieli dostęp tylko do swoich danych
   - W development: Możliwe jest tymczasowe wyłączenie RLS poprzez użycie `supabaseAdminClient` zamiast standardowego klienta
 - **User ID**: Pobierać ID użytkownika z kontekstu sesji, nigdy z danych wejściowych
 
 ## 7. Obsługa błędów
+
 - **Walidacja danych wejściowych**:
   - Brakujące pola: 400 Bad Request z informacją o brakujących polach
   - Przekroczenie limitów znaków: 400 Bad Request z informacją o limicie
@@ -76,6 +83,7 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
   - Ogólne błędy: 500 Internal Server Error z ogólnym komunikatem (bez ujawniania szczegółów technicznych)
 
 ## 8. Rozważania dotyczące wydajności
+
 - Zastosować cache dla sesji użytkownika
 - Optymalizować zapytania do bazy danych przez wykorzystanie indeksów
 - Monitorować czas odpowiedzi endpointu i liczbę żądań
@@ -84,25 +92,31 @@ Endpoint ten umożliwia ręczne tworzenie nowych fiszek przez użytkownika. W pr
 ## 9. Etapy wdrożenia
 
 1. **Utworzenie plików i struktury**:
+
    - Utworzenie katalogu `/src/pages/api/flashcards` jeśli nie istnieje
    - Utworzenie pliku `/src/pages/api/flashcards/index.ts` dla endpointu POST
 
 2. **Utworzenie serwisu**:
+
    - Utworzenie katalogu `/src/lib/services` jeśli nie istnieje
    - Utworzenie pliku `/src/lib/services/flashcard.service.ts`
 
 3. **Implementacja schematu walidacji**:
+
    - Utworzenie schematu Zod dla walidacji danych wejściowych
 
 4. **Implementacja serwisu**:
+
    - Implementacja metody `createFlashcard` w `flashcard.service.ts`
    - Obsługa interakcji z bazą danych Supabase
 
 5. **Implementacja endpointu**:
+
    - Dodanie obsługi metody POST w `/src/pages/api/flashcards/index.ts`
    - Implementacja logiki biznesowej i obsługi błędów
 
 6. **Testowanie**:
+
    - Napisanie testów jednostkowych i integracyjnych dla endpointu
    - Manualne testowanie utworzenia fiszki
 
@@ -140,26 +154,22 @@ export class FlashcardService {
   async createFlashcard(userId: string, data: unknown): Promise<FlashcardDTO> {
     // Validate input
     const validatedData = createFlashcardSchema.parse(data);
-    
+
     // Prepare command
     const command: CreateFlashcardCommand = {
       user_id: userId,
       front: validatedData.front,
       back: validatedData.back,
-      source: "manual"
+      source: "manual",
     };
-    
+
     // Insert into database
-    const { data: flashcard, error } = await this.supabase
-      .from("flashcards")
-      .insert(command)
-      .select()
-      .single();
-      
+    const { data: flashcard, error } = await this.supabase.from("flashcards").insert(command).select().single();
+
     if (error) {
       throw new Error(`Failed to create flashcard: ${error.message}`);
     }
-    
+
     // Return as DTO
     return {
       id: flashcard.id,
@@ -167,7 +177,7 @@ export class FlashcardService {
       back: flashcard.back,
       source: flashcard.source,
       created_at: flashcard.created_at,
-      updated_at: flashcard.updated_at
+      updated_at: flashcard.updated_at,
     };
   }
 }
@@ -184,35 +194,32 @@ import { ZodError } from "zod";
 export const POST: APIRoute = async ({ request, locals }) => {
   // Ensure user is authenticated
   const { supabase, session } = locals;
-  
+
   if (!session) {
     return new Response(
       JSON.stringify({ error: "Unauthorized", message: "You must be logged in to create flashcards" }),
       {
         status: 401,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
-  
+
   try {
     // Parse request body
     const requestData = await request.json();
-    
+
     // Create flashcard service
     const flashcardService = new FlashcardService(supabase);
-    
+
     // Create flashcard
     const flashcard = await flashcardService.createFlashcard(session.user.id, requestData);
-    
+
     // Return successful response
-    return new Response(
-      JSON.stringify(flashcard),
-      {
-        status: 201,
-        headers: { "Content-Type": "application/json" }
-      }
-    );
+    return new Response(JSON.stringify(flashcard), {
+      status: 201,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
     // Handle validation errors
     if (error instanceof ZodError) {
@@ -220,31 +227,31 @@ export const POST: APIRoute = async ({ request, locals }) => {
         JSON.stringify({
           error: "Bad Request",
           message: "Invalid input data",
-          details: error.errors
+          details: error.errors,
         }),
         {
           status: 400,
-          headers: { "Content-Type": "application/json" }
+          headers: { "Content-Type": "application/json" },
         }
       );
     }
-    
+
     // Handle other errors
     console.error("Error creating flashcard:", error);
-    
+
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
-        message: "An unexpected error occurred"
+        message: "An unexpected error occurred",
       }),
       {
         status: 500,
-        headers: { "Content-Type": "application/json" }
+        headers: { "Content-Type": "application/json" },
       }
     );
   }
-}
+};
 
 // Disable prerendering for API routes
 export const prerender = false;
-``` 
+```

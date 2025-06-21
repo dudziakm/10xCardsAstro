@@ -16,26 +16,26 @@ This indicates that the port Supabase is trying to use (e.g., `54321`, `54324`, 
 
 ### Cause
 
-*   **Another Application:** Another service or application might be running on that specific port.
-*   **Windows Reserved Ports:** Windows, especially with features like Hyper-V or WSL enabled, often reserves ranges of ports dynamically, which can conflict with default application ports. The default Supabase ports in the `54xxx` range are sometimes affected.
+- **Another Application:** Another service or application might be running on that specific port.
+- **Windows Reserved Ports:** Windows, especially with features like Hyper-V or WSL enabled, often reserves ranges of ports dynamically, which can conflict with default application ports. The default Supabase ports in the `54xxx` range are sometimes affected.
 
 ### Solution Steps
 
 1.  **Identify Conflicting Ports:** Note the specific port mentioned in the error message (e.g., `54321`, `54324`).
 2.  **Modify `supabase/config.toml`:** The primary solution is to change the default ports in your `supabase/config.toml` file to a range less likely to be occupied. In this case, we changed the ports from the `5xxxx` range to the `6xxxx` range.
-    *   Example change for the API port:
-        ```toml
-        [api]
-        # Port to use for the API URL.
-        port = 64321 # Changed from 54321
-        ```
-    *   **Important:** Ensure *all* relevant ports in `config.toml` are changed. In the reported case, the `[inbucket]` port was initially missed:
-        ```toml
-        [inbucket]
-        # Port to use for the email testing server web interface.
-        port = 64324 # Changed from 54324
-        ```
-3.  **Check for System Reserved Ports (Advanced):** If changing ports doesn't work, you can check if Windows has explicitly reserved the port range. Open PowerShell *as Administrator* and run:
+    - Example change for the API port:
+      ```toml
+      [api]
+      # Port to use for the API URL.
+      port = 64321 # Changed from 54321
+      ```
+    - **Important:** Ensure _all_ relevant ports in `config.toml` are changed. In the reported case, the `[inbucket]` port was initially missed:
+      ```toml
+      [inbucket]
+      # Port to use for the email testing server web interface.
+      port = 64324 # Changed from 54324
+      ```
+3.  **Check for System Reserved Ports (Advanced):** If changing ports doesn't work, you can check if Windows has explicitly reserved the port range. Open PowerShell _as Administrator_ and run:
     ```powershell
     netsh interface ipv4 show excludedportrange protocol=tcp
     ```
@@ -87,29 +87,29 @@ ERROR vector::sources::docker_logs: Listing currently running containers failed.
 
 ### Cause
 
-*   The Supabase analytics service (`vector`) attempts to collect logs from other Docker containers by connecting to the Docker daemon.
-*   By default, it tries to connect via a TCP socket (`tcp://localhost:2375`).
-*   On Windows with Docker Desktop, the daemon typically listens on a *named pipe* for security reasons, not a TCP socket, unless explicitly configured otherwise. The `vector` container cannot reach the daemon via the expected TCP route.
+- The Supabase analytics service (`vector`) attempts to collect logs from other Docker containers by connecting to the Docker daemon.
+- By default, it tries to connect via a TCP socket (`tcp://localhost:2375`).
+- On Windows with Docker Desktop, the daemon typically listens on a _named pipe_ for security reasons, not a TCP socket, unless explicitly configured otherwise. The `vector` container cannot reach the daemon via the expected TCP route.
 
 ### Solution Steps
 
 1.  **Disable Analytics Service (Recommended for Local Dev):** Since the analytics service is often non-essential for local development workflows, the simplest solution is to disable it.
-    *   Edit `supabase/config.toml`.
-    *   Find the `[analytics]` section.
-    *   Set `enabled = false`:
-        ```toml
-        [analytics]
-        enabled = false # Changed from true
-        port = 64327
-        backend = "postgres"
-        ```
-    *   Run `supabase stop --no-backup` and then `supabase start` again. This was the solution applied successfully in this scenario.
+    - Edit `supabase/config.toml`.
+    - Find the `[analytics]` section.
+    - Set `enabled = false`:
+      ```toml
+      [analytics]
+      enabled = false # Changed from true
+      port = 64327
+      backend = "postgres"
+      ```
+    - Run `supabase stop --no-backup` and then `supabase start` again. This was the solution applied successfully in this scenario.
 2.  **Expose Docker Daemon via TCP (Alternative, Use with Caution):**
-    *   Open Docker Desktop settings.
-    *   Go to the "General" section.
-    *   Enable the option "Expose daemon on tcp://localhost:2375 without TLS".
-    *   **Security Warning:** Be aware that enabling this allows any process on your machine to potentially interact with your Docker daemon without encryption or authentication. Only enable this if you understand the risks.
-    *   Apply the changes and restart Docker Desktop. Then try `supabase start` again.
+    - Open Docker Desktop settings.
+    - Go to the "General" section.
+    - Enable the option "Expose daemon on tcp://localhost:2375 without TLS".
+    - **Security Warning:** Be aware that enabling this allows any process on your machine to potentially interact with your Docker daemon without encryption or authentication. Only enable this if you understand the risks.
+    - Apply the changes and restart Docker Desktop. Then try `supabase start` again.
 
 ## Testing Docker Port Binding Directly
 
@@ -130,4 +130,4 @@ If this `docker run` command fails with a port binding error, it confirms an iss
 
 ## Conclusion
 
-By systematically addressing port conflicts (changing them in `config.toml`), ensuring clean Docker state (`supabase stop`, `docker rm`), and disabling the analytics service (`[analytics] enabled = false`), the `supabase start` command was able to successfully launch the local development environment on Windows. 
+By systematically addressing port conflicts (changing them in `config.toml`), ensuring clean Docker state (`supabase stop`, `docker rm`), and disabling the analytics service (`[analytics] enabled = false`), the `supabase start` command was able to successfully launch the local development environment on Windows.

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const getLearningSessionSchema = z.object({
   session_id: z.string().uuid().optional(),

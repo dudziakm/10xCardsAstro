@@ -1,9 +1,11 @@
 # API Endpoint Implementation Plan: User Registration (POST /api/auth/register)
 
 ## 1. Przegląd punktu końcowego
+
 Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Supabase Auth do bezpiecznego zarządzania kontami użytkowników z weryfikacją email i automatycznym wysyłaniem emaila potwierdzającego.
 
 ## 2. Szczegóły żądania
+
 - **Metoda HTTP**: POST
 - **Struktura URL**: `/api/auth/register`
 - **Nagłówki**:
@@ -18,6 +20,7 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
     ```
 
 ## 3. Wykorzystywane typy
+
 - **DTOs**:
   - `RegisterRequestDTO` - Struktura danych wejściowych
   - `RegisterResponseDTO` - Struktura odpowiedzi
@@ -25,6 +28,7 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
   - `registerSchema` - walidacja email i hasła
 
 ## 4. Szczegóły odpowiedzi
+
 - **Status 201 Created**:
   ```json
   {
@@ -60,6 +64,7 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
   ```
 
 ## 5. Przepływ danych
+
 1. Żądanie POST trafia do endpointu `/api/auth/register`
 2. Handler parsuje i waliduje dane używając `registerSchema`
 3. Handler wywołuje `AuthService.registerUser(email, password)`
@@ -71,12 +76,14 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
 6. Zwraca odpowiedź z kodem 201 Created
 
 ## 6. Względy bezpieczeństwa
+
 - **Walidacja hasła**: Minimum 8 znaków, wymagana złożoność
 - **Walidacja email**: Sprawdzenie poprawnego formatu
 - **Rate limiting**: Ograniczenie liczby prób rejestracji z tego samego IP
 - **Email verification**: Obowiązkowa weryfikacja przez email
 
 ## 7. Obsługa błędów
+
 - **400 Bad Request**: Błędy walidacji (nieprawidłowy email, za słabe hasło)
 - **409 Conflict**: Email już istnieje w systemie
 - **429 Too Many Requests**: Przekroczenie rate limitów
@@ -85,18 +92,20 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
 ## 8. Etapy wdrożenia
 
 ### 1. Utworzenie schematu walidacji
+
 1. Stwórz `src/lib/schemas/auth.schema.ts`:
+
    ```typescript
-   import { z } from 'zod';
+   import { z } from "zod";
 
    export const registerSchema = z.object({
-     email: z.string().email('Invalid email format'),
+     email: z.string().email("Invalid email format"),
      password: z
        .string()
-       .min(8, 'Password must be at least 8 characters')
+       .min(8, "Password must be at least 8 characters")
        .regex(
          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-         'Password must contain at least one lowercase letter, one uppercase letter, and one number'
+         "Password must contain at least one lowercase letter, one uppercase letter, and one number"
        ),
    });
 
@@ -104,7 +113,9 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
    ```
 
 ### 2. Implementacja AuthService
+
 1. Stwórz `src/lib/services/auth.service.ts`:
+
    ```typescript
    import type { SupabaseClient } from "../../db/supabase.client";
    import type { RegisterInput } from "../schemas/auth.schema";
@@ -122,14 +133,14 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
        });
 
        if (error) {
-         if (error.message.includes('already registered')) {
-           throw new Error('USER_EXISTS');
+         if (error.message.includes("already registered")) {
+           throw new Error("USER_EXISTS");
          }
          throw new Error(`Registration failed: ${error.message}`);
        }
 
        if (!authData.user) {
-         throw new Error('Failed to create user');
+         throw new Error("Failed to create user");
        }
 
        return {
@@ -139,19 +150,21 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
            email_confirmed_at: authData.user.email_confirmed_at,
            created_at: authData.user.created_at,
          },
-         message: 'Registration successful. Please check your email for confirmation link.',
+         message: "Registration successful. Please check your email for confirmation link.",
        };
      }
    }
    ```
 
 ### 3. Implementacja endpointu
+
 1. Stwórz `src/pages/api/auth/register.ts`:
+
    ```typescript
-   import type { APIRoute } from 'astro';
-   import { ZodError } from 'zod';
-   import { AuthService } from '../../../lib/services/auth.service';
-   import { registerSchema } from '../../../lib/schemas/auth.schema';
+   import type { APIRoute } from "astro";
+   import { ZodError } from "zod";
+   import { AuthService } from "../../../lib/services/auth.service";
+   import { registerSchema } from "../../../lib/schemas/auth.schema";
 
    export const POST: APIRoute = async ({ request, locals }) => {
      try {
@@ -163,40 +176,39 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
 
        return new Response(JSON.stringify(response), {
          status: 201,
-         headers: { 'Content-Type': 'application/json' },
+         headers: { "Content-Type": "application/json" },
        });
-
      } catch (error) {
        if (error instanceof ZodError) {
          return new Response(
            JSON.stringify({
-             error: 'Bad Request',
-             message: 'Invalid input data',
+             error: "Bad Request",
+             message: "Invalid input data",
              details: error.errors,
            }),
-           { status: 400, headers: { 'Content-Type': 'application/json' } }
+           { status: 400, headers: { "Content-Type": "application/json" } }
          );
        }
 
        if (error instanceof Error) {
-         if (error.message === 'USER_EXISTS') {
+         if (error.message === "USER_EXISTS") {
            return new Response(
              JSON.stringify({
-               error: 'Conflict',
-               message: 'User with this email already exists',
+               error: "Conflict",
+               message: "User with this email already exists",
              }),
-             { status: 409, headers: { 'Content-Type': 'application/json' } }
+             { status: 409, headers: { "Content-Type": "application/json" } }
            );
          }
        }
 
-       console.error('Registration error:', error);
+       console.error("Registration error:", error);
        return new Response(
          JSON.stringify({
-           error: 'Internal Server Error',
-           message: 'Registration failed',
+           error: "Internal Server Error",
+           message: "Registration failed",
          }),
-         { status: 500, headers: { 'Content-Type': 'application/json' } }
+         { status: 500, headers: { "Content-Type": "application/json" } }
        );
      }
    };
@@ -205,11 +217,13 @@ Endpoint umożliwia rejestrację nowego użytkownika w systemie. Wykorzystuje Su
    ```
 
 ### 4. Konfiguracja Supabase Auth
+
 1. Skonfiguruj redirect URLs w Supabase Dashboard
 2. Ustaw email templates dla weryfikacji
 3. Skonfiguruj SMTP lub użyj built-in email service
 
 ### 5. Testowanie
+
 1. Test prawidłowej rejestracji
 2. Test duplikatu email
 3. Test słabego hasła
