@@ -57,7 +57,7 @@ export class FlashcardService {
     // Apply search filter if provided
     if (search && search.trim()) {
       const searchQuery = search.trim().split(/\s+/).join(" & ");
-      query = query.or(`front_tsv.phfts(${searchQuery}),back_tsv.phfts(${searchQuery})`);
+      query = query.or(`front_tsv.fts.${searchQuery},back_tsv.fts.${searchQuery}`);
     }
 
     // Apply pagination
