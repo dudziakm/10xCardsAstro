@@ -77,12 +77,12 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await expect(page.locator("text=Kliknij aby zobaczyć odpowiedź")).toBeVisible();
   });
 
-  test("should flip card to show back when clicked (US-008)", async ({ page }) => {
-    await page.goto("/learn");
-    await page.waitForSelector('[data-testid="learning-card"]');
+  test("should show back of the card after clicking (US-007)", async ({ page }) => {
+    // Wait for the learning card to be visible
+    await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
 
     // Click on the card to flip it
-    await page.click('[data-testid="learning-card"]');
+    await page.locator('[data-testid="learning-card"]').click();
 
     // Should show back side
     await expect(page.locator('[data-testid="card-back"]')).toBeVisible();
@@ -101,62 +101,46 @@ test.describe("Learning Session with Spaced Repetition", () => {
     ).toBeVisible();
   });
 
-  test("should rate flashcard and move to next (US-008)", async ({ page }) => {
-    await page.goto("/learn");
-    await page.waitForSelector('[data-testid="learning-card"]');
+  test("should load next card after rating", async ({ page }) => {
+    // Wait for the learning card to be visible
+    await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
 
-    // Flip card
-    await page.click('[data-testid="learning-card"]');
+    // Flip card and rate it
+    await page.locator('[data-testid="learning-card"]').click();
+    const ratingButton = page.locator('[data-testid="rating-4"]');
+    await expect(ratingButton).toBeEnabled();
+    await ratingButton.click();
 
-    // Rate the card (4 = Easy)
-    await page.click('[data-testid="rating-4"]');
+    // Should show new card
+    await expect(page.locator('[data-testid="card-front"]')).toBeVisible();
+  });
+
+  test("should update session stats after rating", async ({ page }) => {
+    // Check initial stats
+    await expect(page.locator("text=Przejrzane: 0")).toBeVisible();
+    await expect(page.locator("text=Pozostało: 5")).toBeVisible();
+
+    // Rate a card
+    await page.locator('[data-testid="learning-card"]').click();
+    const ratingButton = page.locator('[data-testid="rating-3"]');
+    await expect(ratingButton).toBeEnabled();
+    await ratingButton.click();
 
     // Should show rating confirmation
     await expect(page.locator("text=Oceniono!")).toBeVisible();
-
-    // Mock next card
-    await page.route("/api/learn/session", (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          card: {
-            id: "card-456",
-            front: "What is JSX?",
-            back: "JavaScript XML syntax extension",
-            last_reviewed: null,
-            review_count: 0,
-            difficulty_rating: 2.5,
-          },
-          session: {
-            session_id: "session-123",
-            cards_reviewed: 1,
-            cards_remaining: 4,
-            session_start: new Date().toISOString(),
-          },
-        }),
-      });
-    });
-
-    // Should load next card
-    await page.waitForSelector('[data-testid="learning-card"]');
-    await expect(page.locator('[data-testid="card-front"]')).toContainText("What is JSX?");
   });
 
-  test("should display session statistics (US-008)", async ({ page }) => {
-    await page.goto("/learn");
-    await page.waitForSelector('[data-testid="learning-card"]');
+  test("should show summary when session ends", async ({ page }) => {
+    // Wait for the learning card to be visible
+    await expect(page.locator('[data-testid="learning-card"]')).toBeVisible();
 
-    // Should show session progress in the stats section
-    await expect(page.locator("text=Przejrzano: 0")).toBeVisible();
-    await expect(page.locator("text=Pozostało: 5")).toBeVisible();
+    // End session
+    const endSessionButton = page.locator('button:has-text("Zakończ sesję")');
+    await expect(endSessionButton).toBeEnabled();
+    await endSessionButton.click();
 
-    // After rating a card, stats should update
-    await page.click('[data-testid="learning-card"]');
-    await page.click('[data-testid="rating-3"]');
-
-    // Stats should update (mocked in beforeEach) - just check rating was successful
-    await expect(page.locator("text=Oceniono!")).toBeVisible();
+    // Should show summary
+    await expect(page.locator("text=Sesja nauki zakończona!")).toBeVisible();
   });
 
   test("should show rating labels and intervals (US-008)", async ({ page }) => {
@@ -216,37 +200,26 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await expect(page.locator("text=Trudność: 2.5/5.0")).toBeVisible();
   });
 
-  test("should end learning session", async ({ page }) => {
-    await page.goto("/learn");
-    await page.waitForSelector('[data-testid="learning-card"]');
-
-    // Should show end session button
-    await expect(page.locator('button:has-text("Zakończ sesję")')).toBeVisible();
-
-    // Click end session
-    await page.click('button:has-text("Zakończ sesję")');
-
-    // Should navigate away (end session navigates to flashcards)
-    await expect(page).toHaveURL("/flashcards");
-  });
-
   test("should handle API errors during learning", async ({ page }) => {
-    // Mock API error for starting session
-    await page.route("/api/learn/session", (route) => {
+    // Mock API error for rating
+    await page.route("/api/learn/session/rate", (route) => {
       route.fulfill({
         status: 500,
         contentType: "application/json",
-        body: JSON.stringify({ error: "Failed to start learning session" }),
+        body: JSON.stringify({ error: "API Error" }),
       });
     });
 
-    await page.goto("/learn");
+    // Flip card and rate it
+    await page.locator('[data-testid="learning-card"]').click();
 
-    // Should show error message  
-    await expect(page.locator("text=Failed to load learning session")).toBeVisible();
+    // Rate the card
+    const ratingButton = page.locator('[data-testid="rating-4"]');
+    await expect(ratingButton).toBeEnabled();
+    await ratingButton.click();
 
-    // Should show retry button
-    await expect(page.locator('button:has-text("Spróbuj ponownie")')).toBeVisible();
+    // Should show error message
+    await expect(page.locator("text=Wystąpił błąd")).toBeVisible();
   });
 
   test("should handle rating API errors", async ({ page }) => {

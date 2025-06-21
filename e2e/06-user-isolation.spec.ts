@@ -45,18 +45,22 @@ test.describe("User Data Isolation", () => {
     await page.goto("/flashcards");
 
     // Click create new flashcard
-    await page.click("text=Dodaj fiszkę");
+    await page.locator("text=Dodaj fiszkę").click();
     await expect(page).toHaveURL("/flashcards/new");
 
+    await expect(page.locator('button[type="submit"]')).toBeVisible();
     // Fill in form with extra user specific content
-    const frontText = "Extra User Question: What is Node.js?";
-    const backText = "Extra User Answer: A JavaScript runtime built on Chrome's V8 engine";
+    const timestamp = Date.now();
+    const frontText = `Extra User Question ${timestamp}: What is Node.js?`;
+    const backText = `Extra User Answer ${timestamp}: A JavaScript runtime built on Chrome's V8 engine`;
 
     await page.fill('textarea[id="front"]', frontText);
     await page.fill('textarea[id="back"]', backText);
 
     // Submit the form
-    await page.click('button[type="submit"]');
+    const submitButton = page.locator('button[type="submit"]');
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
 
     // Should redirect back to flashcards list
     await expect(page).toHaveURL("/flashcards");
@@ -97,8 +101,9 @@ test.describe("User Data Isolation", () => {
     await expect(page.locator('textarea[id="prompt"]')).toBeVisible();
 
     // Generate some content to test isolation
+    const timestamp = Date.now();
     const testContent = `
-    Extra User Content for AI Generation:
+    Extra User Content for AI Generation ${timestamp}:
     
     Node.js is a JavaScript runtime that allows you to run JavaScript on the server.
     It's built on Chrome's V8 JavaScript engine and provides an event-driven, 

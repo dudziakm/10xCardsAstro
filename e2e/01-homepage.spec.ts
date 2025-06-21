@@ -70,4 +70,37 @@ test.describe("Homepage and Navigation", () => {
     await page.click('[data-testid="action-my-flashcards"]');
     await expect(page).toHaveURL("/flashcards");
   });
+
+  test("should navigate to My Flashcards from hero section", async ({ page }) => {
+    // Click button to go to flashcards
+    await page.locator('[data-testid="action-my-flashcards"]').click();
+
+    // Verify redirection to flashcards page
+    await expect(page).toHaveURL("/flashcards");
+  });
+
+  test("should navigate to Learn Session from hero section", async ({ page }) => {
+    // Click button to go to learning session
+    await page.locator('[data-testid="action-learn"]').click();
+
+    // Verify redirection to learning page
+    await expect(page).toHaveURL("/learn");
+  });
+
+  test("should navigate to AI Generation from hero section", async ({ page }) => {
+    // Click button to go to AI generation
+    await page.locator('[data-testid="action-generate-ai"]').click();
+
+    // Verify redirection to generation page
+    await expect(page).toHaveURL("/generate");
+  });
+
+  test("should have a working link in the footer", async ({ page }) => {
+    // Check footer visibility
+    await expect(page.locator("footer")).toBeVisible();
+
+    // Click on a link in the footer and verify navigation
+    await page.locator('[data-testid="action-my-flashcards"]').click();
+    await expect(page).toHaveURL("/flashcards");
+  });
 });

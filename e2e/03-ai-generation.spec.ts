@@ -21,18 +21,20 @@ test.describe("AI Flashcard Generation", () => {
   test("should validate input text length (US-001)", async ({ page }) => {
     // Test empty text - button should be disabled
     await page.fill('[data-testid="prompt-textarea"]', "");
-    await expect(page.locator('[data-testid="generate-button"]')).toBeDisabled();
+    const generateButton = page.locator('[data-testid="generate-button"]');
+    await expect(generateButton).toBeDisabled();
 
     // Test with valid text - button should be enabled
     const validText = "JavaScript podstawy programowania obiektowego";
     await page.fill('[data-testid="prompt-textarea"]', validText);
-    await expect(page.locator('[data-testid="generate-button"]')).toBeEnabled();
+    await expect(generateButton).toBeEnabled();
   });
 
   test("should generate flashcards with valid input (US-001)", async ({ page }) => {
     // Valid input text (1000-10000 chars about React)
+    const timestamp = Date.now();
     const validText = `
-    React is a JavaScript library for building user interfaces. It was developed by Facebook and is now maintained by Facebook and the community. React allows developers to create reusable UI components and manage the state of their applications efficiently. 
+    React is a JavaScript library for building user interfaces. Test ID: ${timestamp}. It was developed by Facebook and is now maintained by Facebook and the community. React allows developers to create reusable UI components and manage the state of their applications efficiently. 
     
     One of the key features of React is its virtual DOM, which helps improve performance by minimizing direct manipulation of the actual DOM. React components can be either functional or class-based, with functional components becoming more popular with the introduction of Hooks.
     
@@ -49,10 +51,13 @@ test.describe("AI Flashcard Generation", () => {
     await page.selectOption('[data-testid="count-select"]', "5");
 
     // Submit form
-    await page.click('[data-testid="generate-button"]');
+    const generateButton = page.locator('[data-testid="generate-button"]');
+    await expect(generateButton).toBeVisible();
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
 
     // Should show loading state
-    await expect(page.locator("text=Generuję fiszki...")).toBeVisible();
+    await expect(page.locator("text=Generuję fiszki...")).toBeVisible({ timeout: 10000 });
 
     // Wait for generation to complete (may take some time with real API)
     await page.waitForSelector('[data-testid="generated-flashcards"]', { timeout: 30000 });
@@ -61,7 +66,9 @@ test.describe("AI Flashcard Generation", () => {
     await expect(page.locator('[data-testid="generated-flashcards"]')).toBeVisible();
 
     // Should show up to 5 flashcards (based on count parameter)
-    const generatedCards = page.locator('[data-testid="candidate-card-0"], [data-testid="candidate-card-1"], [data-testid="candidate-card-2"], [data-testid="candidate-card-3"], [data-testid="candidate-card-4"]');
+    const generatedCards = page.locator(
+      '[data-testid="candidate-card-0"], [data-testid="candidate-card-1"], [data-testid="candidate-card-2"], [data-testid="candidate-card-3"], [data-testid="candidate-card-4"]'
+    );
     const cardCount = await generatedCards.count();
     expect(cardCount).toBeGreaterThan(0);
     expect(cardCount).toBeLessThanOrEqual(5);
@@ -79,13 +86,15 @@ test.describe("AI Flashcard Generation", () => {
 
     const validText = "React podstawy i zaawansowane koncepty programowania"; // Valid prompt
     await page.fill('[data-testid="prompt-textarea"]', validText);
-    await page.click('[data-testid="generate-button"]');
+    const generateButton = page.locator('[data-testid="generate-button"]');
+    await expect(generateButton).toBeEnabled();
+    await generateButton.click();
 
     // Should show error message
     await expect(page.locator("text=Wystąpił błąd podczas generowania")).toBeVisible();
 
     // Should allow retry
-    await expect(page.locator('[data-testid="generate-button"]')).toBeEnabled();
+    await expect(generateButton).toBeEnabled();
   });
 
   test("should validate count parameter", async ({ page }) => {
@@ -138,12 +147,14 @@ test.describe("AI Flashcard Generation", () => {
       }, 1000);
     });
 
-    await page.click('button[type="submit"]');
+    const submitButton = page.locator('button[type="submit"]');
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
 
     // During loading, form fields should be disabled
     await expect(page.locator('textarea[id="prompt"]')).toBeDisabled();
     await expect(page.locator('select[id="count"]')).toBeDisabled();
-    await expect(page.locator('button[type="submit"]')).toBeDisabled();
+    await expect(submitButton).toBeDisabled();
 
     // Wait for completion
     await page.waitForSelector('[data-testid="generated-flashcards"]');
@@ -154,7 +165,7 @@ test.describe("AI Flashcard Generation", () => {
     if (hasForm) {
       await expect(page.locator('textarea[id="prompt"]')).toBeEnabled();
       await expect(page.locator('select[id="count"]')).toBeEnabled();
-      await expect(page.locator('button[type="submit"]')).toBeEnabled();
+      await expect(submitButton).toBeEnabled();
     }
   });
 });

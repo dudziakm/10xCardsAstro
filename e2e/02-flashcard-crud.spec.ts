@@ -22,20 +22,24 @@ test.describe("Flashcard CRUD Operations", () => {
 
   test("should create new flashcard manually (US-003)", async ({ page }) => {
     // Click "Create New Flashcard" button
-    await page.click('[data-testid="create-flashcard"]');
+    await page.locator('[data-testid="create-flashcard"]').click();
 
     // Should navigate to create form
     await expect(page).toHaveURL("/flashcards/new");
 
     // Fill in the form
-    const frontText = "What is React?";
-    const backText = "A JavaScript library for building user interfaces";
+    const timestamp = Date.now();
+    const frontText = `What is React? ${timestamp}`;
+    const backText = `A JavaScript library for building user interfaces ${timestamp}`;
 
     await page.fill('[data-testid="front-textarea"]', frontText);
     await page.fill('[data-testid="back-textarea"]', backText);
 
     // Submit the form
-    await page.click('[data-testid="submit-button"]');
+    const submitButton = page.locator('[data-testid="submit-button"]');
+    await expect(submitButton).toBeVisible();
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
 
     // Should redirect back to flashcards list
     await expect(page).toHaveURL("/flashcards");
@@ -81,11 +85,15 @@ test.describe("Flashcard CRUD Operations", () => {
       await expect(page.locator("h1")).toContainText("Edytuj fiszkę");
 
       // Modify the flashcard
-      const newFrontText = "Updated: What is Vue.js?";
+      const timestamp = Date.now();
+      const newFrontText = `Updated: What is Vue.js? ${timestamp}`;
       await page.fill('[data-testid="front-textarea"]', newFrontText);
 
       // Save changes
-      await page.click('[data-testid="submit-button"]');
+      const submitButton = page.locator('[data-testid="submit-button"]');
+      await expect(submitButton).toBeVisible();
+      await expect(submitButton).toBeEnabled();
+      await submitButton.click();
 
       // Should redirect back to list
       await expect(page).toHaveURL("/flashcards");
@@ -109,7 +117,9 @@ test.describe("Flashcard CRUD Operations", () => {
       await expect(page.locator("text=Czy na pewno chcesz usunąć")).toBeVisible();
 
       // Confirm deletion
-      await page.click('button:has-text("Usuń")');
+      const deleteButton = page.locator('button:has-text("Usuń")');
+      await expect(deleteButton).toBeEnabled();
+      await deleteButton.click();
 
       // Should redirect back to list with one less flashcard
       const finalCards = await page.locator('[data-testid="flashcard-item"]').count();
@@ -127,7 +137,9 @@ test.describe("Flashcard CRUD Operations", () => {
       await page.locator('[data-testid="delete-flashcard"]').first().click();
 
       // Cancel deletion
-      await page.click('button:has-text("Anuluj")');
+      const cancelButton = page.locator('button:has-text("Anuluj")');
+      await expect(cancelButton).toBeEnabled();
+      await cancelButton.click();
 
       // Should return to list with same number of flashcards
       const finalCards = await page.locator('[data-testid="flashcard-item"]').count();

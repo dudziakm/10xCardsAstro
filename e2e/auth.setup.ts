@@ -33,7 +33,9 @@ setup("authenticate main user", async ({ page }) => {
   await page.fill('input[name="password"]', mainPassword);
 
   // Submit form and wait for redirect
-  await page.click('button[type="submit"]');
+  const submitButtonMain = page.locator('button[type="submit"]');
+  await expect(submitButtonMain).toBeEnabled();
+  await submitButtonMain.click();
   await page.waitForURL("/flashcards");
 
   // Verify we're logged in
@@ -55,7 +57,9 @@ setup("authenticate extra user", async ({ page }) => {
   await page.fill('input[name="password"]', extraPassword);
 
   // Submit form and wait for redirect
-  await page.click('button[type="submit"]');
+  const submitButtonExtra = page.locator('button[type="submit"]');
+  await expect(submitButtonExtra).toBeEnabled();
+  await submitButtonExtra.click();
   await page.waitForURL("/flashcards");
 
   // Verify we're logged in

@@ -35,7 +35,9 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     // Generate some flashcards first
     const validText = "A".repeat(1500);
     await page.fill('textarea[id="prompt"]', validText);
-    await page.click('button[type="submit"]');
+    const submitButton = page.locator('button[type="submit"]');
+    await expect(submitButton).toBeEnabled();
+    await submitButton.click();
 
     // Wait for generation to complete
     await page.waitForSelector('[data-testid="generated-flashcards"]');
@@ -84,7 +86,10 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     await page.check('[data-testid="select-card"]:nth-child(2)');
 
     // Click "Accept Selected"
-    await page.click('button:has-text("Zaakceptuj wybrane")');
+    const acceptButton = page.locator('button:has-text("Zaakceptuj wybrane")');
+    await expect(acceptButton).toBeVisible();
+    await expect(acceptButton).toBeEnabled();
+    await acceptButton.click();
 
     // Should show success message
     await expect(page.locator("text=Zaakceptowano 2 fiszki")).toBeVisible();
@@ -95,20 +100,24 @@ test.describe("AI Flashcard Review and Acceptance", () => {
 
   test("should edit flashcard before acceptance (US-002)", async ({ page }) => {
     // Click edit on first flashcard
-    await page.click('[data-testid="edit-card"]:first-child');
+    await page.locator('[data-testid="edit-card"]:first-child').click();
 
     // Should show edit form
     await expect(page.locator('[data-testid="edit-form"]')).toBeVisible();
 
     // Edit the content
-    const newFront = "What is React.js?";
-    const newBack = "A JavaScript library for building modern user interfaces";
+    const timestamp = Date.now();
+    const newFront = `What is React.js? ${timestamp}`;
+    const newBack = `A JavaScript library for building modern user interfaces ${timestamp}`;
 
     await page.fill('[data-testid="edit-front"]', newFront);
     await page.fill('[data-testid="edit-back"]', newBack);
 
     // Save changes
-    await page.click('button:has-text("Zapisz zmiany")');
+    const saveButton = page.locator('button:has-text("Zapisz zmiany")');
+    await expect(saveButton).toBeVisible();
+    await expect(saveButton).toBeEnabled();
+    await saveButton.click();
 
     // Should show updated content
     await expect(page.locator(`text=${newFront}`)).toBeVisible();
@@ -116,7 +125,8 @@ test.describe("AI Flashcard Review and Acceptance", () => {
 
     // Should still be able to accept the edited card
     await page.check('[data-testid="select-card"]:first-child');
-    await expect(page.locator('button:has-text("Zaakceptuj wybrane")')).toBeEnabled();
+    const acceptButton = page.locator('button:has-text("Zaakceptuj wybrane")');
+    await expect(acceptButton).toBeEnabled();
   });
 
   test("should reject flashcards (US-002)", async ({ page }) => {
@@ -124,13 +134,16 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     const initialCount = await page.locator('[data-testid="generated-flashcard"]').count();
 
     // Click reject on first flashcard
-    await page.click('[data-testid="reject-card"]:first-child');
+    await page.locator('[data-testid="reject-card"]:first-child').click();
 
     // Should show confirmation
     await expect(page.locator("text=Czy na pewno chcesz odrzucić")).toBeVisible();
 
     // Confirm rejection
-    await page.click('button:has-text("Odrzuć")');
+    const rejectButton = page.locator('button:has-text("Odrzuć")');
+    await expect(rejectButton).toBeVisible();
+    await expect(rejectButton).toBeEnabled();
+    await rejectButton.click();
 
     // Should remove the card from view
     const finalCount = await page.locator('[data-testid="generated-flashcard"]').count();
@@ -139,11 +152,11 @@ test.describe("AI Flashcard Review and Acceptance", () => {
 
   test("should validate edited flashcard content (US-002)", async ({ page }) => {
     // Click edit on first flashcard
-    await page.click('[data-testid="edit-card"]:first-child');
+    await page.locator('[data-testid="edit-card"]:first-child').click();
 
     // Try to save with empty front
     await page.fill('[data-testid="edit-front"]', "");
-    await page.click('button:has-text("Zapisz zmiany")');
+    await page.locator('button:has-text("Zapisz zmiany")').click();
 
     // Should show validation error
     await expect(page.locator("text=Przód fiszki nie może być pusty")).toBeVisible();
@@ -151,7 +164,7 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     // Try to save with text too long
     const tooLongFront = "A".repeat(201);
     await page.fill('[data-testid="edit-front"]', tooLongFront);
-    await page.click('button:has-text("Zapisz zmiany")');
+    await page.locator('button:has-text("Zapisz zmiany")').click();
 
     // Should show validation error or truncate
     await expect(page.locator("text=Przekroczono limit 200 znaków")).toBeVisible();
@@ -162,7 +175,7 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     await expect(page.locator('button:has-text("Zaznacz wszystkie")')).toBeVisible();
 
     // Click "Select All"
-    await page.click('button:has-text("Zaznacz wszystkie")');
+    await page.locator('button:has-text("Zaznacz wszystkie")').click();
 
     // All checkboxes should be checked
     const checkboxes = page.locator('[data-testid="select-card"]');
@@ -173,7 +186,7 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     }
 
     // Click "Deselect All"
-    await page.click('button:has-text("Odznacz wszystkie")');
+    await page.locator('button:has-text("Odznacz wszystkie")').click();
 
     // All checkboxes should be unchecked
     for (let i = 0; i < checkboxCount; i++) {
@@ -191,12 +204,13 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     }
 
     // Accept button should be disabled
-    await expect(page.locator('button:has-text("Zaakceptuj wybrane")')).toBeDisabled();
+    const acceptButton = page.locator('button:has-text("Zaakceptuj wybrane")');
+    await expect(acceptButton).toBeDisabled();
   });
 
   test("should show preview mode for flashcards", async ({ page }) => {
     // Click preview on first flashcard
-    await page.click('[data-testid="preview-card"]:first-child');
+    await page.locator('[data-testid="preview-card"]:first-child').click();
 
     // Should show preview modal/popup
     await expect(page.locator('[data-testid="preview-modal"]')).toBeVisible();
@@ -206,13 +220,13 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     await expect(page.locator('[data-testid="preview-back"]')).toBeHidden();
 
     // Click to flip
-    await page.click('[data-testid="preview-card-content"]');
+    await page.locator('[data-testid="preview-card-content"]').click();
 
     // Should show back side
     await expect(page.locator('[data-testid="preview-back"]')).toBeVisible();
 
     // Close preview
-    await page.click('[data-testid="close-preview"]');
+    await page.locator('[data-testid="close-preview"]').click();
     await expect(page.locator('[data-testid="preview-modal"]')).toBeHidden();
   });
 
@@ -228,13 +242,15 @@ test.describe("AI Flashcard Review and Acceptance", () => {
 
     // Select a card and try to accept
     await page.check('[data-testid="select-card"]:first-child');
-    await page.click('button:has-text("Zaakceptuj wybrane")');
+    const acceptButton = page.locator('button:has-text("Zaakceptuj wybrane")');
+    await expect(acceptButton).toBeEnabled();
+    await acceptButton.click();
 
     // Should show error message
     await expect(page.locator("text=Nie udało się zapisać fiszek")).toBeVisible();
 
     // Should allow retry
-    await expect(page.locator('button:has-text("Zaakceptuj wybrane")')).toBeEnabled();
+    await expect(acceptButton).toBeEnabled();
   });
 
   test("should maintain selection state during editing", async ({ page }) => {
@@ -242,9 +258,9 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     await page.check('[data-testid="select-card"]:first-child');
 
     // Edit the card
-    await page.click('[data-testid="edit-card"]:first-child');
+    await page.locator('[data-testid="edit-card"]:first-child').click();
     await page.fill('[data-testid="edit-front"]', "Updated front");
-    await page.click('button:has-text("Zapisz zmiany")');
+    await page.locator('button:has-text("Zapisz zmiany")').click();
 
     // Card should still be selected after editing
     await expect(page.locator('[data-testid="select-card"]:first-child')).toBeChecked();
