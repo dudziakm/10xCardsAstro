@@ -14,7 +14,7 @@ test.describe("Flashcard CRUD Operations", () => {
     await expect(page.locator('[data-testid="flashcards-list"]')).toBeVisible();
 
     // Check if "Create New" button exists
-    await expect(page.locator("text=Dodaj fiszkę")).toBeVisible();
+    await expect(page.locator('[data-testid="create-flashcard"]')).toBeVisible();
 
     // Check if search bar exists
     await expect(page.locator('[data-testid="search-bar"]')).toBeVisible();
@@ -22,7 +22,7 @@ test.describe("Flashcard CRUD Operations", () => {
 
   test("should create new flashcard manually (US-003)", async ({ page }) => {
     // Click "Create New Flashcard" button
-    await page.click("text=Dodaj fiszkę");
+    await page.click('[data-testid="create-flashcard"]');
 
     // Should navigate to create form
     await expect(page).toHaveURL("/flashcards/new");
@@ -31,41 +31,41 @@ test.describe("Flashcard CRUD Operations", () => {
     const frontText = "What is React?";
     const backText = "A JavaScript library for building user interfaces";
 
-    await page.fill('textarea[id="front"]', frontText);
-    await page.fill('textarea[id="back"]', backText);
+    await page.fill('[data-testid="front-textarea"]', frontText);
+    await page.fill('[data-testid="back-textarea"]', backText);
 
     // Submit the form
-    await page.click('button[type="submit"]');
+    await page.click('[data-testid="submit-button"]');
 
     // Should redirect back to flashcards list
     await expect(page).toHaveURL("/flashcards");
 
     // Should see success message or the new flashcard
-    await expect(page.locator("text=" + frontText)).toBeVisible();
+    await expect(page.locator('[data-testid="flashcard-item"]').first()).toContainText(frontText);
   });
 
   test("should validate flashcard form inputs (US-003)", async ({ page }) => {
     await page.goto("/flashcards/new");
 
-    // Try to submit empty form
-    await page.click('button[type="submit"]');
+    // Try to submit empty form - should be disabled
+    await expect(page.locator('[data-testid="submit-button"]')).toBeDisabled();
 
-    // Should see validation errors - check for actual form validation messages
-    // The form may use HTML5 validation or custom validation
-    const frontField = page.locator('textarea[id="front"]');
-    const backField = page.locator('textarea[id="back"]');
+    // Check form fields are visible
+    const frontField = page.locator('[data-testid="front-textarea"]');
+    const backField = page.locator('[data-testid="back-textarea"]');
 
     // Check required validation
     await expect(frontField).toBeVisible();
     await expect(backField).toBeVisible();
 
     // Test with valid input
-    await page.fill('textarea[id="front"]', "Valid front text");
-    await page.fill('textarea[id="back"]', "Valid back text");
+    await page.fill('[data-testid="front-textarea"]', "Valid front text");
+    await page.fill('[data-testid="back-textarea"]', "Valid back text");
 
-    // Form should accept valid input
+    // Form should accept valid input and enable submit button
     await expect(frontField).toHaveValue("Valid front text");
     await expect(backField).toHaveValue("Valid back text");
+    await expect(page.locator('[data-testid="submit-button"]')).toBeEnabled();
   });
 
   test("should edit existing flashcard (US-005)", async ({ page }) => {
@@ -82,16 +82,16 @@ test.describe("Flashcard CRUD Operations", () => {
 
       // Modify the flashcard
       const newFrontText = "Updated: What is Vue.js?";
-      await page.fill('textarea[id="front"]', newFrontText);
+      await page.fill('[data-testid="front-textarea"]', newFrontText);
 
       // Save changes
-      await page.click('button[type="submit"]');
+      await page.click('[data-testid="submit-button"]');
 
       // Should redirect back to list
       await expect(page).toHaveURL("/flashcards");
 
       // Should see updated content
-      await expect(page.locator("text=" + newFrontText)).toBeVisible();
+      await expect(page.locator('[data-testid="flashcard-item"]').first()).toContainText(newFrontText);
     }
   });
 
@@ -195,7 +195,7 @@ test.describe("Flashcard CRUD Operations", () => {
 
     if (!hasFlashcards) {
       await expect(noFlashcardsMessage).toBeVisible();
-      await expect(page.locator("text=Utwórz nową fiszkę")).toBeVisible();
+      await expect(page.locator('[data-testid="create-first-flashcard"]')).toBeVisible();
     }
   });
 });

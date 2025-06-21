@@ -49,7 +49,7 @@ export default function CandidateReview({
   const totalCount = candidates.length;
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto p-6" data-testid="generated-flashcards">
       <div className="bg-white shadow-sm rounded-lg border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
           <h2 className="text-xl font-semibold text-gray-900">Przejrzyj wygenerowane fiszki</h2>
@@ -62,6 +62,7 @@ export default function CandidateReview({
           <div className="flex items-center gap-4">
             <button
               onClick={selectAll}
+              data-testid="select-all-button"
               className="text-sm text-blue-600 hover:text-blue-700 font-medium"
               disabled={isLoading}
             >
@@ -69,6 +70,7 @@ export default function CandidateReview({
             </button>
             <button
               onClick={selectNone}
+              data-testid="select-none-button"
               className="text-sm text-gray-600 hover:text-gray-700 font-medium"
               disabled={isLoading}
             >
@@ -84,6 +86,7 @@ export default function CandidateReview({
           {candidates.map((candidate, index) => (
             <div
               key={index}
+              data-testid={`candidate-card-${index}`}
               className={`p-6 cursor-pointer transition-colors ${
                 selectedCandidates.has(index) ? "bg-blue-50 border-l-4 border-l-blue-500" : "hover:bg-gray-50"
               }`}
@@ -100,6 +103,7 @@ export default function CandidateReview({
               <div className="flex items-start gap-4">
                 <input
                   type="checkbox"
+                  data-testid={`candidate-checkbox-${index}`}
                   checked={selectedCandidates.has(index)}
                   onChange={() => toggleCandidate(index)}
                   className="mt-1 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
@@ -141,6 +145,7 @@ export default function CandidateReview({
             <button
               onClick={onCancel}
               disabled={isLoading}
+              data-testid="cancel-review-button"
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
             >
               Anuluj
@@ -148,6 +153,7 @@ export default function CandidateReview({
             <button
               onClick={handleAccept}
               disabled={isLoading || selectedCount === 0}
+              data-testid="accept-candidates-button"
               className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isLoading ? "Dodawanie..." : `Dodaj wybrane (${selectedCount})`}

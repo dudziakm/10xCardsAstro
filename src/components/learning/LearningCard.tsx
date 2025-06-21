@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import type { LearningSessionCardDTO } from "../../types";
 
@@ -11,6 +11,12 @@ interface LearningCardProps {
 export function LearningCard({ card, onRate, isLoading = false }: LearningCardProps) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [hasRated, setHasRated] = useState(false);
+
+  // Reset card state when a new card is loaded
+  useEffect(() => {
+    setIsFlipped(false);
+    setHasRated(false);
+  }, [card.id]);
 
   const handleRate = (rating: 1 | 2 | 3 | 4 | 5) => {
     setHasRated(true);
