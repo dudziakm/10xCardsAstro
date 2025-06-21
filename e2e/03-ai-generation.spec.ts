@@ -9,12 +9,12 @@ test.describe("AI Flashcard Generation", () => {
     await aiGenerationPage.navigate();
   });
 
-  test("should display AI generation page correctly (US-001)", async ({ page }) => {
+  test("should display AI generation page correctly (US-001)", async () => {
     await aiGenerationPage.verifyPageLoaded();
     await aiGenerationPage.verifyInstructions();
   });
 
-  test("should validate input text length (US-001)", async ({ page }) => {
+  test("should validate input text length (US-001)", async () => {
     await aiGenerationPage.verifyFormValidation();
 
     // Test with valid text - button should be enabled
@@ -23,7 +23,7 @@ test.describe("AI Flashcard Generation", () => {
     await expect(aiGenerationPage.generateButton).toBeEnabled({ timeout: 10000 });
   });
 
-  test("should generate flashcards with valid input (US-001)", async ({ page }) => {
+  test("should generate flashcards with valid input (US-001)", async () => {
     const timestamp = Date.now();
     const validText = aiGenerationPage.createLongPrompt(
       `React is a JavaScript library for building user interfaces. Test ID: ${timestamp}`,
@@ -35,7 +35,7 @@ test.describe("AI Flashcard Generation", () => {
     await aiGenerationPage.verifyGeneratedFlashcards(5);
   });
 
-  test("should validate count parameter", async ({ page }) => {
+  test("should validate count parameter", async () => {
     const validText = "React podstawy programowania";
     await aiGenerationPage.fillPrompt(validText);
     await aiGenerationPage.verifyCountOptions();
@@ -44,7 +44,7 @@ test.describe("AI Flashcard Generation", () => {
     await aiGenerationPage.selectCount("3");
   });
 
-  test("should show character counter for input text", async ({ page }) => {
+  test("should show character counter for input text", async () => {
     const text = "React podstawy";
     await aiGenerationPage.fillPrompt(text);
     await expect(aiGenerationPage.promptTextarea).toHaveValue(text);

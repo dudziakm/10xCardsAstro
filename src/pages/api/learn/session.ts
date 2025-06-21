@@ -32,7 +32,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         .eq("user_id", session.user.id);
 
       if (deleteError) {
-        console.error("Error resetting flashcard progress:", deleteError);
+        throw new Error(`Error resetting flashcard progress: ${deleteError.message}`);
       }
 
       // Also close any active learning sessions
@@ -43,7 +43,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         .eq("is_active", true);
 
       if (sessionError) {
-        console.error("Error closing learning sessions:", sessionError);
+        throw new Error(`Error closing learning sessions: ${sessionError.message}`);
       }
     }
 

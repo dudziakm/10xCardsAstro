@@ -18,19 +18,19 @@ test.describe("Homepage and Navigation", () => {
     await expect(page.locator('[data-testid="action-add-flashcard"]')).toBeVisible();
   });
 
-  test("should navigate to flashcards page", async ({ page }) => {
+  test("should navigate to flashcards page", async () => {
     await homePage.goToFlashcards();
-    await expect(page).toHaveTitle(/Moje fiszki/);
+    await expect(homePage.page).toHaveTitle(/Moje fiszki/);
   });
 
-  test("should navigate to learning page", async ({ page }) => {
+  test("should navigate to learning page", async () => {
     await homePage.goToLearn();
-    await expect(page).toHaveTitle(/Sesja nauki/);
+    await expect(homePage.page).toHaveTitle(/Sesja nauki/);
   });
 
-  test("should navigate to AI generation page", async ({ page }) => {
+  test("should navigate to AI generation page", async () => {
     await homePage.goToGenerateAI();
-    await expect(page).toHaveTitle(/Generuj fiszki AI/);
+    await expect(homePage.page).toHaveTitle(/Generuj fiszki AI/);
   });
 
   test("should be responsive on mobile", async ({ page }) => {
@@ -44,15 +44,15 @@ test.describe("Homepage and Navigation", () => {
     await homePage.goToFlashcards();
   });
 
-  test("should navigate to My Flashcards from hero section", async ({ page }) => {
+  test("should navigate to My Flashcards from hero section", async () => {
     await homePage.goToFlashcardsViaNav();
   });
 
-  test("should navigate to Learn Session from hero section", async ({ page }) => {
+  test("should navigate to Learn Session from hero section", async () => {
     await homePage.goToLearnViaNav();
   });
 
-  test("should navigate to AI Generation from hero section", async ({ page }) => {
+  test("should navigate to AI Generation from hero section", async () => {
     await homePage.goToGenerateViaNav();
   });
 });

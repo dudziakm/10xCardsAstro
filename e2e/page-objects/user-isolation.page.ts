@@ -5,9 +5,6 @@ import { BasePage } from "./base.page";
  * Page object for User Isolation testing
  */
 export class UserIsolationPage extends BasePage {
-  constructor(page: Page) {
-    super(page);
-  }
 
   /**
    * Sign out current user (mock implementation)
@@ -82,8 +79,6 @@ export class UserIsolationPage extends BasePage {
   async mockUserIsolationAPI(userId: string) {
     // Mock API to return different data based on user
     await this.page.route("/api/flashcards", (route) => {
-      const url = new URL(route.request().url());
-      
       // Return empty data for isolated user
       if (userId === "isolated-user") {
         route.fulfill({

@@ -1,19 +1,17 @@
 import { test, expect } from "@playwright/test";
-import { FlashcardsPage, FlashcardFormPage, AIGenerationPage, UserIsolationPage } from "./page-objects";
+import { FlashcardsPage, AIGenerationPage, UserIsolationPage } from "./page-objects";
 
 test.describe("User Data Isolation", () => {
   let flashcardsPage: FlashcardsPage;
-  let flashcardFormPage: FlashcardFormPage;
   let aiGenerationPage: AIGenerationPage;
   let userIsolationPage: UserIsolationPage;
 
   test.beforeEach(async ({ page }) => {
     flashcardsPage = new FlashcardsPage(page);
-    flashcardFormPage = new FlashcardFormPage(page);
     aiGenerationPage = new AIGenerationPage(page);
     userIsolationPage = new UserIsolationPage(page);
   });
-  test("should not see other user's flashcards (US-008)", async ({ page }) => {
+  test("should not see other user's flashcards (US-008)", async () => {
     await flashcardsPage.navigate();
 
     // Check that we're logged in as the correct user
@@ -37,7 +35,7 @@ test.describe("User Data Isolation", () => {
     }
   });
 
-  test("should be able to create flashcard as extra user", async ({ page }) => {
+  test("should be able to create flashcard as extra user", async () => {
     const timestamp = Date.now();
     const frontText = `Extra User Question ${timestamp}: What is Node.js?`;
     const backText = `Extra User Answer ${timestamp}: A JavaScript runtime built on Chrome's V8 engine`;
@@ -46,7 +44,7 @@ test.describe("User Data Isolation", () => {
     await userIsolationPage.verifyFlashcardExists(frontText);
   });
 
-  test("should have isolated AI generation history", async ({ page }) => {
+  test("should have isolated AI generation history", async () => {
     await aiGenerationPage.navigate();
     await aiGenerationPage.verifyPageLoaded();
 
@@ -57,7 +55,7 @@ test.describe("User Data Isolation", () => {
     await expect(aiGenerationPage.promptTextarea).toHaveValue(testContent);
   });
 
-  test("should maintain session isolation across page navigation", async ({ page }) => {
+  test("should maintain session isolation across page navigation", async () => {
     await flashcardsPage.navigate();
     await expect(page.locator("text=Zalogowany")).toBeVisible();
 

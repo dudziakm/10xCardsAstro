@@ -190,18 +190,12 @@ export class LearningPage extends BasePage {
    * Reset learning progress to make all cards available again
    */
   async resetLearningProgress() {
-    console.log("Resetting learning progress...");
     const response = await this.page.request.get("/api/learn/session?reset=true");
-    console.log(`Reset response status: ${response.status()}`);
     
     if (!response.ok()) {
       const responseText = await response.text();
-      console.log(`Reset response body: ${responseText}`);
-      throw new Error(`Failed to reset learning progress: ${response.status()}`);
+      throw new Error(`Failed to reset learning progress: ${response.status()} - ${responseText}`);
     }
-    
-    const responseData = await response.json();
-    console.log("Reset response data:", responseData);
   }
 
   /**

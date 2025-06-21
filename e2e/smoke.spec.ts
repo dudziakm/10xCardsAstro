@@ -8,7 +8,7 @@ test.describe("Smoke Tests - Basic Functionality", () => {
     homePage = new HomePage(page);
   });
 
-  test("homepage loads successfully", async ({ page }) => {
+  test("homepage loads successfully", async () => {
     await homePage.navigate();
     await homePage.verifyPageLoaded();
     await homePage.verifyActionCards();

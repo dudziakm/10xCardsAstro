@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { AIGenerationPage, AIReviewPage } from "./page-objects";
 
 test.describe("AI Flashcard Review and Acceptance", () => {
@@ -22,24 +22,24 @@ test.describe("AI Flashcard Review and Acceptance", () => {
     await aiGenerationPage.waitForGeneration();
   });
 
-  test("should display generated flashcards for review (US-002)", async ({ page }) => {
+  test("should display generated flashcards for review (US-002)", async () => {
     await aiReviewPage.verifyReviewInterface();
     await aiReviewPage.verifyCandidatesVisible();
   });
 
-  test("should accept selected flashcards (US-002)", async ({ page }) => {
+  test("should accept selected flashcards (US-002)", async () => {
     await aiReviewPage.mockAcceptAPI();
     await aiReviewPage.selectCandidate(0);
     await aiReviewPage.verifyAcceptButtonEnabled();
     await aiReviewPage.acceptSelected();
   });
 
-  test("should handle select all functionality", async ({ page }) => {
+  test("should handle select all functionality", async () => {
     await aiReviewPage.selectAll();
     await aiReviewPage.selectNone();
   });
 
-  test("should prevent acceptance with no cards selected", async ({ page }) => {
+  test("should prevent acceptance with no cards selected", async () => {
     await aiReviewPage.selectNone();
     await aiReviewPage.verifyAcceptButtonDisabled();
   });

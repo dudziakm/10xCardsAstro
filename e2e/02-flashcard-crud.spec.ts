@@ -17,7 +17,7 @@ test.describe("Flashcard CRUD Operations", () => {
     await expect(page.locator('[data-testid="search-bar"]')).toBeVisible();
   });
 
-  test("should create new flashcard manually (US-003)", async ({ page }) => {
+  test("should create new flashcard manually (US-003)", async () => {
     await flashcardsPage.createFlashcard();
     await flashcardFormPage.verifyFormLoaded();
 
@@ -29,7 +29,7 @@ test.describe("Flashcard CRUD Operations", () => {
     await flashcardsPage.verifyFlashcardExists(frontText);
   });
 
-  test("should validate flashcard form inputs (US-003)", async ({ page }) => {
+  test("should validate flashcard form inputs (US-003)", async () => {
     await flashcardFormPage.navigateToCreate();
     await flashcardFormPage.verifyFormLoaded();
     await flashcardFormPage.verifyFormValidation();

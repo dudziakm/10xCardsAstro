@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { LearningPage } from "./page-objects";
 
 test.describe("Learning Session with Spaced Repetition", () => {
@@ -8,14 +8,14 @@ test.describe("Learning Session with Spaced Repetition", () => {
     learningPage = new LearningPage(page);
   });
 
-  test("should start learning session and display first card (US-008)", async ({ page }) => {
+  test("should start learning session and display first card (US-008)", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
     await learningPage.verifyInitialCardState();
   });
 
-  test("should show back of the card after clicking (US-007)", async ({ page }) => {
+  test("should show back of the card after clicking (US-007)", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
@@ -24,7 +24,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await learningPage.verifyRatingInstruction();
   });
 
-  test("should update session stats after rating", async ({ page }) => {
+  test("should update session stats after rating", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
@@ -34,14 +34,14 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await learningPage.verifyRatingConfirmation();
   });
 
-  test("should show summary when session ends", async ({ page }) => {
+  test("should show summary when session ends", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
     await learningPage.endSession();
   });
 
-  test("should show rating labels and intervals (US-008)", async ({ page }) => {
+  test("should show rating labels and intervals (US-008)", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
@@ -50,7 +50,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await learningPage.verifyIntervalInfo();
   });
 
-  test("should handle no cards available scenario (US-008)", async ({ page }) => {
+  test("should handle no cards available scenario (US-008)", async () => {
     // This test should mock empty session instead of relying on actual empty state
     await learningPage.mockEmptySession();
     await learningPage.navigate();
@@ -58,7 +58,7 @@ test.describe("Learning Session with Spaced Repetition", () => {
     await learningPage.verifyNoCardsAvailable();
   });
 
-  test("should show card metadata (difficulty, review count)", async ({ page }) => {
+  test("should show card metadata (difficulty, review count)", async () => {
     await learningPage.resetLearningProgress();
     await learningPage.navigate();
     await learningPage.verifyPageLoaded();
