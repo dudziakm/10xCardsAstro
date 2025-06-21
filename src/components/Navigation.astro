@@ -58,7 +58,7 @@ const isActive = (href: string) => {
         {
           session ? (
             <div class="flex items-center space-x-3">
-              <span class="text-sm text-gray-600">👋 {session.user?.email || "Użytkownik"}</span>
+              <span class="text-sm text-gray-600">👋 Zalogowany</span>
               <button
                 onclick="logout()"
                 class="text-sm text-red-600 hover:text-red-700 font-medium px-3 py-1 rounded-md hover:bg-red-50 transition-colors"
