@@ -18,9 +18,34 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
   try {
     const url = new URL(request.url);
+    const reset = url.searchParams.get("reset") === "true";
     const params = {
       session_id: url.searchParams.get("session_id") || undefined,
     };
+
+    // Handle reset request
+    if (reset) {
+      // Reset all flashcard progress for the current user
+      const { error: deleteError } = await supabase
+        .from("flashcard_progress")
+        .delete()
+        .eq("user_id", session.user.id);
+
+      if (deleteError) {
+        console.error("Error resetting flashcard progress:", deleteError);
+      }
+
+      // Also close any active learning sessions
+      const { error: sessionError } = await supabase
+        .from("learning_sessions")
+        .update({ is_active: false })
+        .eq("user_id", session.user.id)
+        .eq("is_active", true);
+
+      if (sessionError) {
+        console.error("Error closing learning sessions:", sessionError);
+      }
+    }
 
     const validatedParams = getLearningSessionSchema.parse(params);
 

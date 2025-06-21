@@ -14,7 +14,7 @@ export class LearningPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.pageHeading = this.page.locator("h1");
+    this.pageHeading = this.page.locator("main h1");
     this.learningCard = this.getByTestId("learning-card");
     this.cardFront = this.getByTestId("card-front");
     this.cardBack = this.getByTestId("card-back");
@@ -34,7 +34,29 @@ export class LearningPage extends BasePage {
    */
   async verifyPageLoaded() {
     await expect(this.pageHeading).toContainText("Sesja nauki");
-    await this.waitForElement(this.learningCard);
+    
+    // Wait for either learning card or session ended message
+    await this.page.waitForFunction(() => {
+      const learningCard = document.querySelector('[data-testid="learning-card"]');
+      const sessionEnded = document.querySelector('h2') && 
+        document.querySelector('h2').textContent && 
+        document.querySelector('h2').textContent.includes('Sesja nauki zakończona!');
+      return learningCard || sessionEnded;
+    });
+    
+    // If we have a learning card, that's success
+    const hasLearningCard = await this.learningCard.isVisible();
+    if (hasLearningCard) {
+      return;
+    }
+    
+    // If we have session ended, that means no cards available
+    const hasSessionEnded = await this.page.locator("text=Sesja nauki zakończona!").isVisible();
+    if (hasSessionEnded) {
+      throw new Error("No cards available for learning session");
+    }
+    
+    throw new Error("Unexpected state on learning page");
   }
 
   /**
@@ -162,6 +184,24 @@ export class LearningPage extends BasePage {
    */
   async verifyNoCardsAvailable() {
     await expect(this.page.locator("text=No cards available for review")).toBeVisible();
+  }
+
+  /**
+   * Reset learning progress to make all cards available again
+   */
+  async resetLearningProgress() {
+    console.log("Resetting learning progress...");
+    const response = await this.page.request.get("/api/learn/session?reset=true");
+    console.log(`Reset response status: ${response.status()}`);
+    
+    if (!response.ok()) {
+      const responseText = await response.text();
+      console.log(`Reset response body: ${responseText}`);
+      throw new Error(`Failed to reset learning progress: ${response.status()}`);
+    }
+    
+    const responseData = await response.json();
+    console.log("Reset response data:", responseData);
   }
 
   /**
