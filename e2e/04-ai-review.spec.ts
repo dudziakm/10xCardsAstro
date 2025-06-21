@@ -2,34 +2,6 @@ import { test, expect } from "@playwright/test";
 
 test.describe("AI Flashcard Review and Acceptance", () => {
   test.beforeEach(async ({ page }) => {
-    // Mock successful AI generation for all tests
-    await page.route("/api/flashcards/generate", (route) => {
-      route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          generation_id: "test-generation-123",
-          candidates: [
-            {
-              id: "candidate-1",
-              front: "What is React?",
-              back: "A JavaScript library for building user interfaces",
-            },
-            {
-              id: "candidate-2",
-              front: "What is JSX?",
-              back: "JavaScript XML syntax extension for React",
-            },
-            {
-              id: "candidate-3",
-              front: "What are React Hooks?",
-              back: "Functions that let you use state and lifecycle features in functional components",
-            },
-          ],
-        }),
-      });
-    });
-
     await page.goto("/generate");
 
     // Declare elements first
