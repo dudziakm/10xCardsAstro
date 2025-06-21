@@ -1,8 +1,6 @@
 import type { APIRoute } from "astro";
 import { supabaseClient } from "../../../db/supabase.client";
 
-console.log('Login API loaded, Supabase URL:', import.meta.env.SUPABASE_URL);
-
 export const POST: APIRoute = async ({ request, cookies }) => {
   try {
     const { email, password } = await request.json();
