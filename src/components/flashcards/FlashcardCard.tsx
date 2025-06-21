@@ -7,9 +7,10 @@ interface FlashcardCardProps {
   onDelete?: (id: string) => void;
   onView?: (id: string) => void;
   showActions?: boolean;
+  'data-testid'?: string;
 }
 
-export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions = true }: FlashcardCardProps) {
+export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions = true, 'data-testid': testId }: FlashcardCardProps) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("pl-PL", {
       day: "numeric",
@@ -23,7 +24,7 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full">
+    <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full" data-testid={testId}>
       {/* Header z source badge */}
       <div className="flex justify-between items-start mb-3">
         <div className="flex items-center gap-2">
@@ -81,6 +82,7 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
               size="sm"
               onClick={() => onEdit(flashcard.id)}
               className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-400"
+              data-testid="edit-flashcard"
             >
               ✏️ Edytuj
             </Button>
@@ -91,6 +93,7 @@ export function FlashcardCard({ flashcard, onEdit, onDelete, onView, showActions
               size="sm"
               onClick={() => onDelete(flashcard.id)}
               className="text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 hover:border-red-400"
+              data-testid="delete-flashcard"
             >
               🗑️ Usuń
             </Button>

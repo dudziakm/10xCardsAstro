@@ -45,7 +45,7 @@ test.describe("User Data Isolation", () => {
     await page.goto("/flashcards");
 
     // Click create new flashcard
-    await page.click("text=Utwórz nową fiszkę");
+    await page.click("text=Dodaj fiszkę");
     await expect(page).toHaveURL("/flashcards/new");
 
     // Fill in form with extra user specific content
@@ -94,7 +94,7 @@ test.describe("User Data Isolation", () => {
 
     // The generation history (if any) should only belong to this user
     // This is important for privacy and data isolation
-    await expect(page.locator('textarea[name="content"]')).toBeVisible();
+    await expect(page.locator('textarea[id="prompt"]')).toBeVisible();
 
     // Generate some content to test isolation
     const testContent = `
@@ -111,11 +111,11 @@ test.describe("User Data Isolation", () => {
     - Cross-platform compatibility
     `;
 
-    await page.fill('textarea[name="content"]', testContent);
+    await page.fill('textarea[id="prompt"]', testContent);
 
     // Note: We won't actually generate AI content in tests to avoid API costs
     // But we verify the form is accessible and isolated per user
-    await expect(page.locator('textarea[name="content"]')).toHaveValue(testContent);
+    await expect(page.locator('textarea[id="prompt"]')).toHaveValue(testContent);
   });
 
   test("should maintain session isolation across page navigation", async ({ page }) => {
