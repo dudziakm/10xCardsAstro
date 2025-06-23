@@ -54,6 +54,8 @@ export class FlashcardFormPage extends BasePage {
   async fillForm(front: string, back: string) {
     await this.fillInput(this.frontInput, front);
     await this.fillInput(this.backInput, back);
+    // Wait for React to update state and enable submit button
+    await expect(this.submitButton).toBeEnabled({ timeout: 5000 });
   }
 
   /**

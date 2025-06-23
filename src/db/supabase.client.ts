@@ -50,6 +50,17 @@ export function getSupabaseAdminClient() {
   return _supabaseAdminClient;
 }
 
-// For backward compatibility - these will be deprecated
-export const supabaseClient = getSupabaseClient();
-export const supabaseAdminClient = getSupabaseAdminClient();
+// For backward compatibility - lazy initialized
+export const supabaseClient = new Proxy({} as ReturnType<typeof createClient<Database>>, {
+  get(target, prop, receiver) {
+    const client = getSupabaseClient();
+    return Reflect.get(client, prop, receiver);
+  }
+});
+
+export const supabaseAdminClient = new Proxy({} as ReturnType<typeof createClient<Database>>, {
+  get(target, prop, receiver) {
+    const client = getSupabaseAdminClient();
+    return Reflect.get(client, prop, receiver);
+  }
+});
