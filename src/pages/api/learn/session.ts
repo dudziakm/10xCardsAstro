@@ -91,6 +91,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
       );
     }
 
+    console.error("Failed to get learning session:", error);
     return new Response(
       JSON.stringify({
         error: "Internal Server Error",
