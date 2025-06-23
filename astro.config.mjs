@@ -19,8 +19,6 @@ export default defineConfig({
     },
   }),
   experimental: { 
-    session: {
-      driver: "cookie",
-    }
+    session: true
   },
 });
