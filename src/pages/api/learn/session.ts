@@ -27,37 +27,34 @@ export const GET: APIRoute = async ({ request, locals }) => {
     if (reset) {
       try {
         // Reset all learning progress for this user
-        const { error: resetError } = await supabase
-          .from("flashcard_progress")
-          .delete()
-          .eq("user_id", session.user.id);
+        const { error: resetError } = await supabase.from("flashcard_progress").delete().eq("user_id", session.user.id);
 
         if (resetError) {
           console.error("Reset error:", resetError);
           return new Response(
-            JSON.stringify({ 
-              error: "Reset failed", 
+            JSON.stringify({
+              error: "Reset failed",
               message: "Could not reset learning progress",
-              details: resetError.message 
-            }), 
+              details: resetError.message,
+            }),
             { status: 500, headers: { "Content-Type": "application/json" } }
           );
         }
 
         return new Response(
-          JSON.stringify({ 
+          JSON.stringify({
             message: "Learning progress reset successfully",
-            resetCards: "All progress cleared" 
-          }), 
+            resetCards: "All progress cleared",
+          }),
           { status: 200, headers: { "Content-Type": "application/json" } }
         );
       } catch (error) {
         console.error("Reset exception:", error);
         return new Response(
-          JSON.stringify({ 
-            error: "Reset failed", 
-            message: "Unexpected error during reset" 
-          }), 
+          JSON.stringify({
+            error: "Reset failed",
+            message: "Unexpected error during reset",
+          }),
           { status: 500, headers: { "Content-Type": "application/json" } }
         );
       }
