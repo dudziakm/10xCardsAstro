@@ -58,6 +58,17 @@ const reactConfig = tseslint.config({
 
 export default tseslint.config(
   includeIgnoreFile(gitignorePath),
+  {
+    ignores: [
+      ".vercel/**",
+      "dist/**",
+      ".astro/**",
+      "node_modules/**",
+      "playwright-report/**",
+      "test-results/**",
+      "coverage/**",
+    ],
+  },
   baseConfig,
   jsxA11yConfig,
   reactConfig,

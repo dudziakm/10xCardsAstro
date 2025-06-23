@@ -24,9 +24,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Auto-fix code formatting
-        run: npm run lint:fix || true # Don't fail if no fixes needed
-
       - name: Run linting
         run: npm run lint
 
