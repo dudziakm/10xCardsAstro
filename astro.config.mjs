@@ -8,8 +8,6 @@ import vercel from "@astrojs/vercel";
 
 // https://astro.build/config
 export default defineConfig({
-  site: "https://10x-cards-astro.vercel.app",
-  output: "server",
   integrations: [react(), sitemap()],
   server: { port: 3000 },
   vite: {
@@ -20,4 +18,7 @@ export default defineConfig({
       enabled: true,
     },
   }),
+  experimental: { 
+    session: true
+  },
 });

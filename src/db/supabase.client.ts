@@ -1,27 +1,32 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./database.types";
 
-const supabaseUrl = import.meta.env.SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.SUPABASE_KEY;
+const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
 
 // Standard client that respects RLS policies
 export const supabaseClient = createClient<Database>(supabaseUrl, supabaseAnonKey);
 
-// Optional: For development only - this client bypasses RLS
-// In production, you should use the standard client above
-// To use this client, import { supabaseAdminClient as supabase } instead of importing supabaseClient
-export const supabaseAdminClient = createClient<Database>(supabaseUrl, supabaseAnonKey, {
-  // Setting auth to skip means the client operates with admin privileges
-  // This bypasses RLS policies entirely
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
-  },
-  global: {
-    headers: {
-      // The service_role key would normally be used here, but for local development
-      // setting this header makes Supabase think we're calling from a service
-      "x-supabase-auth-bypass": "true",
-    },
-  },
-});
+// Admin client that can bypass RLS.
+// In production (Vercel), it uses the SERVICE_ROLE_KEY.
+// In development, it uses the anon key and a bypass header.
+const isAdmin = import.meta.env.PROD;
+
+export const supabaseAdminClient = createClient<Database>(
+  supabaseUrl,
+  isAdmin ? supabaseServiceRoleKey : supabaseAnonKey,
+  isAdmin
+    ? {}
+    : {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+        global: {
+          headers: {
+            "x-supabase-auth-bypass": "true",
+          },
+        },
+      }
+);
