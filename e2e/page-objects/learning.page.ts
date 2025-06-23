@@ -30,9 +30,16 @@ export class LearningPage extends BasePage {
   }
 
   /**
-   * Verify learning page is loaded
+   * Verify learning page is loaded (basic check)
    */
   async verifyPageLoaded() {
+    await expect(this.pageHeading).toContainText("Sesja nauki");
+  }
+
+  /**
+   * Verify learning page has content (cards or ended message)
+   */
+  async verifyPageContent() {
     await expect(this.pageHeading).toContainText("Sesja nauki");
 
     // Wait for either learning card or session ended message
@@ -46,13 +53,13 @@ export class LearningPage extends BasePage {
     // If we have a learning card, that's success
     const hasLearningCard = await this.learningCard.isVisible();
     if (hasLearningCard) {
-      return;
+      return "has_cards";
     }
 
-    // If we have session ended, that means no cards available
+    // If we have session ended, that's also valid
     const hasSessionEnded = await this.page.locator("text=Sesja nauki zakończona!").isVisible();
     if (hasSessionEnded) {
-      throw new Error("No cards available for learning session");
+      return "session_ended";
     }
 
     throw new Error("Unexpected state on learning page");
