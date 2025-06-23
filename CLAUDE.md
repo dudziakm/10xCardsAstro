@@ -49,6 +49,59 @@ npm run format       # Format code with Prettier
 # to ensure code quality and prevent CI/CD failures
 ```
 
+## 🚨 CRITICAL PRE-PUSH WORKFLOW RULES 🚨
+
+**BEFORE EVERY PUSH TO GITHUB, CLAUDE MUST EXECUTE THESE STEPS IN ORDER:**
+
+### 1. Build Check
+```bash
+npm run build
+```
+- Must complete without errors
+- If fails, fix issues before proceeding
+
+### 2. Security Audit
+```bash
+npm audit
+```
+- Check for vulnerabilities
+- If high/critical issues in YOUR code, fix them
+- Known issues in external dependencies (like @astrojs/vercel) can be ignored
+
+### 3. Linting Check
+```bash
+npm run lint
+```
+- Must pass without errors
+- Run `npm run lint:fix` first if needed
+
+### 4. TypeScript Validation
+```bash
+npx astro check
+```
+- Ensure no TypeScript errors
+- Especially check config files after modifications
+
+### 5. Development Server Test
+```bash
+npm run dev
+```
+- Server must start without errors
+- No deprecation warnings or critical errors in console
+
+### 6. Unit Tests (if business logic changed)
+```bash
+npm run test:run
+```
+
+**ONLY after ALL checks pass locally, then push to GitHub!**
+
+### Common Failure Patterns to Watch For:
+- TypeScript errors in astro.config.mjs after changes
+- Missing environment variables causing build failures
+- Import errors after adding new dependencies
+- Security vulnerabilities in project dependencies vs external libraries
+
 ## High-Level Architecture
 
 ### Technology Stack
