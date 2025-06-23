@@ -16,6 +16,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:manual": "node test-manual.js",
+    "security:check": "node scripts/security-check.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."

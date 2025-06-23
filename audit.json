@@ -1,0 +1,96 @@
+{
+  "auditReportVersion": 2,
+  "vulnerabilities": {
+    "@astrojs/vercel": {
+      "name": "@astrojs/vercel",
+      "severity": "high",
+      "isDirect": true,
+      "via": [
+        "@vercel/routing-utils"
+      ],
+      "effects": [],
+      "range": "<=0.0.0-vercel-routing-20250129162731 || >=8.0.5",
+      "nodes": [
+        "node_modules/@astrojs/vercel"
+      ],
+      "fixAvailable": {
+        "name": "@astrojs/vercel",
+        "version": "8.0.4",
+        "isSemVerMajor": true
+      }
+    },
+    "@vercel/routing-utils": {
+      "name": "@vercel/routing-utils",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        "path-to-regexp"
+      ],
+      "effects": [
+        "@astrojs/vercel"
+      ],
+      "range": "<=3.1.0 || >=5.0.0",
+      "nodes": [
+        "node_modules/@vercel/routing-utils"
+      ],
+      "fixAvailable": {
+        "name": "@astrojs/vercel",
+        "version": "8.0.4",
+        "isSemVerMajor": true
+      }
+    },
+    "path-to-regexp": {
+      "name": "path-to-regexp",
+      "severity": "high",
+      "isDirect": false,
+      "via": [
+        {
+          "source": 1101846,
+          "name": "path-to-regexp",
+          "dependency": "path-to-regexp",
+          "title": "path-to-regexp outputs backtracking regular expressions",
+          "url": "https://github.com/advisories/GHSA-9wv6-86v2-598j",
+          "severity": "high",
+          "cwe": [
+            "CWE-1333"
+          ],
+          "cvss": {
+            "score": 7.5,
+            "vectorString": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H"
+          },
+          "range": ">=4.0.0 <6.3.0"
+        }
+      ],
+      "effects": [
+        "@vercel/routing-utils"
+      ],
+      "range": "4.0.0 - 6.2.2",
+      "nodes": [
+        "node_modules/@vercel/routing-utils/node_modules/path-to-regexp"
+      ],
+      "fixAvailable": {
+        "name": "@astrojs/vercel",
+        "version": "8.0.4",
+        "isSemVerMajor": true
+      }
+    }
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 3,
+      "critical": 0,
+      "total": 3
+    },
+    "dependencies": {
+      "prod": 426,
+      "dev": 538,
+      "optional": 118,
+      "peer": 7,
+      "peerOptional": 0,
+      "total": 1057
+    }
+  }
+}
