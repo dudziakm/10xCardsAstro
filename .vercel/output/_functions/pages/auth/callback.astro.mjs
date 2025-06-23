@@ -1,7 +1,7 @@
 import { c as createAstro, a as createComponent, r as renderComponent, b as renderTemplate, m as maybeRenderHead, F as Fragment } from '../../chunks/astro/server_BNVo9Nwc.mjs';
 import 'kleur/colors';
 import { $ as $$Layout } from '../../chunks/Layout_DtnxgX_q.mjs';
-import { a as supabaseClient } from '../../chunks/supabase.client_AiE9_edo.mjs';
+import { s as supabaseClient } from '../../chunks/supabase.client_C9p6CXIX.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const $$Astro = createAstro("https://10x-cards-astro.vercel.app");
