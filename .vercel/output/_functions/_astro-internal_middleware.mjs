@@ -1,5 +1,5 @@
 import { d as defineMiddleware, s as sequence } from './chunks/index_tCcpjOGc.mjs';
-import { s as supabaseAdminClient } from './chunks/supabase.client_CY6bbIc_.mjs';
+import { s as supabaseAdminClient } from './chunks/supabase.client_AiE9_edo.mjs';
 import 'es-module-lexer';
 import './chunks/astro-designed-error-pages_C49UBlo1.mjs';
 import 'kleur/colors';

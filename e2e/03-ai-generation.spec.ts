@@ -20,6 +20,7 @@ test.describe("AI Flashcard Generation", () => {
     // Test with valid text - button should be enabled
     const validText = "JavaScript podstawy programowania obiektowego";
     await aiGenerationPage.fillPrompt(validText);
+    // Wait for React to update state and enable submit button
     await expect(aiGenerationPage.generateButton).toBeEnabled({ timeout: 10000 });
   });
 

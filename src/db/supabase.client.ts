@@ -55,12 +55,12 @@ export const supabaseClient = new Proxy({} as ReturnType<typeof createClient<Dat
   get(target, prop, receiver) {
     const client = getSupabaseClient();
     return Reflect.get(client, prop, receiver);
-  }
+  },
 });
 
 export const supabaseAdminClient = new Proxy({} as ReturnType<typeof createClient<Database>>, {
   get(target, prop, receiver) {
     const client = getSupabaseAdminClient();
     return Reflect.get(client, prop, receiver);
-  }
+  },
 });

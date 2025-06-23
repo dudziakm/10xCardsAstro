@@ -30,6 +30,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         const { error: resetError } = await supabase.from("flashcard_progress").delete().eq("user_id", session.user.id);
 
         if (resetError) {
+          // eslint-disable-next-line no-console
           console.error("Reset error:", resetError);
           return new Response(
             JSON.stringify({
@@ -49,6 +50,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
           { status: 200, headers: { "Content-Type": "application/json" } }
         );
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error("Reset exception:", error);
         return new Response(
           JSON.stringify({
