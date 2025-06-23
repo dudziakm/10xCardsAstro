@@ -1,15 +1,4 @@
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm install --no-audit",
-  "devCommand": "npm run dev",
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "functions": {
-    "dist/chunks/*.js": {
-      "maxDuration": 30
-    },
-    "dist/server/entry.mjs": {
-      "maxDuration": 30
-    }
-  }
+  "installCommand": "npm install --no-audit"
 }

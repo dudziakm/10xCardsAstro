@@ -1,9 +1,9 @@
-import { d as defineMiddleware, s as sequence } from './chunks/index_CvI1SHZJ.mjs';
-import { s as supabaseAdminClient } from './chunks/supabase.client_D3jAQheK.mjs';
+import { d as defineMiddleware, s as sequence } from './chunks/index_tCcpjOGc.mjs';
+import { s as supabaseAdminClient } from './chunks/supabase.client_CY6bbIc_.mjs';
 import 'es-module-lexer';
-import './chunks/astro-designed-error-pages_CacJRxE9.mjs';
+import './chunks/astro-designed-error-pages_C49UBlo1.mjs';
 import 'kleur/colors';
-import './chunks/astro/server_1--A5kBA.mjs';
+import './chunks/astro/server_BNVo9Nwc.mjs';
 import 'clsx';
 import 'cookie';
 

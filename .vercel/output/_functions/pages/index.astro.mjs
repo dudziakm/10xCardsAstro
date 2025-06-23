@@ -1,6 +1,6 @@
-import { c as createAstro, a as createComponent, b as renderTemplate, r as renderComponent, m as maybeRenderHead } from '../chunks/astro/server_1--A5kBA.mjs';
+import { c as createAstro, a as createComponent, b as renderTemplate, r as renderComponent, m as maybeRenderHead } from '../chunks/astro/server_BNVo9Nwc.mjs';
 import 'kleur/colors';
-import { $ as $$Layout } from '../chunks/Layout_BS3VogJm.mjs';
+import { $ as $$Layout } from '../chunks/Layout_DtnxgX_q.mjs';
 import { jsxs, jsx } from 'react/jsx-runtime';
 import { B as Button } from '../chunks/button_tbmfKED-.mjs';
 export { renderers } from '../renderers.mjs';
