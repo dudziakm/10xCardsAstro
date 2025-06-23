@@ -19,5 +19,8 @@ export default defineConfig({
     webAnalytics: {
       enabled: true,
     },
+    imageService: true,
+    devImageService: "sharp",
+    functionPerRoute: false,
   }),
 });

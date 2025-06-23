@@ -63,6 +63,8 @@ export class AIGenerationPage extends BasePage {
   async generateFlashcards(prompt: string, count = "5") {
     await this.fillPrompt(prompt);
     await this.selectCount(count);
+    // Wait for React to update state and enable generate button
+    await expect(this.generateButton).toBeEnabled({ timeout: 5000 });
     await this.clickButton(this.generateButton);
   }
 

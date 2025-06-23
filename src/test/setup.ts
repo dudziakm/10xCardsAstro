@@ -12,6 +12,11 @@ Object.defineProperty(import.meta, "env", {
   writable: true,
 });
 
+// Also set process.env for runtime checks
+process.env.OPENROUTER_API_KEY = "test-api-key";
+process.env.SUPABASE_URL = "https://test.supabase.co";
+process.env.SUPABASE_KEY = "test-anon-key";
+
 vi.mock("../db/supabase.client.ts", () => ({
   supabase: {
     from: vi.fn(() => ({

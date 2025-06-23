@@ -20,7 +20,36 @@ const GET = async ({ request, locals }) => {
       session_id: url.searchParams.get("session_id") || void 0
     };
     if (reset) {
-      return new Response(JSON.stringify({ message: "Progress reset successfully" }), { status: 200 });
+      try {
+        const { error: resetError } = await supabase.from("flashcard_progress").delete().eq("user_id", session.user.id);
+        if (resetError) {
+          console.error("Reset error:", resetError);
+          return new Response(
+            JSON.stringify({
+              error: "Reset failed",
+              message: "Could not reset learning progress",
+              details: resetError.message
+            }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+          );
+        }
+        return new Response(
+          JSON.stringify({
+            message: "Learning progress reset successfully",
+            resetCards: "All progress cleared"
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } }
+        );
+      } catch (error) {
+        console.error("Reset exception:", error);
+        return new Response(
+          JSON.stringify({
+            error: "Reset failed",
+            message: "Unexpected error during reset"
+          }),
+          { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+      }
     }
     const validatedParams = getLearningSessionSchema.parse(params);
     const learningService = new LearningService(supabase);
