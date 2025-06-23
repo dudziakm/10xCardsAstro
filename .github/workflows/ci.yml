@@ -103,13 +103,6 @@ jobs:
             test-results/
           retention-days: 7
 
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v4
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-          file: ./coverage/lcov.info
-          flags: unittests
-          name: codecov-umbrella
 
   build:
     runs-on: ubuntu-latest
