@@ -33,6 +33,12 @@ npm run test:run     # Run tests once
 npm run test:ui      # Run tests with UI interface
 npm run test:coverage # Run tests with coverage report
 
+# E2E Testing
+npm run test:e2e       # Run all E2E tests with Playwright
+npm run test:e2e:ui    # Run E2E tests with Playwright UI mode
+npm run test:e2e:headed # Run E2E tests in headed browser mode
+npm run test:e2e:debug  # Run E2E tests in debug mode
+
 # Code Quality
 npm run lint         # Run ESLint
 npm run lint:fix     # Auto-fix linting issues
@@ -53,6 +59,7 @@ npm run format       # Format code with Prettier
 - **AI**: OpenRouter.ai with Claude 3 Haiku for flashcard generation
 - **TypeScript**: Strict mode with Zod validation
 - **Testing**: Vitest with React Testing Library and jsdom
+- **E2E Testing**: Playwright with Page Object Model pattern
 - **CI/CD**: GitHub Actions with automated testing and security audits
 
 ### Key Architectural Patterns
@@ -103,6 +110,7 @@ npm run format       # Format code with Prettier
    - Unit tests for business logic (spaced repetition algorithm, AI integration)
    - Integration tests for API endpoints and database operations
    - Component tests for React UI with user interaction simulation
+   - E2E tests with Playwright covering all user workflows
    - Automated CI/CD pipeline with security auditing
 
 ### Project Structure
@@ -130,6 +138,11 @@ npm run format       # Format code with Prettier
 │   └── *.astro     # Page routes (home, flashcards, learn, generate)
 ├── test/           # Test configuration and utilities
 └── types.ts        # Shared DTOs and entities
+
+/e2e
+├── page-objects/   # Page Object Model pattern
+├── auth.setup.ts   # Authentication setup for test users
+└── *.spec.ts       # E2E test specifications
 ```
 
 ### API Pattern Example
@@ -167,6 +180,37 @@ export const POST: APIRoute = async ({ request, locals }) => {
 5. **Service Layer**: Extract business logic to `/src/lib/services/`
 6. **Testing**: Write tests for all business logic and user interactions
 7. **AI Integration**: Use OpenRouter with Claude 3 Haiku for optimal cost/performance balance
+8. **E2E Testing**: Use `data-testid` attributes for reliable test selectors
+
+### E2E Testing with Playwright
+
+The project includes comprehensive E2E tests using Playwright with Page Object Model pattern:
+
+#### Test Structure
+
+- **Page Objects** (`/e2e/page-objects/`): Encapsulate page-specific logic
+  - `BasePage`: Common functionality (navigation, element selection, waits)
+  - Individual pages: Homepage, Flashcards, AI Generation, Learning, etc.
+- **Test Specs** (`/e2e/*.spec.ts`): Cover all major user workflows
+  - Homepage navigation and responsiveness
+  - Full CRUD operations for flashcards
+  - AI generation and candidate review flow
+  - Spaced repetition learning sessions
+  - User data isolation and security
+
+#### Configuration
+
+- **Parallel execution** with retry logic for CI stability
+- **Authentication setup** with multiple test users
+- **Automatic dev server** startup before tests
+- **Failure artifacts**: Screenshots, videos, and traces on test failures
+
+#### Best Practices
+
+- Use `data-testid` attributes for reliable element selection
+- Implement proper waits and assertions
+- Maintain test isolation between users
+- Keep page objects focused and reusable
 
 ### Database Migrations
 
@@ -203,7 +247,8 @@ The application is **fully functional** with:
 ✅ **Spaced Repetition Learning** - Scientifically-backed learning algorithm  
 ✅ **User Interface** - Modern, responsive UI with React components  
 ✅ **Authentication** - Supabase auth with Row Level Security  
-✅ **Testing Infrastructure** - Comprehensive unit and integration tests  
+✅ **Testing Infrastructure** - Comprehensive unit, integration, and E2E tests  
+✅ **E2E Testing** - Playwright tests with Page Object Model covering all workflows  
 ✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment
 
 **Recent Fixes (v1.0.0):**
