@@ -1,6 +1,6 @@
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm install",
+  "installCommand": "npm install --no-audit",
   "devCommand": "npm run dev",
   "cleanUrls": true,
   "trailingSlash": false
