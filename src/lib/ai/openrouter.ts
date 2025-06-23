@@ -35,7 +35,7 @@ interface AIGenerationResult {
 }
 
 export async function callOpenRouterAI(inputText: string, count = 5): Promise<AIGenerationResult> {
-  const apiKey = import.meta.env.OPENROUTER_API_KEY;
+  const apiKey = import.meta.env.OPENROUTER_API_KEY || process.env.OPENROUTER_API_KEY;
 
   if (!apiKey) {
     throw new Error("OPENROUTER_API_KEY not configured");
