@@ -16,6 +16,7 @@
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:manual": "node test-manual.js",
+    "security:check": "node scripts/security-check.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
@@ -24,6 +25,7 @@
     "@astrojs/node": "^9.1.3",
     "@astrojs/react": "4.2.2",
     "@astrojs/sitemap": "3.3.0",
+    "@astrojs/vercel": "^8.2.0",
     "@radix-ui/react-slot": "^1.1.2",
     "@supabase/supabase-js": "^2.49.4",
     "@tailwindcss/vite": "4.0.17",

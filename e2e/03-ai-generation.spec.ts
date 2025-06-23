@@ -24,6 +24,8 @@ test.describe("AI Flashcard Generation", () => {
   });
 
   test("should generate flashcards with valid input (US-001)", async () => {
+    await aiGenerationPage.verifyPageLoaded();
+
     const timestamp = Date.now();
     const validText = aiGenerationPage.createLongPrompt(
       `React is a JavaScript library for building user interfaces. Test ID: ${timestamp}`,

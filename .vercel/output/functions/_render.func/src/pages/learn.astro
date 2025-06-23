@@ -1,0 +1,27 @@
+---
+// Learning session page
+import Layout from "../layouts/Layout.astro";
+import { LearningSession } from "../components/learning/LearningSession";
+---
+
+<Layout title="Sesja nauki">
+  <div class="container mx-auto px-4 py-8">
+    <div class="mb-6 text-center">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Sesja nauki</h1>
+      <p class="text-gray-600">Ucz się efektywnie z algorytmem spaced repetition</p>
+    </div>
+
+    <LearningSession client:load />
+
+    <div class="mt-8 max-w-2xl mx-auto bg-blue-50 rounded-lg p-4">
+      <h3 class="font-semibold text-blue-900 mb-2">💡 Jak działa nauka?</h3>
+      <ul class="text-sm text-blue-800 space-y-1">
+        <li>• Przeczytaj pytanie i spróbuj odpowiedzieć w myślach</li>
+        <li>• Kliknij aby zobaczyć prawidłową odpowiedź</li>
+        <li>• Oceń jak dobrze pamiętałeś odpowiedź (1-5)</li>
+        <li>• Algorytm automatycznie ustali kiedy ponownie pokazać fiszkę</li>
+        <li>• Im wyższa ocena, tym rzadziej fiszka będzie się pojawiać</li>
+      </ul>
+    </div>
+  </div>
+</Layout>
