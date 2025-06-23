@@ -1,4 +1,4 @@
-import { expect, Locator, Page } from "@playwright/test";
+import { expect, type Locator, type Page } from "@playwright/test";
 import { BasePage } from "./base.page";
 
 /**
@@ -38,10 +38,8 @@ export class LearningPage extends BasePage {
     // Wait for either learning card or session ended message
     await this.page.waitForFunction(() => {
       const learningCard = document.querySelector('[data-testid="learning-card"]');
-      const sessionEnded =
-        document.querySelector("h2") &&
-        document.querySelector("h2").textContent &&
-        document.querySelector("h2").textContent.includes("Sesja nauki zakończona!");
+      const h2Element = document.querySelector("h2");
+      const sessionEnded = h2Element?.textContent?.includes("Sesja nauki zakończona!") || false;
       return learningCard || sessionEnded;
     });
 

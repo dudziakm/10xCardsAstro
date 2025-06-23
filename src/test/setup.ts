@@ -15,7 +15,7 @@ Object.defineProperty(import.meta, "env", {
 vi.mock("../db/supabase.client.ts", () => ({
   supabase: {
     from: vi.fn(() => ({
-      select: vi.fn((query, options) => ({
+      select: vi.fn((query?: string, options?: any) => ({
         eq: vi.fn(() => ({
           single: vi.fn(),
           order: vi.fn(() => ({ limit: vi.fn() })),

@@ -15,12 +15,12 @@ test.describe("User Data Isolation", () => {
     await flashcardsPage.navigate();
 
     // Check that we're logged in as the correct user
-    await expect(page.locator("text=Zalogowany")).toBeVisible();
+    await expect(flashcardsPage.page.locator("text=Zalogowany")).toBeVisible();
 
     await flashcardsPage.verifyPageLoaded();
 
     // The extra user should have a clean account with no flashcards
-    const flashcardItems = page.locator('[data-testid="flashcard-item"]');
+    const flashcardItems = flashcardsPage.page.locator('[data-testid="flashcard-item"]');
     const flashcardCount = await flashcardItems.count();
 
     if (flashcardCount === 0) {
@@ -57,14 +57,14 @@ test.describe("User Data Isolation", () => {
 
   test("should maintain session isolation across page navigation", async () => {
     await flashcardsPage.navigate();
-    await expect(page.locator("text=Zalogowany")).toBeVisible();
+    await expect(flashcardsPage.page.locator("text=Zalogowany")).toBeVisible();
 
     const pages = ["/generate", "/learn", "/flashcards/new"];
 
     for (const pagePath of pages) {
       await userIsolationPage.goto(pagePath);
-      await expect(page.locator("text=Zalogowany")).toBeVisible();
-      expect(page.url()).not.toContain("/auth/login");
+      await expect(userIsolationPage.page.locator("text=Zalogowany")).toBeVisible();
+      expect(userIsolationPage.page.url()).not.toContain("/auth/login");
     }
 
     await flashcardsPage.navigate();

@@ -121,6 +121,90 @@ export interface Database {
         };
         Relationships: [];
       };
+      learning_sessions: {
+        Row: {
+          id: string;
+          user_id: string;
+          started_at: string;
+          ended_at: string | null;
+          cards_reviewed: number;
+          is_active: boolean;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          started_at?: string;
+          ended_at?: string | null;
+          cards_reviewed?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          started_at?: string;
+          ended_at?: string | null;
+          cards_reviewed?: number;
+          is_active?: boolean;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      flashcard_progress: {
+        Row: {
+          id: string;
+          user_id: string;
+          flashcard_id: string;
+          last_reviewed: string | null;
+          review_count: number;
+          difficulty_rating: number;
+          next_review_date: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          user_id: string;
+          flashcard_id: string;
+          last_reviewed?: string | null;
+          review_count?: number;
+          difficulty_rating?: number;
+          next_review_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          user_id?: string;
+          flashcard_id?: string;
+          last_reviewed?: string | null;
+          review_count?: number;
+          difficulty_rating?: number;
+          next_review_date?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "flashcard_progress_user_id_fkey";
+            columns: ["user_id"];
+            isOneToOne: false;
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "flashcard_progress_flashcard_id_fkey";
+            columns: ["flashcard_id"];
+            isOneToOne: false;
+            referencedRelation: "flashcards";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: Record<never, never>;
     Functions: {
