@@ -23,7 +23,7 @@ All documentation is in Polish, but code implementation is in English.
 
 ```bash
 # Development
-npm run dev          # Start dev server on port 3000
+npm run dev          # Start dev server on port 3000 locally
 npm run build        # Build for production
 npm run preview      # Preview production build
 
