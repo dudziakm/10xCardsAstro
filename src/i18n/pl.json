@@ -1,0 +1,234 @@
+{
+  "common": {
+    "loading": "Ładowanie...",
+    "error": "Błąd:",
+    "tryAgain": "Spróbuj ponownie",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "search": "Szukaj...",
+    "all": "Wszystkie",
+    "manual": "Manualne",
+    "ai": "AI",
+    "yes": "Tak",
+    "no": "Nie",
+    "or": "lub",
+    "and": "i",
+    "with": "z",
+    "for": "dla",
+    "required": "wymagane",
+    "optional": "opcjonalne"
+  },
+  "nav": {
+    "home": "Start",
+    "flashcards": "Moje fiszki",
+    "generate": "Generuj AI",
+    "learn": "Ucz się",
+    "loggedInAs": "Zalogowany",
+    "logout": "Wyloguj",
+    "login": "Zaloguj",
+    "register": "Rejestracja",
+    "openMenu": "Otwórz menu główne"
+  },
+  "home": {
+    "title": "my10xCards - Twoje fiszki do nauki",
+    "headline": "Efektywna nauka z AI-powered fiszkami",
+    "stats": {
+      "total": "Wszystkich fiszek",
+      "totalHint": "Kliknij aby zobaczyć wszystkie",
+      "manual": "Fiszek manualnych",
+      "manualHint": "Kliknij aby zobaczyć manualne",
+      "ai": "Fiszek AI",
+      "aiHint": "Kliknij aby zobaczyć AI"
+    },
+    "actions": {
+      "flashcards": "Moje fiszki",
+      "addFlashcard": "Dodaj fiszkę",
+      "generate": "Generuj AI",
+      "learn": "Ucz się"
+    },
+    "welcome": "Witaj z powrotem! Gotowy na naukę?"
+  },
+  "flashcards": {
+    "title": "Moje fiszki",
+    "deleteConfirm": "Czy na pewno chcesz usunąć tę fiszkę?",
+    "deleteError": "Nie udało się usunąć fiszki",
+    "searchPlaceholder": "Szukaj w fiszkach...",
+    "filters": {
+      "all": "Wszystkie",
+      "manual": "Manualne",
+      "ai": "AI"
+    },
+    "results": {
+      "found": "Znaleziono {{count}} fiszek",
+      "forQuery": "dla zapytania",
+      "noResults": "Nie znaleziono fiszek pasujących do kryteriów wyszukiwania.",
+      "empty": "Nie masz jeszcze żadnych fiszek.",
+      "createFirst": "Utwórz swoją pierwszą fiszkę"
+    },
+    "pagination": {
+      "page": "Strona {{current}} z {{total}}",
+      "previous": "Poprzednia",
+      "next": "Następna"
+    },
+    "actions": {
+      "add": "Dodaj fiszkę",
+      "generate": "Generuj AI"
+    },
+    "card": {
+      "source": {
+        "manual": "Manual",
+        "ai": "AI"
+      },
+      "dates": {
+        "created": "Utworzono:",
+        "updated": "Edytowano:"
+      },
+      "sections": {
+        "front": "📄 Przód",
+        "back": "📝 Tył"
+      },
+      "buttons": {
+        "view": "👁️ Podgląd",
+        "edit": "✏️ Edytuj",
+        "delete": "🗑️ Usuń"
+      }
+    }
+  },
+  "flashcardForm": {
+    "titleNew": "Dodaj nową fiszkę",
+    "titleEdit": "Edytuj fiszkę",
+    "notFound": "Fiszka nie została znaleziona",
+    "loadError": "Nie udało się załadować fiszki",
+    "fillBoth": "Proszę wypełnić oba pola",
+    "saveError": "Nie udało się zapisać fiszki",
+    "genericError": "Wystąpił błąd podczas zapisywania",
+    "loading": "Ładowanie fiszki...",
+    "backToList": "Powrót do listy",
+    "front": "Przód fiszki",
+    "frontPlaceholder": "Wprowadź pytanie lub pojęcie...",
+    "back": "Tył fiszki",
+    "backPlaceholder": "Wprowadź odpowiedź lub wyjaśnienie...",
+    "saving": "Zapisywanie...",
+    "update": "Zaktualizuj fiszkę",
+    "create": "Utwórz fiszkę",
+    "requiredFields": "* Pola wymagane"
+  },
+  "generate": {
+    "title": "Generuj fiszki AI",
+    "subtitle": "Pozwól sztucznej inteligencji utworzyć dla Ciebie fiszki do nauki",
+    "tips": {
+      "title": "💡 Wskazówki",
+      "specific": "Bądź konkretny w opisie tematu - im więcej szczegółów, tym lepsze fiszki",
+      "difficulty": "Możesz określić poziom trudności (podstawowy, średnio zaawansowany, zaawansowany)",
+      "examples": "Przykłady dobrych promptów:",
+      "example1": "Podstawy JavaScript: zmienne, funkcje, pętle i warunki",
+      "example2": "Historia Polski 1918-1939: wydarzenia polityczne i społeczne",
+      "example3": "Matematyka: wzory na pole i obwód figur geometrycznych"
+    },
+    "form": {
+      "topicRequired": "Proszę wprowadzić temat do wygenerowania fiszek",
+      "generateError": "Nie udało się wygenerować fiszek",
+      "acceptError": "Nie udało się zaakceptować fiszek",
+      "genericError": "Wystąpił błąd podczas generowania",
+      "description": "🤖 Generowanie AI: Podaj temat, a AI wygeneruje dla Ciebie fiszki do nauki.",
+      "topic": "Temat do nauki",
+      "topicPlaceholder": "Np. podstawy programowania w JavaScript, historia Polski w XX wieku, wzory matematyczne...",
+      "topicHelp": "Opisz szczegółowo czego chcesz się nauczyć. Im bardziej konkretny opis, tym lepsze fiszki.",
+      "count": "Liczba fiszek do wygenerowania",
+      "countOptions": {
+        "3": "3 fiszki",
+        "5": "5 fiszek",
+        "10": "10 fiszek",
+        "15": "15 fiszek",
+        "20": "20 fiszek"
+      },
+      "countHelp": "Rekomendujemy zacząć od mniejszej liczby, aby sprawdzić jakość generowanych fiszek.",
+      "generating": "Generuję fiszki...",
+      "generateButton": "Wygeneruj {{count}} fiszek",
+      "inProgress": "Generowanie w toku... To może potrwać kilka sekund. Proszę czekać."
+    }
+  },
+  "candidateReview": {
+    "title": "Przejrzyj wygenerowane fiszki",
+    "subtitle": "Wybierz fiszki, które chcesz dodać do swojej kolekcji",
+    "selectAll": "Zaznacz wszystkie",
+    "deselectAll": "Odznacz wszystkie",
+    "selected": "{{selected}} z {{total}} fiszek wybranych",
+    "selectAtLeast": "Musisz wybrać co najmniej jedną fiszkę",
+    "front": "Przód fiszki",
+    "back": "Tył fiszki",
+    "difficulty": "Trudność:",
+    "confirmAdd": "Dodasz {{count}} fiszkę/fiszek do swojej kolekcji",
+    "adding": "Dodawanie...",
+    "addSelected": "Dodaj wybrane"
+  },
+  "learn": {
+    "title": "Sesja nauki",
+    "subtitle": "Ucz się efektywnie z algorytmem spaced repetition",
+    "tips": {
+      "title": "💡 Jak działa nauka?",
+      "step1": "Przeczytaj pytanie i spróbuj odpowiedzieć w myślach",
+      "step2": "Kliknij aby zobaczyć prawidłową odpowiedź",
+      "step3": "Oceń jak dobrze pamiętałeś odpowiedź (1-5)",
+      "step4": "Algorytm automatycznie ustali kiedy ponownie pokazać fiszkę",
+      "step5": "Im wyższa ocena, tym rzadziej fiszka będzie się pojawiać"
+    },
+    "session": {
+      "loading": "Ładowanie sesji nauki...",
+      "endSession": "Zakończ sesję",
+      "completed": "Sesja nauki zakończona!",
+      "reviewed": "Przejrzano fiszek:",
+      "duration": "Czas sesji:",
+      "allReviewed": "Wszystkie dostępne fiszki zostały przejrzane",
+      "newSession": "Rozpocznij nową sesję",
+      "backToFlashcards": "Powrót do fiszek",
+      "reviewedCount": "Przejrzano:",
+      "remaining": "Pozostało:",
+      "time": "Czas:"
+    }
+  },
+  "auth": {
+    "error": "Wystąpił błąd",
+    "checkEmail": "Sprawdź email aby aktywować konto",
+    "login": "Zaloguj się",
+    "createAccount": "Utwórz konto",
+    "toContinue": "Aby kontynuować naukę z fiszkami",
+    "joinToday": "Dołącz do my10xCards już dziś",
+    "email": "Email",
+    "emailPlaceholder": "twoj@email.com",
+    "password": "Hasło",
+    "passwordPlaceholder": "Minimum 6 znaków",
+    "loggingIn": "Logowanie...",
+    "creatingAccount": "Tworzenie konta...",
+    "noAccount": "Nie masz konta? Zarejestruj się",
+    "hasAccount": "Masz już konto? Zaloguj się",
+    "forgotPassword": "Zapomniałeś hasła?",
+    "loginPrompt": {
+      "title": "Zaloguj się aby rozpocząć naukę",
+      "description": "Utwórz konto lub zaloguj się, aby rozpocząć tworzenie fiszek i efektywną naukę z algorytmem spaced repetition.",
+      "benefits": "✅ Bezpłatne • ✅ Bez reklam • ✅ Twoje dane są bezpieczne",
+      "loginButton": "🚀 Zaloguj się",
+      "registerButton": "✨ Utwórz konto"
+    },
+    "api": {
+      "emailPasswordRequired": "Email i hasło są wymagane",
+      "invalidCredentials": "Nieprawidłowy email lub hasło",
+      "loginSuccess": "Zalogowano pomyślnie",
+      "serverError": "Wystąpił błąd serwera",
+      "passwordTooShort": "Hasło musi mieć co najmniej 6 znaków",
+      "registrationError": "Wystąpił błąd podczas rejestracji",
+      "emailTaken": "Ten email jest już zarejestrowany",
+      "passwordTooWeak": "Hasło jest zbyt słabe",
+      "invalidEmailFormat": "Nieprawidłowy format email",
+      "accountCreated": "Konto utworzone! Sprawdź email aby aktywować konto."
+    }
+  },
+  "guestMode": {
+    "title": "Tryb gościa",
+    "description": "Używasz aplikacji w trybie gościa. Twoje fiszki są przechowywane lokalnie w przeglądarce i zostaną utracone po wyczyszczeniu danych przeglądarki lub zamknięciu sesji.",
+    "signUpButton": "🚀 Załóż konto (za darmo)",
+    "dismissButton": "Ukryj to ostrzeżenie"
+  }
+}

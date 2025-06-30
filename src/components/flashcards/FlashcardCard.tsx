@@ -1,5 +1,6 @@
 import type { FlashcardDTO } from "../../types";
 import { Button } from "../ui/button";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface FlashcardCardProps {
   flashcard: FlashcardDTO;
@@ -18,8 +19,11 @@ export function FlashcardCard({
   showActions = true,
   "data-testid": testId,
 }: FlashcardCardProps) {
+  const { t, language } = useTranslation();
+  
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("pl-PL", {
+    const locale = language === 'pl' ? 'pl-PL' : 'en-US';
+    return new Date(dateString).toLocaleDateString(locale, {
       day: "numeric",
       month: "short",
       year: "numeric",
@@ -43,12 +47,12 @@ export function FlashcardCard({
               flashcard.source === "ai" ? "bg-purple-100 text-purple-800" : "bg-blue-100 text-blue-800"
             }`}
           >
-            {flashcard.source === "ai" ? "AI" : "Manual"}
+            {t(`flashcards.card.source.${flashcard.source}`)}
           </span>
           <span className="text-xs text-gray-500">
             {flashcard.updated_at !== flashcard.created_at
-              ? `Edytowano: ${formatDate(flashcard.updated_at)}`
-              : `Utworzono: ${formatDate(flashcard.created_at)}`}
+              ? `${t('flashcards.card.dates.updated')} ${formatDate(flashcard.updated_at)}`
+              : `${t('flashcards.card.dates.created')} ${formatDate(flashcard.created_at)}`}
           </span>
         </div>
       </div>
@@ -57,7 +61,7 @@ export function FlashcardCard({
       <div className="space-y-4 mb-4 flex-1">
         <div className="bg-blue-50 rounded-lg p-3 border-l-4 border-blue-400">
           <div className="flex items-center mb-2">
-            <span className="text-blue-600 text-sm font-semibold">📄 Przód</span>
+            <span className="text-blue-600 text-sm font-semibold">{t('flashcards.card.sections.front')}</span>
           </div>
           <div className="text-gray-900 text-sm leading-relaxed" title={flashcard.front}>
             {truncateText(flashcard.front, 100)}
@@ -65,7 +69,7 @@ export function FlashcardCard({
         </div>
         <div className="bg-green-50 rounded-lg p-3 border-l-4 border-green-400">
           <div className="flex items-center mb-2">
-            <span className="text-green-600 text-sm font-semibold">📝 Tył</span>
+            <span className="text-green-600 text-sm font-semibold">{t('flashcards.card.sections.back')}</span>
           </div>
           <div className="text-gray-800 text-sm leading-relaxed" title={flashcard.back}>
             {truncateText(flashcard.back, 150)}
@@ -84,7 +88,7 @@ export function FlashcardCard({
               className="text-blue-600 border-blue-300 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400"
               data-testid="view-flashcard"
             >
-              👁️ Podgląd
+              {t('flashcards.card.buttons.view')}
             </Button>
           )}
           {onEdit && (
@@ -95,7 +99,7 @@ export function FlashcardCard({
               className="text-amber-600 border-amber-300 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-400"
               data-testid="edit-flashcard"
             >
-              ✏️ Edytuj
+              {t('flashcards.card.buttons.edit')}
             </Button>
           )}
           {onDelete && (
@@ -106,7 +110,7 @@ export function FlashcardCard({
               className="text-red-600 border-red-300 hover:bg-red-50 hover:text-red-700 hover:border-red-400"
               data-testid="delete-flashcard"
             >
-              🗑️ Usuń
+              {t('flashcards.card.buttons.delete')}
             </Button>
           )}
         </div>

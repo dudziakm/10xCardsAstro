@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button } from "../ui/button";
 import { LoadingSpinner } from "../ui/LoadingSpinner";
 import CandidateReview from "./CandidateReview";
+import { useTranslation } from "../../hooks/useTranslation";
 import type { FlashcardDTO, FlashcardCandidateDTO } from "../../types";
 
 interface GenerateFormProps {
@@ -10,6 +11,7 @@ interface GenerateFormProps {
 }
 
 export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
+  const { t } = useTranslation();
   const [prompt, setPrompt] = useState("");
   const [count, setCount] = useState(5);
   const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
     e.preventDefault();
 
     if (!prompt.trim()) {
-      setError("Proszę wprowadzić temat do wygenerowania fiszek");
+      setError(t('generate.form.topicRequired'));
       return;
     }
 
@@ -43,7 +45,7 @@ export function GenerateForm({ onGenerated, onCancel }: GenerateFormProps) {
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || "Nie udało się wygenerować fiszek");
+        throw new Error(errorData.message || t('generate.form.generateError'));
       }
 
       const data = await response.json();

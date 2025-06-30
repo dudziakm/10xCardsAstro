@@ -1,0 +1,234 @@
+{
+  "common": {
+    "loading": "Loading...",
+    "error": "Error:",
+    "tryAgain": "Try again",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search...",
+    "all": "All",
+    "manual": "Manual",
+    "ai": "AI",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or",
+    "and": "and",
+    "with": "with",
+    "for": "for",
+    "required": "required",
+    "optional": "optional"
+  },
+  "nav": {
+    "home": "Home",
+    "flashcards": "My Flashcards",
+    "generate": "Generate AI",
+    "learn": "Learn",
+    "loggedInAs": "Logged in as",
+    "logout": "Logout",
+    "login": "Login",
+    "register": "Register",
+    "openMenu": "Open main menu"
+  },
+  "home": {
+    "title": "my10xCards - Your flashcards for learning",
+    "headline": "Effective learning with AI-powered flashcards",
+    "stats": {
+      "total": "Total flashcards",
+      "totalHint": "Click to see all",
+      "manual": "Manual flashcards",
+      "manualHint": "Click to see manual",
+      "ai": "AI flashcards",
+      "aiHint": "Click to see AI"
+    },
+    "actions": {
+      "flashcards": "My Flashcards",
+      "addFlashcard": "Add Flashcard",
+      "generate": "Generate AI",
+      "learn": "Learn"
+    },
+    "welcome": "Welcome back! Ready to learn?"
+  },
+  "flashcards": {
+    "title": "My Flashcards",
+    "deleteConfirm": "Are you sure you want to delete this flashcard?",
+    "deleteError": "Failed to delete flashcard",
+    "searchPlaceholder": "Search flashcards...",
+    "filters": {
+      "all": "All",
+      "manual": "Manual",
+      "ai": "AI"
+    },
+    "results": {
+      "found": "Found {{count}} flashcards",
+      "forQuery": "for query",
+      "noResults": "No flashcards found matching your search criteria.",
+      "empty": "You don't have any flashcards yet.",
+      "createFirst": "Create your first flashcard"
+    },
+    "pagination": {
+      "page": "Page {{current}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "actions": {
+      "add": "Add Flashcard",
+      "generate": "Generate AI"
+    },
+    "card": {
+      "source": {
+        "manual": "Manual",
+        "ai": "AI"
+      },
+      "dates": {
+        "created": "Created:",
+        "updated": "Updated:"
+      },
+      "sections": {
+        "front": "📄 Front",
+        "back": "📝 Back"
+      },
+      "buttons": {
+        "view": "👁️ View",
+        "edit": "✏️ Edit",
+        "delete": "🗑️ Delete"
+      }
+    }
+  },
+  "flashcardForm": {
+    "titleNew": "Add New Flashcard",
+    "titleEdit": "Edit Flashcard",
+    "notFound": "Flashcard not found",
+    "loadError": "Failed to load flashcard",
+    "fillBoth": "Please fill in both fields",
+    "saveError": "Failed to save flashcard",
+    "genericError": "An error occurred while saving",
+    "loading": "Loading flashcard...",
+    "backToList": "Back to list",
+    "front": "Flashcard front",
+    "frontPlaceholder": "Enter question or concept...",
+    "back": "Flashcard back",
+    "backPlaceholder": "Enter answer or explanation...",
+    "saving": "Saving...",
+    "update": "Update flashcard",
+    "create": "Create flashcard",
+    "requiredFields": "* Required fields"
+  },
+  "generate": {
+    "title": "Generate AI Flashcards",
+    "subtitle": "Let artificial intelligence create flashcards for your studies",
+    "tips": {
+      "title": "💡 Tips",
+      "specific": "Be specific in your topic description - the more details, the better flashcards",
+      "difficulty": "You can specify difficulty level (basic, intermediate, advanced)",
+      "examples": "Examples of good prompts:",
+      "example1": "JavaScript basics: variables, functions, loops and conditions",
+      "example2": "Polish history 1918-1939: political and social events",
+      "example3": "Mathematics: formulas for area and perimeter of geometric shapes"
+    },
+    "form": {
+      "topicRequired": "Please enter a topic to generate flashcards",
+      "generateError": "Failed to generate flashcards",
+      "acceptError": "Failed to accept flashcards",
+      "genericError": "An error occurred during generation",
+      "description": "🤖 AI Generation: Provide a topic, and AI will generate flashcards for your studies.",
+      "topic": "Study topic",
+      "topicPlaceholder": "E.g. JavaScript programming basics, 20th century Polish history, mathematical formulas...",
+      "topicHelp": "Describe in detail what you want to learn. The more specific the description, the better the flashcards.",
+      "count": "Number of flashcards to generate",
+      "countOptions": {
+        "3": "3 flashcards",
+        "5": "5 flashcards",
+        "10": "10 flashcards",
+        "15": "15 flashcards",
+        "20": "20 flashcards"
+      },
+      "countHelp": "We recommend starting with a smaller number to check the quality of generated flashcards.",
+      "generating": "Generating flashcards...",
+      "generateButton": "Generate {{count}} flashcards",
+      "inProgress": "Generation in progress... This may take a few seconds. Please wait."
+    }
+  },
+  "candidateReview": {
+    "title": "Review generated flashcards",
+    "subtitle": "Select flashcards you want to add to your collection",
+    "selectAll": "Select all",
+    "deselectAll": "Deselect all",
+    "selected": "{{selected}} of {{total}} flashcards selected",
+    "selectAtLeast": "You must select at least one flashcard",
+    "front": "Flashcard front",
+    "back": "Flashcard back",
+    "difficulty": "Difficulty:",
+    "confirmAdd": "You will add {{count}} flashcard(s) to your collection",
+    "adding": "Adding...",
+    "addSelected": "Add selected"
+  },
+  "learn": {
+    "title": "Learning Session",
+    "subtitle": "Learn effectively with spaced repetition algorithm",
+    "tips": {
+      "title": "💡 How does learning work?",
+      "step1": "Read the question and try to answer in your mind",
+      "step2": "Click to see the correct answer",
+      "step3": "Rate how well you remembered the answer (1-5)",
+      "step4": "The algorithm will automatically determine when to show the flashcard again",
+      "step5": "The higher the rating, the less frequently the flashcard will appear"
+    },
+    "session": {
+      "loading": "Loading learning session...",
+      "endSession": "End session",
+      "completed": "Learning session completed!",
+      "reviewed": "Flashcards reviewed:",
+      "duration": "Session duration:",
+      "allReviewed": "All available flashcards have been reviewed",
+      "newSession": "Start new session",
+      "backToFlashcards": "Back to flashcards",
+      "reviewedCount": "Reviewed:",
+      "remaining": "Remaining:",
+      "time": "Time:"
+    }
+  },
+  "auth": {
+    "error": "An error occurred",
+    "checkEmail": "Check your email to activate your account",
+    "login": "Login",
+    "createAccount": "Create account",
+    "toContinue": "To continue learning with flashcards",
+    "joinToday": "Join my10xCards today",
+    "email": "Email",
+    "emailPlaceholder": "your@email.com",
+    "password": "Password",
+    "passwordPlaceholder": "Minimum 6 characters",
+    "loggingIn": "Logging in...",
+    "creatingAccount": "Creating account...",
+    "noAccount": "Don't have an account? Register",
+    "hasAccount": "Already have an account? Login",
+    "forgotPassword": "Forgot password?",
+    "loginPrompt": {
+      "title": "Login to start learning",
+      "description": "Create an account or login to start creating flashcards and learn effectively with spaced repetition algorithm.",
+      "benefits": "✅ Free • ✅ No ads • ✅ Your data is secure",
+      "loginButton": "🚀 Login",
+      "registerButton": "✨ Create account"
+    },
+    "api": {
+      "emailPasswordRequired": "Email and password are required",
+      "invalidCredentials": "Invalid email or password",
+      "loginSuccess": "Login successful",
+      "serverError": "Server error occurred",
+      "passwordTooShort": "Password must be at least 6 characters",
+      "registrationError": "Error occurred during registration",
+      "emailTaken": "This email is already registered",
+      "passwordTooWeak": "Password is too weak",
+      "invalidEmailFormat": "Invalid email format",
+      "accountCreated": "Account created! Check your email to activate your account."
+    }
+  },
+  "guestMode": {
+    "title": "Guest Mode",
+    "description": "You are using the app in guest mode. Your flashcards are stored locally in your browser and will be lost if you clear browser data or close the session.",
+    "signUpButton": "🚀 Sign up (free)",
+    "dismissButton": "Hide this warning"
+  }
+}

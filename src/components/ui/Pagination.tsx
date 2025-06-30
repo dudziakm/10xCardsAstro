@@ -1,5 +1,6 @@
 import React from "react";
 import { Button } from "./button";
+import { useTranslation } from "../../hooks/useTranslation";
 
 interface PaginationProps {
   currentPage: number;
@@ -16,6 +17,8 @@ export function Pagination({
   showSummary = true,
   className = "",
 }: PaginationProps) {
+  const { t } = useTranslation();
+  
   if (totalPages <= 1) return null;
 
   const getVisiblePages = () => {
@@ -50,13 +53,13 @@ export function Pagination({
     <div className={`flex items-center justify-between ${className}`}>
       {showSummary && (
         <div className="text-sm text-gray-700">
-          Strona <span className="font-medium">{currentPage}</span> z <span className="font-medium">{totalPages}</span>
+          {t('flashcards.pagination.page', { current: currentPage, total: totalPages })}
         </div>
       )}
 
       <div className="flex items-center space-x-2">
         <Button variant="outline" size="sm" onClick={() => onPageChange(currentPage - 1)} disabled={currentPage <= 1}>
-          Poprzednia
+          {t('flashcards.pagination.previous')}
         </Button>
 
         <div className="flex items-center space-x-1">
@@ -84,7 +87,7 @@ export function Pagination({
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage >= totalPages}
         >
-          Następna
+          {t('flashcards.pagination.next')}
         </Button>
       </div>
     </div>

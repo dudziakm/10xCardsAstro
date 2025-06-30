@@ -1,11 +1,25 @@
 import { defineMiddleware } from "astro:middleware";
 import { supabaseAdminClient } from "../db/supabase.client";
+import { getLanguageFromRequest } from "../i18n/astro-helper";
+import type { Language } from "../i18n";
 
 // Session typing is defined in src/lib/types/locals.ts
 
 export const onRequest = defineMiddleware(async ({ locals, request, cookies, url, redirect }, next) => {
+  console.log('🚀 MIDDLEWARE START:', url.pathname);
+  
   // Set the Supabase client in locals
   locals.supabase = supabaseAdminClient;
+
+  // Set language in locals
+  let language: Language = 'pl';
+  const langCookie = cookies.get('my10xCards_language')?.value;
+  if (langCookie === 'pl' || langCookie === 'en') {
+    language = langCookie;
+  } else {
+    language = getLanguageFromRequest(request);
+  }
+  locals.language = language;
 
   try {
     // Try to get session from cookies first
@@ -51,13 +65,11 @@ export const onRequest = defineMiddleware(async ({ locals, request, cookies, url
     locals.session = null;
   }
 
-  // Protected routes - require authentication
-  const protectedRoutes = ["/flashcards", "/generate", "/learn"];
-  const isProtectedRoute = protectedRoutes.some((route) => url.pathname.startsWith(route));
+  console.log('✅ MIDDLEWARE END:', url.pathname, 'Session:', !!locals.session, 'Allowing access');
 
-  if (isProtectedRoute && !locals.session) {
-    return redirect("/auth/login");
-  }
+  // Protected routes - require authentication
+  // REMOVED: We now allow guest access to all routes
+  // Guest users will use localStorage for data storage
 
   return next();
 });

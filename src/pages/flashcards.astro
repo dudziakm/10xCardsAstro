@@ -1,11 +1,15 @@
 ---
 // Flashcards list page
 import Layout from "../layouts/Layout.astro";
-import { FlashcardList } from "../components/flashcards/FlashcardList";
+import { UniversalFlashcardList } from "../components/flashcards/UniversalFlashcardList";
+import { createTranslator } from "../i18n/astro-helper";
+
+const { language } = Astro.locals;
+const { t } = createTranslator(language);
 ---
 
-<Layout title="Moje fiszki">
+<Layout title={t("flashcards.title")}>
   <div class="container mx-auto px-4 py-8">
-    <FlashcardList client:load />
+    <UniversalFlashcardList client:load />
   </div>
 </Layout>
