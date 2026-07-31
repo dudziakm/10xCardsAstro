@@ -2,6 +2,25 @@
 
 Podejście: guard-first, Branch by Abstraction dla persistence, forward-only migrations i małe odwracalne fazy. Jedna faza = jeden niezależny review/rollback.
 
+## Opublikowane dowody
+
+- Draft PR: <https://github.com/dudziakm/10xCardsAstro/pull/25>
+- Commit Phase 1: [`e5f8c0b`](https://github.com/dudziakm/10xCardsAstro/commit/e5f8c0bbcab05ec02804b054ef7b2f8011dd8689)
+- Run CI: <https://github.com/dudziakm/10xCardsAstro/actions/runs/30659996423>
+- Zielony job `ReviewScheduler characterization` (24/24):
+  <https://github.com/dudziakm/10xCardsAstro/actions/runs/30659996423/job/91253680496>
+- Czerwony istniejący `unit-tests` baseline:
+  <https://github.com/dudziakm/10xCardsAstro/actions/runs/30659996423/job/91253680419>
+- Czerwony istniejący `security` baseline:
+  <https://github.com/dudziakm/10xCardsAstro/actions/runs/30659996423/job/91253680543>
+
+Nowy job schedulera jest zielony; cały legacy pipeline nie jest przedstawiany
+jako zielony. `unit-tests` zatrzymuje 11 istniejących błędów Prettier w
+generowanym `src/db/database.types.ts`, a `security` raportuje 7 advisories
+(1 low, 6 high) przy lockfile niezmienionym przez PR. Stare joby używają Node 20,
+poniżej wymagania Astro 7 (`>=22.12`). Wszystkie te punkty są baseline'em poza
+małą Phase 1, nie sukcesem refaktoru.
+
 ## Automated progress
 
 | Faza                             | Status                             | Dowód                                                                                                                                 |
