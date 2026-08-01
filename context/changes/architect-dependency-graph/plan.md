@@ -42,9 +42,9 @@
 
 #### Automated
 
-- [x] 1.1 Configure dependency-cruiser and the project command
-- [x] 1.2 Record focused graph evidence and the M4 synthesis report
-- [x] 1.3 Prove the static guard, pass repository gates and commit
+- [x] 1.1 Configure dependency-cruiser and the project command — 951eed0
+- [x] 1.2 Record focused graph evidence and the M4 synthesis report — 951eed0
+- [x] 1.3 Prove the static guard, pass repository gates and commit — 951eed0
 
 #### Manual
 

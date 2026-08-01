@@ -2,7 +2,7 @@
 title: Dependency-cruiser evidence and Architect synthesis
 created: 2026-08-01
 type: implementation-plan
-status: implementing
+status: implemented
 ---
 
 # Change: architect-dependency-graph
