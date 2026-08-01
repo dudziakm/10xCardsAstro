@@ -4,7 +4,31 @@
 
 Jak przepływa feature „sesja nauki → karta → rating → harmonogram” i gdzie narusza granice warstw?
 
-Analiza jest celowo zawężona. `dependency-cruiser` nie jest zależnością projektu ani lokalną komendą, dlatego nie pobierano go ad hoc. Graf oparto na aktualnych importach (`rg '^import .* from'`) oraz call-site'ach zweryfikowanych `ast-grep 0.43.0`.
+Analiza jest celowo zawężona do aktywnego flow nauki. Od 1 sierpnia 2026
+`dependency-cruiser 18.1.0` jest wersjonowaną dev dependency; konfiguracja
+`.dependency-cruiser.cjs` analizuje importy TypeScript/TSX z `src` i ma trzy
+blokujące reguły: brak cykli, brak bezpośredniego importu API przez React island
+oraz brak importu React island przez API. `rg` i `ast-grep 0.43.0` nadal służą
+do call-site'ów, których graf importów nie opisuje.
+
+## Odtwarzalny graf dependency-cruiser
+
+```bash
+npm run analyze:dependencies
+# ✔ no dependency violations found (65 modules, 104 dependencies cruised)
+
+npx depcruise --config .dependency-cruiser.cjs --output-type text \
+  --focus '^(src/pages/learn\\.astro|src/components/learning/LearningSession\\.tsx|src/pages/api/learn/session\\.ts|src/pages/api/learn/session/rate\\.ts|src/lib/services/learning\\.service\\.ts)$' \
+  --focus-depth 2 src
+```
+
+Wynik dependency-cruiser potwierdza w analizowanym TS/TSX: oba endpointy
+`src/pages/api/learn/session*.ts` importują `learning.schema.ts` oraz
+`LearningService`; serwis importuje wyłącznie czysty `ReviewScheduler` z tej
+ścieżki. `LearningSession.tsx` importuje kartę i komponenty UI, lecz wywołania
+`fetch` do endpointów są relacją runtime HTTP, nie importem. `learn.astro` nie
+pojawia się w grafie tego narzędzia, dlatego jego `client:load` pozostaje
+osobnym, cytowanym dowodem źródłowym, a nie wnioskiem z graphu.
 
 ## Podgraf zależności
 
@@ -42,7 +66,9 @@ flowchart LR
 
 ## Cykle i testowalność
 
-- W zawężonym grafie importów nie ma cyklu.
+- `npm run analyze:dependencies` nie znalazł cyklu ani naruszenia obu granic
+  importowych w 65 modułach i 104 zależnościach; to nie jest dowód bezpieczeństwa
+  wywołań HTTP ani polityk bazy.
 - `ReviewScheduler` nie importuje Astro, Supabase ani DTO; jest czystym liściem grafu.
 - `LearningService` pozostaje trudny do testowania przez fluent mock Supabase i jednoczesną odpowiedzialność za query, mutacje oraz kompozycję DTO.
 - `src/types.ts` jest wspólnym workiem DTO dla wielu feature'ów. Zmiana kształtu sesji może dotknąć API i UI bez lokalnej granicy typu.

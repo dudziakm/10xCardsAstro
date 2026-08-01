@@ -17,6 +17,8 @@
     "test:e2e:debug": "playwright test --debug",
     "test:manual": "node test-manual.js",
     "security:check": "node scripts/security-check.js",
+    "analyze:dependencies": "depcruise --config .dependency-cruiser.cjs --output-type err-long src",
+    "analyze:dependencies:config": "node scripts/verify-dependency-cruiser-config.mjs",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write ."
@@ -53,6 +55,7 @@
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
     "@vitest/ui": "^4.1.8",
+    "dependency-cruiser": "^18.1.0",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "10.1.1",
     "eslint-import-resolver-typescript": "4.2.5",
