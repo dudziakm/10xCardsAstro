@@ -1,36 +1,26 @@
-import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, type Mock, vi } from "vitest";
 import { callOpenRouterAI } from "./openrouter";
+
+const TEST_API_KEY = "test-api-key";
 
 describe("OpenRouter AI Service", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    // Mock environment variable is already set in test setup
+    vi.stubEnv("OPENROUTER_API_KEY", TEST_API_KEY);
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   describe("callOpenRouterAI", () => {
     it("should throw error when API key is missing", async () => {
-      const originalEnv = import.meta.env;
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          ...originalEnv,
-          OPENROUTER_API_KEY: undefined,
-        },
-        writable: true,
-        configurable: true,
-      });
+      vi.stubEnv("OPENROUTER_API_KEY", "");
 
       await expect(callOpenRouterAI("test input")).rejects.toThrow("OPENROUTER_API_KEY not configured");
-
-      // Restore original env
-      Object.defineProperty(import.meta, "env", {
-        value: originalEnv,
-        writable: true,
-        configurable: true,
-      });
     });
 
     it("should make correct API request with proper headers", async () => {
-      // Use the env from setup.ts which already has the API key
       const mockResponse = {
         ok: true,
         json: () =>
@@ -82,16 +72,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should parse AI response correctly", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockFlashcards = [
         { front: "What is React?", back: "A JavaScript library for building user interfaces" },
         { front: "What is JSX?", back: "JavaScript XML syntax extension" },
@@ -122,16 +102,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should filter out invalid flashcards", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockFlashcards = [
         { front: "Valid Front", back: "Valid Back" },
         { front: "", back: "No front" }, // Invalid - empty front
@@ -166,16 +136,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should truncate long content to specified limits", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const longFront = "A".repeat(300); // Exceeds 200 char limit
       const longBack = "B".repeat(600); // Exceeds 500 char limit
 
@@ -207,16 +167,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should handle API errors properly", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockResponse = {
         ok: false,
         status: 401,
@@ -229,16 +179,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should handle invalid JSON response", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockResponse = {
         ok: true,
         json: () =>
@@ -262,16 +202,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should handle missing flashcards array in response", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockResponse = {
         ok: true,
         json: () =>
@@ -297,16 +227,6 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should handle empty choices array", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockResponse = {
         ok: true,
         json: () =>
@@ -323,32 +243,12 @@ describe("OpenRouter AI Service", () => {
     });
 
     it("should handle network errors", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       global.fetch = vi.fn().mockRejectedValue(new Error("Network error"));
 
       await expect(callOpenRouterAI("Test input")).rejects.toThrow("Network error");
     });
 
     it("should use correct default count parameter", async () => {
-      // Restore the mock API key for this test
-      Object.defineProperty(import.meta, "env", {
-        value: {
-          OPENROUTER_API_KEY: "test-api-key",
-          SUPABASE_URL: "https://test.supabase.co",
-          SUPABASE_ANON_KEY: "test-anon-key",
-        },
-        writable: true,
-      });
-
       const mockResponse = {
         ok: true,
         json: () =>
