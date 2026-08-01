@@ -1,3 +1,9 @@
+---
+title: Plan agregatu-strażnika LearningSession
+created: 2026-07-31
+type: refactor-plan
+---
+
 # 02 — Plan agregatu-strażnika `LearningSession`
 
 To plan, nie implementacja.
@@ -8,14 +14,14 @@ To plan, nie implementacja.
 
 ## Gdzie reguła jest dziś rozsmarowana
 
-- active session + ownership: fluent query w `LearningService.rateFlashcard`;
-- card ownership: osobny query tego samego serwisu;
-- rating range: Zod wyłącznie na granicy HTTP;
-- presentation: brak zapisu/modelu;
-- counter: update w `getNextCard`, czyli inny request niż rating;
-- progress unique: SQL constraint;
-- idempotency: brak;
-- transaction: brak jawnej granicy.
+- active session + ownership: fluent query w `LearningService.rateFlashcard` (`src/lib/services/learning.service.ts:134-145`);
+- card ownership: osobny query tego samego serwisu (`src/lib/services/learning.service.ts:147-157`);
+- rating range: Zod wyłącznie na granicy HTTP (`src/lib/schemas/learning.schema.ts:7-11`);
+- presentation: brak zapisu/modelu w aktualnych migracjach i flow rate (`supabase/migrations/20240320120000_add_learning_tables.sql:7-31`; `src/lib/services/learning.service.ts:134-189`);
+- counter: update w `getNextCard`, czyli inny request niż rating (`src/lib/services/learning.service.ts:91-100,159-208`);
+- progress unique: SQL constraint (`supabase/migrations/20240320120000_add_learning_tables.sql:19-31`);
+- idempotency: brak zapisanej komendy lub presentation id w aktualnym flow (`src/lib/services/learning.service.ts:128-208`);
+- transaction: brak jawnej granicy w aktualnym serwisie (`src/lib/services/learning.service.ts:159-192`).
 
 ## Model docelowy
 
@@ -127,3 +133,15 @@ Każda faza ma forward migration i możliwość przełączenia adaptera. Nie usu
 ## Ryzyka/unknown
 
 Concurrent tabs, retrofitting istniejących aktywnych sesji, wybrany kod HTTP 403/404, retention presentations oraz koszt transakcji/RPC Supabase wymagają decyzji przed fazą schema.
+
+## Podsumowanie
+
+Ten dokument opisuje docelową granicę `LearningSession`; nie deklaruje, że
+agregat, tabela presentations ani transakcja już istnieją. Model skupia
+aktywność sesji, własność przedstawienia i jednokrotne zaakceptowanie ratingu,
+ponieważ obecny kod rozdziela te reguły między GET, rate i SQL. Proponowane
+`commitRating` ustanawia jedną granicę atomowości dla consumption presentation,
+postępu i licznika sesji. Fazy migracji zachowują publiczne endpointy i DTO,
+ale wymagają characterization oraz contract tests przed enforcement. Kody HTTP,
+retencja i zachowanie concurrent tabs pozostają świadomymi decyzjami do
+podjęcia, a nie założeniami implementacyjnymi.

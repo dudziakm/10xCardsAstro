@@ -1,12 +1,40 @@
+---
+title: Anti-Corruption Layer dla Supabase w domenie nauki
+created: 2026-07-31
+type: refactor-plan
+---
+
 # 03 — Anti-Corruption Layer dla Supabase w domenie nauki
 
 To plan, nie implementacja.
 
 ## Przeciek zależności
 
-`LearningService` importuje `SupabaseClient`, buduje fluent queries, zna nazwy tabel, join string `flashcard_progress!left`, kształt response `{data,error,count}` i semantykę `.single()/.upsert()`. Reguły aplikacyjne są więc związane z modelem i błędami SDK.
+`LearningService` importuje `SupabaseClient`, buduje fluent queries, zna nazwy
+tabel, join string `flashcard_progress!left`, kształt response
+`{data,error,count}` i semantykę `.single()/.upsert()`
+(`src/lib/services/learning.service.ts:1,5-9,15-21,45-60,159-192`). Reguły
+aplikacyjne są więc związane z modelem i błędami SDK.
 
 Wyciek dotyczy slice'u nauki. Globalne middleware/auth i inne feature'y mogą nadal używać Supabase; plan nie proponuje wrappera całego SDK.
+
+## Current SDK inventory
+
+Inwentaryzacja poniżej jest odtwarzalnym stanem bieżącego `src/`, wykonanym
+poleceniem `rg -n '@supabase/supabase-js|SupabaseClient|Postgrest' src`; nie
+jest twierdzeniem o przyszłej strukturze po migracji.
+
+| Miejsce | Aktualna wiedza o SDK | Granica docelowa / decyzja |
+|---|---|---|
+| `src/lib/services/learning.service.ts:1,5-9` | produkcyjny slice nauki przyjmuje `SupabaseClient` i wykonuje query | przenieść do adaptera Supabase |
+| `src/lib/services/learning.service.test.ts:3,8-20` | test buduje mock w typie `SupabaseClient` | zastąpić fake'em portu w testach use case |
+| `src/env.d.ts:3-16`; `src/lib/types/locals.ts:1-8` | typy Astro Locals eksponują klienta SDK | composition może nadal dostarczać adapter, nie klient do application |
+| `src/db/supabase.client.ts:1-8` | composition tworzy klienta Supabase | dozwolone miejsce infrastrukturalne |
+| `src/lib/services/flashcard.service.ts:1-6`; `src/lib/services/generation.service.ts:1-13`; `src/lib/services/test/flashcard.service.test.ts:2,22` | inne feature'y i ich test także używają SDK | poza zakresem ACL slice'u nauki |
+
+W aktualnym kodzie nie istnieją jeszcze katalogi `src/domain/learning` ani
+`src/application/learning`; komendy proof poniżej są kryteriami po utworzeniu
+tych granic, nie wynikiem ich obecnego istnienia.
 
 ## Granica docelowa
 
@@ -136,3 +164,14 @@ Ten sam suite uruchamiany dla in-memory i Supabase adaptera:
 ## Ryzyka i decyzje przed implementacją
 
 RPC vs bezpośredni Postgres client, ownership transakcji, error taxonomy, wersjonowanie progress i mapping remote schema wymagają discovery. Remote policies pozostają `unknown` do inwentaryzacji.
+
+## Podsumowanie
+
+ACL ma odizolować wyłącznie use case'y nauki od szczegółów query buildera i
+typów Supabase, a nie zastąpić całe SDK globalnym wrapperem. Bieżąca
+inwentaryzacja pokazuje dokładnie, gdzie zależność występuje w production,
+testach i composition. Porty pozostają wąskie i opisują komendy domenowe,
+dlatego `commitRating` może później ukryć mechanizm RPC oraz transakcji.
+Przetłumaczenie błędów na named results ma usunąć zależność API od stringów
+provider error. Plan wymaga najpierw contract tests i branch by abstraction;
+remote schema, RLS oraz decyzja RPC pozostają `unknown` do discovery.
