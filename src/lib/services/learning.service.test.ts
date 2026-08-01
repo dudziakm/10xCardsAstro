@@ -2,6 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { LearningService } from "./learning.service";
+import { ReviewScheduler } from "./review-scheduler";
 
 // Mock Supabase client
 const mockSupabase = {
@@ -28,45 +29,42 @@ describe("LearningService", () => {
 
   describe("calculateNextReviewDate", () => {
     it("should calculate correct intervals for different ratings", () => {
-      const service = learningService as any; // Access private method
+      const scheduler = new ReviewScheduler();
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
-      vi.setSystemTime(baseDate);
 
       // Rating 1 (Again) - 1 day
-      const nextReview1 = service.calculateNextReviewDate(1, 0, 2.5);
-      expect(nextReview1.getDate()).toBe(2); // Jan 2
+      const nextReview1 = scheduler.calculateNextReviewDate(1, 0, 2.5, baseDate);
+      expect(nextReview1.toISOString()).toBe("2024-01-02T00:00:00.000Z");
 
       // Rating 3 (Good) - 4 days
-      const nextReview3 = service.calculateNextReviewDate(3, 0, 2.5);
-      expect(nextReview3.getDate()).toBe(5); // Jan 5
+      const nextReview3 = scheduler.calculateNextReviewDate(3, 0, 2.5, baseDate);
+      expect(nextReview3.toISOString()).toBe("2024-01-05T00:00:00.000Z");
 
       // Rating 5 (Easy) - 14 days
-      const nextReview5 = service.calculateNextReviewDate(5, 0, 2.5);
-      expect(nextReview5.getDate()).toBe(15); // Jan 15
+      const nextReview5 = scheduler.calculateNextReviewDate(5, 0, 2.5, baseDate);
+      expect(nextReview5.toISOString()).toBe("2024-01-15T00:00:00.000Z");
     });
 
     it("should apply difficulty multiplier correctly", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
-      vi.setSystemTime(baseDate);
 
       // High difficulty (5.0) should increase interval
-      const nextReviewHard = service.calculateNextReviewDate(3, 0, 5.0);
+      const nextReviewHard = scheduler.calculateNextReviewDate(3, 0, 5.0, baseDate);
       // Low difficulty (1.0) should decrease interval
-      const nextReviewEasy = service.calculateNextReviewDate(3, 0, 1.0);
+      const nextReviewEasy = scheduler.calculateNextReviewDate(3, 0, 1.0, baseDate);
 
       expect(nextReviewHard.getDate()).toBeGreaterThan(nextReviewEasy.getDate());
     });
 
     it("should apply review count multiplier correctly", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
       const baseDate = new Date("2024-01-01T00:00:00.000Z");
-      vi.setSystemTime(baseDate);
 
       // First review
-      const firstReview = service.calculateNextReviewDate(3, 1, 2.5);
+      const firstReview = scheduler.calculateNextReviewDate(3, 1, 2.5, baseDate);
       // Fifth review should have longer interval
-      const fifthReview = service.calculateNextReviewDate(3, 5, 2.5);
+      const fifthReview = scheduler.calculateNextReviewDate(3, 5, 2.5, baseDate);
 
       expect(fifthReview.getDate()).toBeGreaterThan(firstReview.getDate());
     });
@@ -74,46 +72,46 @@ describe("LearningService", () => {
 
   describe("updateDifficultyRating", () => {
     it("should increase difficulty for low ratings", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
 
       // Rating 1 (Again) should increase difficulty
-      const newDifficulty1 = service.updateDifficultyRating(2.5, 1);
+      const newDifficulty1 = scheduler.updateDifficultyRating(2.5, 1);
       expect(newDifficulty1).toBeGreaterThan(2.5);
 
       // Rating 2 (Hard) should increase difficulty
-      const newDifficulty2 = service.updateDifficultyRating(2.5, 2);
+      const newDifficulty2 = scheduler.updateDifficultyRating(2.5, 2);
       expect(newDifficulty2).toBeGreaterThan(2.5);
     });
 
     it("should decrease difficulty for high ratings", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
 
       // Rating 4 (Easy) should decrease difficulty
-      const newDifficulty4 = service.updateDifficultyRating(2.5, 4);
+      const newDifficulty4 = scheduler.updateDifficultyRating(2.5, 4);
       expect(newDifficulty4).toBeLessThan(2.5);
 
       // Rating 5 (Very Easy) should decrease difficulty more
-      const newDifficulty5 = service.updateDifficultyRating(2.5, 5);
+      const newDifficulty5 = scheduler.updateDifficultyRating(2.5, 5);
       expect(newDifficulty5).toBeLessThan(newDifficulty4);
     });
 
     it("should keep difficulty unchanged for neutral rating", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
 
       // Rating 3 (Good) should keep difficulty same
-      const newDifficulty = service.updateDifficultyRating(2.5, 3);
+      const newDifficulty = scheduler.updateDifficultyRating(2.5, 3);
       expect(newDifficulty).toBe(2.5);
     });
 
     it("should enforce difficulty bounds", () => {
-      const service = learningService as any;
+      const scheduler = new ReviewScheduler();
 
       // Should not go below 1.0
-      const minDifficulty = service.updateDifficultyRating(1.1, 1);
+      const minDifficulty = scheduler.updateDifficultyRating(1.1, 1);
       expect(minDifficulty).toBeGreaterThanOrEqual(1.0);
 
       // Should not go above 5.0
-      const maxDifficulty = service.updateDifficultyRating(4.9, 5);
+      const maxDifficulty = scheduler.updateDifficultyRating(4.9, 5);
       expect(maxDifficulty).toBeLessThanOrEqual(5.0);
     });
   });
@@ -127,20 +125,7 @@ describe("LearningService", () => {
         started_at: new Date().toISOString(),
       };
 
-      (mockSupabase.from as any).mockReturnValue({
-        insert: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: mockSession, error: null }),
-          }),
-        }),
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            order: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue({ data: [], error: null }),
-            }),
-          }),
-        }),
-      });
+      mockEmptyLearningQueries(mockSession);
 
       await learningService.getNextCard("user-123");
 
@@ -155,25 +140,7 @@ describe("LearningService", () => {
         started_at: new Date().toISOString(),
       };
 
-      (mockSupabase.from as any).mockReturnValue({
-        insert: vi.fn().mockReturnValue({
-          select: vi.fn().mockReturnValue({
-            single: vi.fn().mockResolvedValue({ data: mockSession, error: null }),
-          }),
-        }),
-        select: vi.fn().mockReturnValue({
-          eq: vi.fn().mockReturnValue({
-            order: vi.fn().mockReturnValue({
-              limit: vi.fn().mockResolvedValue({ data: [], error: null }),
-            }),
-          }),
-          count: vi.fn().mockResolvedValue({ count: 0 }),
-          head: vi.fn(),
-          gt: vi.fn().mockReturnValue({
-            count: vi.fn().mockResolvedValue({ count: 0 }),
-          }),
-        }),
-      });
+      mockEmptyLearningQueries(mockSession);
 
       const result = await learningService.getNextCard("user-123");
 
@@ -241,3 +208,45 @@ describe("LearningService", () => {
     });
   });
 });
+
+function mockEmptyLearningQueries(mockSession: Record<string, unknown>) {
+  (mockSupabase.from as any).mockImplementation((table: string) => {
+    if (table === "learning_sessions") {
+      return {
+        insert: vi.fn().mockReturnValue({
+          select: vi.fn().mockReturnValue({
+            single: vi.fn().mockResolvedValue({ data: mockSession, error: null }),
+          }),
+        }),
+      };
+    }
+
+    if (table === "flashcards") {
+      return {
+        select: vi.fn((_query?: string, options?: { count?: string; head?: boolean }) => ({
+          eq: vi.fn(() =>
+            options?.head
+              ? Promise.resolve({ count: 0, error: null })
+              : {
+                  order: vi.fn(() => ({
+                    limit: vi.fn().mockResolvedValue({ data: [], error: null }),
+                  })),
+                }
+          ),
+        })),
+      };
+    }
+
+    if (table === "flashcard_progress") {
+      return {
+        select: vi.fn(() => ({
+          eq: vi.fn(() => ({
+            gt: vi.fn().mockResolvedValue({ count: 0, error: null }),
+          })),
+        })),
+      };
+    }
+
+    throw new Error(`Unexpected table in test: ${table}`);
+  });
+}

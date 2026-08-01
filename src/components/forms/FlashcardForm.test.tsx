@@ -135,34 +135,38 @@ describe("FlashcardForm", () => {
   });
 
   describe("Validation", () => {
-    it("should show error when front field is empty", async () => {
+    it("should keep submit disabled and avoid saving when front is missing", async () => {
       const user = userEvent.setup();
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
+      const frontInput = screen.getByLabelText("Przód fiszki *");
       await user.type(screen.getByLabelText("Tył fiszki *"), "Answer only");
-      fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
 
-      await waitFor(() => {
-        expect(screen.getByText(/Proszę wypełnić oba pola/i)).toBeInTheDocument();
-      });
+      expect(frontInput).toBeRequired();
+      expect(frontInput).toBeInvalid();
+      expect(screen.getByRole("button", { name: /utwórz fiszkę/i })).toBeDisabled();
 
+      await user.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
       expect(global.fetch).not.toHaveBeenCalled();
+      expect(mockOnSave).not.toHaveBeenCalled();
     });
 
-    it("should show error when back field is empty", async () => {
+    it("should keep submit disabled and avoid saving when back is missing", async () => {
       const user = userEvent.setup();
 
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
+      const backInput = screen.getByLabelText("Tył fiszki *");
       await user.type(screen.getByLabelText("Przód fiszki *"), "Question only");
-      fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
 
-      await waitFor(() => {
-        expect(screen.getByText(/Proszę wypełnić oba pola/i)).toBeInTheDocument();
-      });
+      expect(backInput).toBeRequired();
+      expect(backInput).toBeInvalid();
+      expect(screen.getByRole("button", { name: /utwórz fiszkę/i })).toBeDisabled();
 
+      await user.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
       expect(global.fetch).not.toHaveBeenCalled();
+      expect(mockOnSave).not.toHaveBeenCalled();
     });
 
     it("should disable submit button when fields are empty", () => {
@@ -339,15 +343,13 @@ describe("FlashcardForm", () => {
       expect(backInput).toHaveAttribute("id", "back");
     });
 
-    it("should have proper ARIA attributes for error states", async () => {
+    it("should use native required validation without a synthetic error state", () => {
       render(<FlashcardForm mode="create" onSave={mockOnSave} />);
 
-      fireEvent.click(screen.getByRole("button", { name: /utwórz fiszkę/i }));
-
-      await waitFor(() => {
-        const errorElement = screen.getByText(/proszę wypełnić oba pola/i);
-        expect(errorElement).toBeInTheDocument();
-      });
+      expect(screen.getByLabelText("Przód fiszki *")).toBeRequired();
+      expect(screen.getByLabelText("Tył fiszki *")).toBeRequired();
+      expect(screen.getByRole("button", { name: /utwórz fiszkę/i })).toBeDisabled();
+      expect(screen.queryByText(/proszę wypełnić oba pola/i)).not.toBeInTheDocument();
     });
   });
 });

@@ -1,8 +1,12 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { GetLearningSessionResponseDTO, RateFlashcardResponseDTO } from "../../types";
+import { ReviewScheduler } from "./review-scheduler";
 
 export class LearningService {
-  constructor(private supabase: SupabaseClient) {}
+  constructor(
+    private supabase: SupabaseClient,
+    private reviewScheduler = new ReviewScheduler()
+  ) {}
 
   async getNextCard(userId: string, sessionId?: string): Promise<GetLearningSessionResponseDTO> {
     // Get or create session
@@ -163,9 +167,13 @@ export class LearningService {
     const currentDifficulty = existingProgress?.difficulty_rating || 2.5;
     const reviewCount = (existingProgress?.review_count || 0) + 1;
 
-    // Calculate new values
-    const newDifficultyRating = this.updateDifficultyRating(currentDifficulty, rating);
-    const nextReviewDate = this.calculateNextReviewDate(rating, reviewCount, newDifficultyRating);
+    // Calculate new values without coupling the scheduling rules to persistence.
+    const { difficultyRating: newDifficultyRating, nextReviewDate } = this.reviewScheduler.schedule(
+      rating,
+      reviewCount,
+      currentDifficulty,
+      new Date()
+    );
 
     // Upsert progress record
     const progressData = {
@@ -198,29 +206,5 @@ export class LearningService {
         session_duration_minutes: sessionDuration,
       },
     };
-  }
-
-  private calculateNextReviewDate(rating: number, reviewCount: number, currentDifficulty: number): Date {
-    const baseIntervals: Record<number, number> = {
-      1: 1, // 1 day
-      2: 2, // 2 days
-      3: 4, // 4 days
-      4: 7, // 7 days
-      5: 14, // 14 days
-    };
-
-    const difficultyMultiplier = Math.max(0.5, Math.min(2.0, currentDifficulty / 2.5));
-    const reviewMultiplier = Math.min(3.0, 1 + reviewCount * 0.1);
-    const interval = baseIntervals[rating] * difficultyMultiplier * reviewMultiplier;
-
-    const nextReview = new Date();
-    nextReview.setDate(nextReview.getDate() + Math.round(interval));
-    return nextReview;
-  }
-
-  private updateDifficultyRating(currentRating: number, userRating: number): number {
-    // Invert the adjustment - lower ratings increase difficulty, higher ratings decrease it
-    const adjustment = (3 - userRating) * 0.2;
-    return Math.max(1.0, Math.min(5.0, currentRating + adjustment));
   }
 }

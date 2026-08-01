@@ -7,6 +7,28 @@ on:
     branches: [master, main]
 
 jobs:
+  review-scheduler:
+    name: ReviewScheduler characterization
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run scheduler and direct service tests
+        run: npm run test:run -- src/lib/services/review-scheduler.test.ts src/lib/services/learning.service.test.ts
+
   # Unit and Integration Tests - These block the pipeline if they fail
   unit-tests:
     runs-on: ubuntu-latest
@@ -18,7 +40,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -36,6 +58,7 @@ jobs:
             src/test/simple.test.ts \
             src/lib/schemas/test/flashcard.schema.test.ts \
             src/lib/services/test/flashcard.service.test.ts \
+            src/lib/services/review-scheduler.test.ts \
             "src/lib/services/learning.service.test.ts" \
             --testNamePattern="^((?!getNextCard).)*$"
         env:
@@ -57,7 +80,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -100,7 +123,6 @@ jobs:
             test-results/
           retention-days: 7
 
-
   build:
     runs-on: ubuntu-latest
     needs: unit-tests # Only wait for unit tests, not E2E
@@ -112,7 +134,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
@@ -144,7 +166,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20.x
+          node-version-file: .nvmrc
           cache: "npm"
 
       - name: Install dependencies
