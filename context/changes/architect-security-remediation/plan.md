@@ -39,4 +39,4 @@
 
 #### Manual
 
-- [ ] 1.M1 Retain green remote security evidence and merge PR #25
+- [x] 1.M1 Retain green remote security evidence — run 30715344478; merge PR #25 next

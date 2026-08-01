@@ -48,6 +48,6 @@
 
 #### Manual
 
-- [ ] 1.M1 Retain remote PR and CI evidence
-- [ ] 1.M2 Resolve or formally accept the advisory policy
+- [x] 1.M1 Retain remote PR and CI evidence — PR #25, run 30715344478
+- [x] 1.M2 Resolve advisory policy — non-forced remediation, remote security green
 - [ ] 1.M3 Submit the additional-badges form

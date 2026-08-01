@@ -51,10 +51,10 @@ twierdzenie, że agregat, ACL, transakcja albo RLS są już wdrożone:
   nie-wymuszonym `npm audit fix`, `npm audit --omit=dev` raportuje 0
   vulnerabilities; szczegóły w [ledgerze dowodów](architect.md).
 - Niezweryfikowane: zdalne RLS/migracje, product decisions dla orderingu i
-  `cards_reviewed`, publiczny hosting oraz immutable CI URL-e dla aktualnej
-  rewizji.
-- Zielony lokalny security gate wymaga jeszcze potwierdzenia na zdalnej rewizji
-  remediation; historyczny czerwony run nie jest dowodem stanu bieżącego.
+  `cards_reviewed` oraz publiczny hosting.
+- Zdalny CI dla rewizji remediation jest zielony (security, unit, scheduler,
+  build i E2E: [run 30715344478](https://github.com/dudziakm/10xCardsAstro/actions/runs/30715344478));
+  historyczny czerwony run nie jest dowodem stanu bieżącego.
 
 Wniosek: repo ma wystarczająco udokumentowaną mapę, ranking i bezpieczny seam
 do review M4. Nie ma jeszcze podstaw, by deklarować produkcyjne bezpieczeństwo
