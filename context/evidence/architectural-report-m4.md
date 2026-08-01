@@ -46,14 +46,15 @@ twierdzenie, że agregat, ACL, transakcja albo RLS są już wdrożone:
 
 ## Granice pewności i kolejne bramki
 
-- Lokalnie: pełna suite ma 101/101 testów, lint nie ma błędów, `astro check` i
-  build są zielone; szczegóły w [ledgerze dowodów](architect.md).
+- Lokalnie: pełna suite ma 101/101 testów, lint nie ma błędów, `astro check`,
+  build, dependency graph oraz fail-closed security gate są zielone. Po
+  nie-wymuszonym `npm audit fix`, `npm audit --omit=dev` raportuje 0
+  vulnerabilities; szczegóły w [ledgerze dowodów](architect.md).
 - Niezweryfikowane: zdalne RLS/migracje, product decisions dla orderingu i
   `cards_reviewed`, publiczny hosting oraz immutable CI URL-e dla aktualnej
   rewizji.
-- Czerwony zdalny security check z siedmioma advisory nie jest ukrywany przez
-  ten raport; wymaga osobnej decyzji security ownera przed deklaracją pełnej
-  gotowości pipeline'u.
+- Zielony lokalny security gate wymaga jeszcze potwierdzenia na zdalnej rewizji
+  remediation; historyczny czerwony run nie jest dowodem stanu bieżącego.
 
 Wniosek: repo ma wystarczająco udokumentowaną mapę, ranking i bezpieczny seam
 do review M4. Nie ma jeszcze podstaw, by deklarować produkcyjne bezpieczeństwo
