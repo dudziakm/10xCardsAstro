@@ -1,10 +1,17 @@
-# Legacy development reference
+# Archived development snapshot (non-authoritative)
 
-This is the detailed historical and operational reference moved out of the
-lean repository entry point. It is not a replacement for the current knowledge
-map in [`../CLAUDE.md`](../CLAUDE.md).
+This file is an unverified historical snapshot moved from the former root
+`CLAUDE.md`; it is retained for provenance, not as current operational
+guidance. Its historical stack versions, CI/CD statements, RLS assertions,
+completion claims and pre-push checklist may conflict with the current
+repository. Do not use it to approve a push, deployment, security posture or
+course submission.
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Use the current navigation in [`../CLAUDE.md`](../CLAUDE.md), executable code
+and migrations for present behaviour, and the scoped Architect status in
+[`../context/evidence/architect.md`](../context/evidence/architect.md). In
+particular, that evidence records a red baseline and does not claim a green
+full CI pipeline.
 
 ## Project Overview
 
@@ -23,7 +30,11 @@ my10xCards is an AI-powered flashcard learning application built with Astro 5, R
 
 All documentation is in Polish, but code implementation is in English.
 
-## Essential Development Commands
+## Historical command list
+
+The commands below are preserved as a past reference. Confirm scripts and the
+smallest relevant verification in `package.json` and the current root
+instructions before using them.
 
 ```bash
 # Development
@@ -53,16 +64,18 @@ npm run format       # Format code with Prettier
 # to ensure code quality and prevent CI/CD failures
 ```
 
-## 🚨 CRITICAL PRE-PUSH WORKFLOW RULES 🚨
+## Historical pre-push checklist (not an approval rule)
 
-**BEFORE EVERY PUSH TO GITHUB, CLAUDE MUST EXECUTE THESE STEPS IN ORDER:**
+The following was a former checklist. It is not unconditional: a command may
+be unavailable, inappropriate for the scoped change, or already known to be
+red. Follow the current root instructions and evidence ledger instead; a push
+also requires explicit user authorization.
 
 ### 1. Build Check
 ```bash
 npm run build
 ```
-- Must complete without errors
-- If fails, fix issues before proceeding
+- Historical expectation: complete without errors.
 
 ### 2. Security Audit
 ```bash
@@ -76,29 +89,28 @@ npm audit
 ```bash
 npm run lint
 ```
-- Must pass without errors
-- Run `npm run lint:fix` first if needed
+- Historical expectation: pass without errors.
+- Do not automatically run fixers without reviewing their scope.
 
 ### 4. TypeScript Validation
 ```bash
 npx astro check
 ```
-- Ensure no TypeScript errors
-- Especially check config files after modifications
+- Historical expectation: report type-check errors before a relevant push.
 
 ### 5. Development Server Test
 ```bash
 npm run dev
 ```
-- Server must start without errors
-- No deprecation warnings or critical errors in console
+- Historical expectation: report startup errors before a relevant push.
 
 ### 6. Unit Tests (if business logic changed)
 ```bash
 npm run test:run
 ```
 
-**ONLY after ALL checks pass locally, then push to GitHub!**
+This archived checklist does not establish that all checks currently pass and
+does not authorize a push.
 
 ### Common Failure Patterns to Watch For:
 - TypeScript errors in astro.config.mjs after changes
@@ -108,16 +120,21 @@ npm run test:run
 
 ## High-Level Architecture
 
-### Technology Stack
+### Historical technology-stack note
 
-- **Frontend**: Astro 5 (SSR) with React 19 islands for interactivity
+The versions and service descriptions in this subsection are archival. The
+current manifests, source and [`../context/evidence/architect.md`](../context/evidence/architect.md)
+are authoritative when they disagree.
+
+- **Frontend**: Astro with React islands for interactivity
 - **Styling**: Tailwind CSS 4 with Shadcn/ui components
 - **Backend**: Supabase (PostgreSQL + Auth)
 - **AI**: OpenRouter.ai with Claude 3 Haiku for flashcard generation
 - **TypeScript**: Strict mode with Zod validation
 - **Testing**: Vitest with React Testing Library and jsdom
 - **E2E Testing**: Playwright with Page Object Model pattern
-- **CI/CD**: GitHub Actions with automated testing and security audits
+- **CI/CD**: a GitHub Actions workflow was documented historically; current
+  status is not asserted here
 
 ### Key Architectural Patterns
 
@@ -138,7 +155,8 @@ npm run test:run
 
    - Supabase auth handled via middleware
    - Session available in `locals` for API routes
-   - Row Level Security (RLS) enforces data isolation
+   - Historical design intent: Row Level Security (RLS) enforces data
+     isolation; current migration/remote status must be checked separately
 
 4. **Database Schema**
 
@@ -168,7 +186,7 @@ npm run test:run
    - Integration tests for API endpoints and database operations
    - Component tests for React UI with user interaction simulation
    - E2E tests with Playwright covering all user workflows
-   - Automated CI/CD pipeline with security auditing
+   - Historical aspiration: automated CI/CD pipeline with security auditing
 
 ### Project Structure
 
@@ -295,25 +313,16 @@ A `.env` file exists with the following keys configured:
 
 See `.env.example` for the template structure.
 
-### Current Status
+## Archived status notes
 
-The application is **fully functional** with:
+The former version of this file asserted that the application was fully
+functional, production-ready, protected by RLS, and backed by a ready CI/CD
+pipeline. Those assertions are removed because this snapshot is not evidence
+of their current truth. It also referred to a historical Node.js 20 CI setup;
+that value is not current guidance.
 
-✅ **Complete CRUD Operations** - Create, read, update, delete flashcards
-✅ **AI-Powered Generation** - Generate flashcards using OpenRouter/Claude 3 Haiku
-✅ **Spaced Repetition Learning** - Scientifically-backed learning algorithm
-✅ **User Interface** - Modern, responsive UI with React components
-✅ **Authentication** - Supabase auth with Row Level Security
-✅ **Testing Infrastructure** - Comprehensive unit, integration, and E2E tests
-✅ **E2E Testing** - Playwright tests with Page Object Model covering all workflows
-✅ **CI/CD Pipeline** - GitHub Actions with automated testing and deployment
-
-**Recent Fixes (v1.0.0):**
-
-- Fixed AI generation flow with candidate review system (`/api/flashcards/accept`)
-- Added `CandidateReview` component for selecting generated flashcards
-- Implemented global navigation with mobile support (`Navigation.astro`)
-- Simplified CI/CD configuration for faster builds (Chrome only, Node.js 20)
-- Improved development server stability and error handling
-
-The application is ready for production use with a complete learning workflow from AI generation to spaced repetition learning.
+For a factual current statement, consult the versioned source and migrations,
+then [`../context/evidence/architect.md`](../context/evidence/architect.md).
+That ledger deliberately records the green scoped characterization separately
+from the red baseline, pending remote RLS discovery and manual submission
+gates.

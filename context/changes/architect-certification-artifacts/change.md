@@ -2,7 +2,7 @@
 title: Architect certification artifacts
 created: 2026-08-01
 type: documentation-change
-status: in-progress
+status: implemented
 ---
 
 # Change: architect-certification-artifacts
@@ -35,3 +35,10 @@ DDD i tabelę dowodów audytowalnymi względem lokalnych promptów M4.
   baseline;
 - wszystkie cytaty plik:linia i relative links są sprawdzone;
 - finalny diff nie dotyka kodu aplikacji, dependency ani workflow.
+
+## Completion boundary
+
+Status `implemented` oznacza wyłącznie ukończenie automatyzowalnego,
+dokumentacyjnego zakresu tego change. Nie oznacza zielonego pełnego CI,
+zweryfikowanego remote RLS, publicznego permalinku ani wysłanego formularza;
+te niezależne bramki pozostają manual pending w planie i evidence ledgerze.

@@ -9,25 +9,32 @@ type: implementation-plan
 Podejście: wyłącznie dokumentacyjne, addytywne i odwracalne. Jeden commit po
 zielonej weryfikacji wszystkich faz.
 
-## Automated Progress
+## Progress
 
-| Faza | Status | Kryterium sukcesu |
-|---|---|---|
-| 0. Baseline i cytaty | completed | `rg`/`ast-grep` potwierdziły każdy nowy cytat strukturalny |
-| 1. Lean navigation | completed | root linkuje do `.ai/`, mapy, changes i domain; referencje są przeniesione |
-| 2. Research formalization | completed | frontmatter, non-candidates, ranking i tabela AST są kompletne |
-| 3. DDD formalization | completed | metadata, cytaty, inventory ACL i summary są kompletne |
-| 4. Evidence table | completed | tabela rozróżnia scoped proof, czerwony baseline i manual gates |
-| 5. Acceptance | completed | docs checks, deliberate-break, targeted suites i `git diff --check` są green |
+#### Automated
 
-## Manual Progress
+- [x] Baseline i cytaty — `rg`/`ast-grep` potwierdziły nowe cytaty
+  strukturalne.
+- [x] Lean navigation — root prowadzi do `.ai/`, map, changes, domain i
+  historycznej referencji.
+- [x] Research formalization — frontmatter, non-candidates, ranking i tabela
+  AST są kompletne.
+- [x] DDD formalization — metadata, cytaty, inventory ACL i summary są
+  kompletne.
+- [x] Evidence table — rozróżnia scoped proof, czerwony baseline i manual
+  gates.
+- [x] Acceptance — docs checks, deliberate-break, targeted suite i
+  `git diff --check` są green.
 
-| Temat | Status | Właściciel / warunek |
-|---|---|---|
-| `dependency-cruiser` | pending | decyzja człowieka: zaakceptować opisany substytut albo autoryzować dependency change |
-| Semantyka `cards_reviewed` i ordering | pending | właściciel produktu przed fazami RLS/due/rating |
-| Remote RLS i migracje | pending | osobny discovery + decyzja security ownera |
-| Publiczne URL-e i formularz Architect | pending | człowiek po local review i ewentualnym pushu |
+#### Manual
+
+- [ ] `dependency-cruiser` — człowiek akceptuje opisany substytut albo
+  autoryzuje dependency change.
+- [ ] Semantyka `cards_reviewed` i ordering — decyzja właściciela produktu
+  przed fazami RLS/due/rating.
+- [ ] Remote RLS i migracje — osobny discovery oraz decyzja security ownera.
+- [ ] Publiczne URL-e i formularz Architect — local review, ewentualny push i
+  czynność człowieka.
 
 ## Guardrails
 
