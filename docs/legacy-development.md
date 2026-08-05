@@ -15,7 +15,7 @@ full CI pipeline.
 
 ## Project Overview
 
-my10xCards is an AI-powered flashcard learning application built with Astro 5, React 19, and Supabase. It helps users create educational flashcards either manually or through AI generation, with a focus on spaced repetition learning.
+my10xCards is an AI-powered flashcard learning application built with Astro 7, React 19, and Supabase. It helps users create educational flashcards either manually or through AI generation, with a focus on spaced repetition learning.
 
 **Note**: This application is currently being built from scratch with AI assistance as part of the 10xdevs training program. The `.ai/` folder contains various planning documents including business requirements (`prd.md`), database plans, API specifications, tech stack details, and implementation notes for individual endpoints.
 

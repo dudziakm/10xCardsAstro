@@ -6,6 +6,12 @@ on:
   pull_request:
     branches: [master, main]
 
+# Least privilege by default. Four of the five jobs previously declared no
+# permissions at all and inherited the repository default while receiving
+# Supabase, OpenRouter, OpenAI and application login secrets on a public repo.
+permissions:
+  contents: read
+
 jobs:
   review-scheduler:
     name: ReviewScheduler characterization
