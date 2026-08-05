@@ -42,7 +42,7 @@ Dowód importów/call-site'ów: `artifact-2-structure.md`. Co-change z gita: `ar
 4. **Progress accounting:** licznik jest zwiększany przez GET.
 5. **Atomicity:** progress upsert i session counter nie są transakcją.
 6. **Test gate:** CI pomija część testów i toleruje failure E2E.
-7. **Documentation drift:** README/CLAUDE mówią Astro 5, package ma Astro 7; `.nvmrc` Node 22, CI Node 20.
+7. **Documentation drift:** `README.md` i `docs/legacy-development.md` mówiły Astro 5, gdy `package.json` deklaruje `astro ^7.0.3`. `CLAUDE.md` nigdy nie podawał wersji Astro, a każdy krok `setup-node` w `.github/workflows/ci.yml` używa `node-version-file: .nvmrc`, czyli 22.14.0 — wcześniejsza wersja tego wiersza błędnie przypisywała oba twierdzenia.
 
 ## Pierwsze pliki do czytania
 

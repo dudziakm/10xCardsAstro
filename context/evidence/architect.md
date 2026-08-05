@@ -23,6 +23,7 @@ statusu GitHub Actions, remote Supabase ani wysłania formularza.
 | Scoped characterization | `env -u OPENROUTER_API_KEY -u OPENAI_API_KEY npm run test:run -- src/lib/services/review-scheduler.test.ts src/lib/services/learning.service.test.ts` | **passed 2026-08-01:** 2 files, 24 tests; nie zastępuje pełnego CI |
 | Security remediation | `context/changes/architect-security-remediation/`, `npm audit --omit=dev`, `npm run security:check` | **passed locally 2026-08-01:** non-forced lockfile refresh resolves all audit findings; checker remains fail-closed (synthetic high finding exited 1) |
 | Remote Architect CI | [run 30715344478](https://github.com/dudziakm/10xCardsAstro/actions/runs/30715344478) | **passed 2026-08-01:** security, unit, scheduler, build and E2E green on `ce157b6`; configured E2E remains a known coverage boundary |
+| Remote CI on `master` itself | [run 30716207116](https://github.com/dudziakm/10xCardsAstro/actions/runs/30716207116) | **passed 2026-08-01** on the default branch at squash [`2a2b929`](https://github.com/dudziakm/10xCardsAstro/commit/2a2b929), so the evidence is not branch-only; the same configured-gate boundary applies |
 | Baseline projektu | `.github/workflows/ci.yml:55-74` | current CI still excludes `getNextCard` and tolerates E2E, so a green run proves configured gates, not comprehensive product coverage |
 
 ## Public / manual gates

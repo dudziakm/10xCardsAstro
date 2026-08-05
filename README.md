@@ -5,6 +5,7 @@
 - [Project Name](#project-name)
 - [Project Description](#project-description)
 - [Tech Stack](#tech-stack)
+- [Architecture and Module 4 artifacts](#architecture-and-module-4-artifacts)
 - [Getting Started Locally](#getting-started-locally)
 - [Available Scripts](#available-scripts)
 - [Project Scope](#project-scope)
@@ -13,7 +14,9 @@
 
 ## Project Name
 
-**my10xCards**
+**my10xCards** — the application name. The GitHub repository is
+[`dudziakm/10xCardsAstro`](https://github.com/dudziakm/10xCardsAstro); the two
+names refer to the same project.
 
 ## Project Description
 
@@ -21,11 +24,32 @@ my10xCards is an innovative application designed to simplify the creation of hig
 
 ## Tech Stack
 
-- **Frontend:** Astro 5, React 19, TypeScript 5
+- **Frontend:** Astro 7, React 19, TypeScript 5
 - **Styling:** Tailwind CSS 4, Shadcn/ui
 - **Backend & Database:** Supabase (for authentication and PostgreSQL database)
 - **AI Integration:** OpenRouter.ai for generating flashcards
 - **Tooling:** Node.js (v22.14.0 as specified in .nvmrc), ESLint, Prettier
+
+## Architecture and Module 4 artifacts
+
+This repository is also the 10xArchitect submission for the 10xDevs 3.0 course:
+a legacy modernization worked from a repository map through a ranked risk list to
+one small, tested refactor. Start here rather than in `src/`.
+
+| What                                | Where                                                                                     |
+|-------------------------------------|-------------------------------------------------------------------------------------------|
+| Architectural report                | [`context/evidence/architectural-report-m4.md`](context/evidence/architectural-report-m4.md) |
+| Requirement → evidence map          | [`context/evidence/architect.md`](context/evidence/architect.md)                          |
+| Repository map and ranked risks     | [`context/map/repo-map.md`](context/map/repo-map.md)                                       |
+| Territory, structure, contributors  | [`context/map/`](context/map/)                                                            |
+| Domain distillation, aggregate, ACL | [`context/domain/`](context/domain/) — deliberately plans, not implementations             |
+| Feature, debt and blast-radius analysis | [`context/changes/learning-progress-analysis/`](context/changes/learning-progress-analysis/) |
+| The refactor that shipped           | [PR #25](https://github.com/dudziakm/10xCardsAstro/pull/25), squash `2a2b929`; `src/lib/services/review-scheduler.ts` |
+| Dependency rules enforced in CI     | [`.dependency-cruiser.cjs`](.dependency-cruiser.cjs) — `no-circular`, `no-react-island-to-api-import`, `no-api-route-to-react-island`, all `error` |
+
+Reproduce the dependency graph with `npm run analyze:dependencies`; it reports
+65 modules and 104 dependencies with no violations. `npm run security:check`
+reports no vulnerabilities and is fail-closed.
 
 ## Getting Started Locally
 
@@ -94,9 +118,16 @@ The project's core features include:
 
 ## Project Status
 
-✅ **Production Ready (v1.0.0)**
+**Feature-complete (v1.0.0), no live deployment.**
 
-The application is **fully functional** with all core features implemented:
+The Vercel target was removed in PR #12, so there is no hosted instance to visit;
+run the application locally with the steps above. Row-level security on the
+`learning` tables is still disabled by
+`supabase/migrations/20240320140000_disable_learning_rls_for_testing.sql` — that
+is the repository's own ranked risk 1 and its guard-first remediation plan lives
+in [`context/changes/harden-learning-progress/plan.md`](context/changes/harden-learning-progress/plan.md).
+
+The following core features are implemented:
 
 - ✅ **Complete CRUD Operations** - Create, read, update, delete flashcards
 - ✅ **AI-Powered Generation** - Two-step process: generate candidates → review → accept
@@ -110,7 +141,7 @@ The application is **fully functional** with all core features implemented:
 
 - Fixed AI flashcard generation flow with candidate review system
 - Added global navigation with mobile support
-- Simplified CI/CD to use only Chrome and Node.js 20
+- Simplified CI/CD to a single Chrome target; every `setup-node` step reads the version from `.nvmrc` (22.14.0)
 - Improved development experience and error handling
 - **Migrated to online Supabase** - Full production-ready database
 - **Updated CI/CD for online deployment** - Separated unit/E2E tests, non-blocking E2E
