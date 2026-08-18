@@ -82,9 +82,5 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
-  },
-  "overrides": {
-    "nanoid": "3.3.18",
-    "js-yaml": "4.3.1"
   }
 }
