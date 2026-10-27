@@ -61,7 +61,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         JSON.stringify({
           error: "Bad Request",
           message: "Invalid input data",
-          details: error.errors,
+          details: error.issues,
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );

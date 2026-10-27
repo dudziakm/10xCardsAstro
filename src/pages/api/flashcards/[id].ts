@@ -182,7 +182,7 @@ export const PUT: APIRoute = async ({ params, request, locals }) => {
         JSON.stringify({
           error: "Bad Request",
           message: "Invalid input data",
-          details: error.errors,
+          details: error.issues,
         }),
         {
           status: 400,
