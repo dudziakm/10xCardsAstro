@@ -33,7 +33,7 @@
     "@tailwindcss/vite": "4.3.2",
     "@types/react": "19.0.12",
     "@types/react-dom": "19.0.4",
-    "astro": "7.2.8",
+    "astro": "7.3.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.5.0",
@@ -54,7 +54,7 @@
     "@testing-library/user-event": "^14.6.1",
     "@typescript-eslint/eslint-plugin": "8.28.0",
     "@typescript-eslint/parser": "8.28.0",
-    "@vitest/ui": "^4.1.8",
+    "@vitest/ui": "^4.1.12",
     "dependency-cruiser": "^18.1.0",
     "eslint": "^9.39.4",
     "eslint-config-prettier": "10.1.1",
@@ -64,7 +64,6 @@
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-prettier": "5.2.5",
     "eslint-plugin-react": "7.37.4",
-    "eslint-plugin-react-compiler": "19.0.0-beta-aeaed83-20250323",
     "eslint-plugin-react-hooks": "5.2.0",
     "husky": "9.1.7",
     "jsdom": "^26.1.0",
@@ -73,7 +72,7 @@
     "prettier-plugin-astro": "0.14.1",
     "typescript": "^5.8.3",
     "typescript-eslint": "8.28.0",
-    "vitest": "4.1.11"
+    "vitest": "4.1.12"
   },
   "lint-staged": {
     "*.{ts,tsx,astro}": [
@@ -92,7 +91,7 @@
     "smol-toml": "1.9.0",
     "svgo": "4.1.0",
     "browserslist": "4.28.7",
-    "fast-uri": "3.1.8",
+    "fast-uri": "3.1.9",
     "@humanfs/node": "0.16.8",
     "postcss-selector-parser": "7.1.6",
     "fflate": "0.8.3",

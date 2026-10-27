@@ -75,7 +75,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
         JSON.stringify({
           error: "Bad Request",
           message: "Invalid parameters",
-          details: error.errors,
+          details: error.issues,
         }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
