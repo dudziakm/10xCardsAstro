@@ -75,7 +75,11 @@ jobs:
 
   # E2E Tests - These run after build and don't block the pipeline
   e2e-tests:
-    runs-on: ubuntu-latest
+    # Playwright ships no chromium build for ubuntu26.04, which is what
+    # ubuntu-latest resolves to now; `npx playwright install chromium` aborts
+    # with "Playwright does not support chromium on ubuntu26.04-x64". Pin the
+    # job to the previous LTS image until Playwright publishes 26.04 support.
+    runs-on: ubuntu-24.04
     needs: build # Wait for build to complete first
     continue-on-error: true # Don't fail the workflow if E2E tests fail
 
